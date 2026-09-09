@@ -1,6 +1,6 @@
 # ATC Org-AGENT_MANIFEST — Agent Identity & Scope (ATC-AI-GOV-MANIFEST-001)
 
-Document ID: **ATC-AI-GOV-MANIFEST-001** · Version: **1.1.0** · Status: **ACTIVE**
+Document ID: **ATC-AI-GOV-MANIFEST-001** · Version: **1.2.0** · Status: **ACTIVE**
 Organization: A-TownChain-Okosystems · Owner: A-TownChain-Okosystems (Michael Wroblewski)
 Änderungen: versioniert via SCR, geprüft (CI), nachvollziehbar (AUD) — siehe §10.
 
@@ -57,7 +57,9 @@ autorisierten Scopes sind Änderungen VERBOTEN. Aurora: ORGANIZATION (read),
 `changed_files` · `open_findings` · `tests` · `risks` · `next_action`.
 Normative Bindung: ATC-STD-AI-DEV-012 (Multi-Agent Coordination).
 
-## 8. Governance-Interpretation (Zielbild-Mapping, ehrlich)
+## 8. Governance-Interpretation
+
+> Vollständige Familien-Protokolle: `ai/audit.yaml` (AUDIT-001) · `ai/handoff.yaml` (HANDOFF-001) · `ai/incident.yaml` (INCIDENT-001) · `ai/change.yaml` (CHANGE-001) — jeweils via SCR-0061 registriert. (Zielbild-Mapping, ehrlich)
 
 | ATC-AI-GOV-Dokument | Umsetzung hier |
 |---|---|

@@ -1,0 +1,23 @@
+# ATC Agent Incident Protocol — ATC-AI-GOV-INCIDENT-001 (SCR-0061)
+# Incident- & Fehlerbehandlung fuer Agent-getriebene Aenderungen.
+schema_version: "1.0"
+id: ATC-AI-GOV-INCIDENT
+version: "1.0.0"
+status: ACTIVE
+category: Governance
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+incident_classes:
+  - {id: INC-CLS-PROD,  name: "Produktionsstoerung", severity: P0, response: "Sofort-Stopp + Rollback-Pfad pruuefen + Owner-Benachrichtigung"}
+  - {id: INC-CLS-GOV,   name: "Governance-Verstoss (Policy/Standard verletzt)", severity: P0, response: "Aenderung anhalten, AUD-Record, Owner-Gate"}
+  - {id: INC-CLS-SEC,  name: "Security-Incident (Secret/Leak/Permission)", severity: P0, response: "ATC-STD-SEC-001 + Owner sofort"}
+  - {id: INC-CLS-DATA, name: "Datenverlust/-korruption", severity: P0, response: "Restore-Pfad, Integritäts-Audit"}
+  - {id: INC-CLS-QUAL, name: "Qualitaetsvorfall (falsche Validierung, falsches Reporting)", severity: P1, response: "ATC-POL-008 truthful-reporting + Re-Audit"}
+  - {id: INC-CLS-PROC, name: "Prozessvorfall (CI rot, Automation fehlgeschlagen)", severity: P1, response: "RCA + IMP-Record"}
+lifecycle: [DETECTED, CONTAINED, ANALYZED, REMEDIATED, VERIFIED, CLOSED]
+rules:
+  - "Jeder Incident MUSS als F-NNNN (BUG-001) und/oder ATC-IMP-Record (IMPROVEMENT-001) erfasst werden — kein stilles Behandeln."
+  - "Jeder P0-Incident erzeugt zwingend einen AUD-Record (AUDIT-001) mit Zeitstempel-Kette."
+  - "Root-Cause-Analyse nach BUG-005 (5-Why bis zur systemischen Ursache) ist FUER P0/P1 zwingend."
+  - "Nach remediation zwingend Regression Prevention (IMPROVEMENT-001 REQ-IMP-008): 'Kann derselbe Fehler woanders auftreten?'"
+  - "Postmortem-Dokumentation in docs/incidents/ (INCIDENT-YYYY-MM-DD-<ref>.md) mit Ursache, Wirkung, Fix, Praevention."
+  - "Owner-Benachrichtigung bei allen P0-Incidents; Agent dokumentiert, Owner entscheidet."

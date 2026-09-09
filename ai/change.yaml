@@ -1,0 +1,22 @@
+# ATC Governance Change Management — ATC-AI-GOV-CHANGE-001 (SCR-0061)
+# Aenderungen an der Agent-Governance selbst sind governance-relevant und geregelt.
+schema_version: "1.0"
+id: ATC-AI-GOV-CHANGE
+version: "1.0.0"
+status: ACTIVE
+category: Governance
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+change_scope:  # Was gilt als Governance-Aenderung
+  - AGENT_MANIFEST.md (Agenten-Identitaet, Registry, Capabilities, Scope)
+  - ai/agent.yaml, ai/capabilities.yaml, ai/policies.yaml, ai/checks.yaml
+  - ai/governance-rules.yaml, ai/handoff.yaml, ai/incident.yaml, ai/change.yaml
+  - AGENTS.md (Org-Regeln) und agent-instructions/
+requirements:
+  - "Jede Governance-Aenderung erfordert SCR im atc-standards-Repository (ATC-STD-000) mit Impact-Analyse."
+  - "SemVer: behavior-relevante Verschärfung = MINOR, inkompatible Regeländerung = MAJOR, Redaktion = PATCH (ATC-STD-VERSION-001)."
+  - "CHECK-Katalog-Aenderungen: Checks duerfen nur verschärft, nie stillschweigend geschwächt werden; jede neue Check-Version dokumentiert Delta."
+  - "Policies duerfen nicht deaktiviert werden ohne Owner-Freigabe (enabled=false nur via Owner)."
+  - "VOR Deploy der Aenderung: agov_check.py + readiness_check.py auf Hub + alle gebundenen Repos (Regression Prevention)."
+  - "NACH Deploy: Snapshot-Regeneration + AGOV-Lauf; Differenzen als Findings (F-NNNN)."
+  - "Governance-Aenderungen sind auditierbar: Commit-SHA + SCR + AUD-Referenz in der Datei-Headline."
+rollback: "Bei Gate-Failure nach Governance-Aenderung: vorheriger Stand des Hub wiederherstellen (Git), SCR mit Abbruchgrund schliessen, Incident-Record bei P0-Auswirkung."

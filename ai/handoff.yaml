@@ -1,0 +1,41 @@
+# ATC Agent Handoff Protocol — ATC-AI-GOV-HANDOFF-001 (SCR-0061)
+# Agent-zu-Agent-Uebergabe: keine Information geht verloren, jede Uebergabe ist auditierbar.
+schema_version: "1.0"
+id: ATC-AI-GOV-HANDOFF
+version: "1.0.0"
+status: ACTIVE
+category: Governance
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+rule: "Jede Agent-Uebergabe erzeugt einen Handoff-Record (Pflichtfelder). Ohne vollstaendigen Record gilt der Task als NICHT uebergeben."
+mandatory_fields:  # REQ-AGOV-HOF-001
+  - source_agent        # ID aus AGENT_MANIFEST.md Registry
+  - target_agent
+  - task               # Task-/SCR-/Issue-Referenz
+  - status             # DISCOVERED|ANALYZING|IMPLEMENTED|TESTED|VERIFYING|BLOCKED|DONE
+  - completed_work
+  - changed_files
+  - open_findings      # F-NNNN-Referenzen oder 'keine'
+  - tests              # Laufende/gruene Tests + Testnamen
+  - risks
+  - next_action         # Konkreter Folgeschritt fuer Ziel-Agent
+storage:
+  location: "docs/handoffs/ im Ziel-Repository oder Task-Dokument (SCR/Issue)"
+  naming: "HANDOFF-YYYY-MM-DD-<task-ref>.md"
+  audit: "Commit-Trailer [handoff: <source>→<target>] bei Repository-Changes"
+continuity_rules:
+  - "Ziel-Agent MUSS Handoff-Record lesen, bevor er fortfuehrt (inspect-before-modify, ATC-POL-001)."
+  - "Scope-Wechsel mit der Uebergabe = neuer Task + neuer Registry-Snapshot (governance-rules.yaml)."
+  - "Widerspruch Handoff vs. Repository-Realitaet => Repository gewinnt; Diskrepanz als Finding (F-NNNN) melden."
+  - "Offene Findings duerfen NUR mit Aufloesung oder bewusstem Carry-Over uebergeben werden."
+template: |
+  # Handoff <task-ref>
+  source_agent: <ATC-AI-...>
+  target_agent: <ATC-AI-...>
+  task: <Beschreibung/SCR/Issue>
+  status: <...>
+  completed_work: <...>
+  changed_files: <...>
+  open_findings: <...>
+  tests: <...>
+  risks: <...>
+  next_action: <...>

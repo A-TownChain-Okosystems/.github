@@ -1,0 +1,25 @@
+# ATC Agent Governance Audit — ATC-AI-GOV-AUDIT-001 (SCR-0061)
+# Verfahren, wie die Organisation automatisiert feststellt, dass Repositories die Regeln erfuellen.
+schema_version: "1.0"
+id: ATC-AI-GOV-AUDIT
+version: "1.0.0"
+status: ACTIVE
+category: Governance
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+audit_chain:
+  - Repository-Discovery (git + GitHub API + Registry-Binding)
+  - CHECK-001..020 ausfuehren (tools/agov_check.py, AUTO/MANUAL/HYBRID)
+  - Verdict je Check: PASS | FAIL | WARN | N/A (MUST/SHOULD/MAY-Modell)
+  - Findings erfassen (F-NNNN, BUG-001) + Severity P0-P3
+  - Issue je P0/P1-Finding (automatisiert erstellbar)
+  - Fix + Recheck bis VERIFIED
+  - Post-Change-Audit: Diff-Review + Regression + Dokumentations-Sync
+  - Continuous Improvement: IMP-Records fuer systemische Ursachen (IMPROVEMENT-001)
+run_types:
+  - {id: AGOV-FULL,  trigger: "taeglich/gesteuert",  scope: "alle Repos",      evidence: "docs/AGOV-RUN-*.md"}
+  - {id: AGOV-DELTA, trigger: "je Task/Change",     scope: "betroffene Repos", evidence: "SCR/Issue-Referenz"}
+  - {id: AGOV-GATE,  trigger: "vor Merge/Release", scope: "PR-Targets",        evidence: "Merge-Gate (governance-rules.yaml)"}
+evidence_rules:
+  - "Jeder Lauf erzeugt/aktualisiert ai/audit/SNAPSHOT-*.json + Lauf-Report in docs/."
+  - "AUSSAGE nur mit API-Evidenz (Reality-Check, ATC-STD-BUG-001 Regeln)."
+  - "Widerspruch Check vs. Registry-SSOT => Registry gewinnt, Differenz = Finding."
