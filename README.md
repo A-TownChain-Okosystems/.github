@@ -3,7 +3,7 @@
 Dieses Repository ist der **zentrale, vererbbare Organisationsstandard** für alle
 KI-Agenten in A-TownChain-Okosystems (SCR-0057, 09.09.2026). Als `.github`-Repo
 stellt es Org-weite Dateien bereit; jedes ATC-Repository dockt über den Verweis-
-Block in seiner AGENTS.md an (Pflicht, eingerichtet für alle 26 Repos).
+Block in seiner AGENTS.md an (Pflicht, eingerichtet für alle 27 Repos (Quelle: ai/org-scope.yaml — SSOT, GitHub-API)).
 
 **Einstieg:** `AGENTS.md` (Org-Master) · `agent-instructions/00..11` (12 Module) ·
 `ai/agent.yaml` + `ai/policies.yaml` (AP-001..016, normativ) + `ai/capabilities.yaml`

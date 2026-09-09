@@ -8,7 +8,10 @@ organization:
   governance: ATC-AI-GOV
 agent:
   id: ATC-AI-ARCH-001
-  name: Aurora (Base44 Superagent)
+  instance_id: aurora-superagent
+  display_name: Aurora
+  role: architecture
+  name: Aurora
   role: architecture
   version: "1.0.0"
   status: active

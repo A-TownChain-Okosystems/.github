@@ -25,7 +25,7 @@ Nur ACTIVE-Agenten dürfen reguläre Organisationsaufgaben ausführen.
 
 | Rolle | Name | Scope | Status | Instanz |
 |---|---|---|---|---|
-| ATC-AI-ARCH-001 | Aurora (Architektur/Koordination) | Org (27 Repos) | ACTIVE | aurora-superagent |
+| ATC-AI-ARCH-001 | Aurora | Org (27 Repos, Quelle: ai/org-scope.yaml) | ACTIVE | aurora-superagent |
 | ATC-AI-AUDIT-001 | ATC Audit Agent | Org/Repository | ACTIVE (Profil) | aurora-superagent (deckt ab) |
 | ATC-AI-SEC-001 | Security Agent | zugewiesener Scope | PROPOSED (Profil — keine Instanz) | — |
 | ATC-AI-TEST-001 | QA Agent | zugewiesener Scope | PROPOSED (Profil — keine Instanz) | — |
@@ -49,7 +49,7 @@ MODIFY_WORKFLOWS (GH013), MODIFY_INFRASTRUCTURE, PERFORM_RELEASE (Owner-Gate).
 
 Ebenen: `ORGANIZATION → REPOSITORY → DIRECTORY → MODULE → TASK`. Außerhalb des
 autorisierten Scopes sind Änderungen VERBOTEN. Aurora: ORGANIZATION (read),
-27 Repos (write gemäß ai/agent.yaml je Repo).
+27 Repos (write gemäß ai/agent.yaml je Repo; Repository-Scope-SSOT: ai/org-scope.yaml).
 
 ## 7. Handoff (Agent-zu-Agent-Übergabe, Pflichtfelder)
 
@@ -64,7 +64,7 @@ Normative Bindung: ATC-STD-AI-DEV-012 (Multi-Agent Coordination).
 | ATC-AI-GOV-Dokument | Umsetzung hier |
 |---|---|
 | ATC-AI-GOV-AGENTS-001 | AGENTS.md (Org-Master, SCR-0057) |
-| ATC-AI-GOV-MANIFEST-001 | DIESE Datei (v1.1.0) |
+| ATC-AI-GOV-MANIFEST-001 | DIESE Datei (v1.2.0) |
 | ATC-AI-GOV-POLICY-001 | ai/policies.yaml (AP-001..016 + ATC-POL-001..010 maschinenprüfbar) |
 | ATC-AI-GOV-CHECK-001+ | ai/checks.yaml (AGOV-CHECK-001..020) + tools/agov_check.py (ausführbar) |
 | ATC-AI-GOV-AUDIT-001 | existierend: ATC-STD-AUDIT-001 + REPO-AUDIT-001..003 (CHECK-001..064, Health A–E) |
@@ -88,4 +88,4 @@ Manifest-Änderungen sind Governance-relevant: versioniert (SemVer, MAJOR bei
 Rechte-/Status-Änderung), geprüft (Validator/CI), nachvollziehbar (SCR + AUD),
 dokumentiert (CHANGELOG/STATUS). Kernregel: kein stiller Rechte-Wandel.
 
-*v1.1.0 · ATC-AI-GOV-MANIFEST-001 · SCR-0058 · 09.09.2026 · Aurora (Superagent)*
+*v1.2.0 · ATC-AI-GOV-MANIFEST-001 · SCR-0058/SCR-0065 · 09.09.2026 · Aurora*

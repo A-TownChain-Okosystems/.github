@@ -1,0 +1,3 @@
+# Laufzeit-Abhaengigkeiten der Org-Governance-Tools (GOV-SELF-AUDIT-001, SCR-0065)
+# CI-Install vor Validierung: python3 -m pip install -r requirements.txt (ATC-STD-CI-001 CI-003)
+pyyaml>=6.0,<7.0

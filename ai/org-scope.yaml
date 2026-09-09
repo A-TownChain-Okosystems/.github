@@ -1,0 +1,39 @@
+# Organisations-Scope als SSOT (Audit P2-01/M1: Repository-Count darf nicht
+# manuell in README/AGENTS/MANIFEST dupliziert werden — alle Ansichten leiten
+# sich von hier ab. Quelle: GitHub API, Snapshot 09.09.2026, SCR-0065).
+version: "1.0.0"
+status: ACTIVE
+organization: A-TownChain-Okosystems
+organization_meta:
+  repository_count: 27
+  repository_scope:
+    source: github-api
+    snapshot: "2026-09-09T12:20:00Z"
+repositories:
+  - .github
+  - a-townchain
+  - a-townchain-os
+  - a-townchain-os-docs
+  - atc-algorithm
+  - atc-compute
+  - atc-contracts
+  - atc-explorer
+  - atc-indexer
+  - atc-interop
+  - atc-launchpad
+  - atc-marketplace
+  - atc-mining
+  - atc-node
+  - atc-oracle
+  - atc-sdk
+  - atc-shivacore
+  - atc-standards
+  - atc-storage
+  - atc-vm
+  - atc-wallet
+  - atc-zkp
+  - atclang
+  - aurora-ai
+  - genesis-chronicles
+  - genesis-engine
+  - globus-os

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """AGOV-Hub Selbst-Tests (AGOV-CHECK-012): validiert die Governance-Assets
 des Hubs. Ausfuehrung: python3 tools/test_agov.py  — Exit 0 = grün."""
-import os, sys
+import os, re, sys
 import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +16,9 @@ d = yaml.safe_load(open(os.path.join(ROOT, "ai/checks.yaml"), encoding="utf-8"))
 check("T1 checks.yaml: 20 Checks, v1.0.0, ACTIVE",
       len(d["checks"]) == 20 and d["version"] == "1.0.0" and d["status"] == "ACTIVE")
 ids = [c["id"] for c in d["checks"]]
-check("T2 CHECK-IDs eindeutig 001..020", len(set(ids)) == 20 and sorted(ids) == sorted(set(ids)))
+expected_ids = {f"{i:03d}" for i in range(1, 21)}
+actual_ids = {c["id"].split("-")[-1] for c in d["checks"]}
+check("T2 CHECK-IDs exakt 001..020 (Menge und Werte)", actual_ids == expected_ids)
 lv = {c["level"] for c in d["checks"]}
 check("T3 Level-Modell MUST/SHOULD/MAY", lv == {"MUST", "SHOULD", "MAY"})
 
@@ -36,7 +38,11 @@ check("T8 Aurora ohne MODIFY_WORKFLOWS (GH013)", "MODIFY_WORKFLOWS" not in a["ca
 
 # T9: Manifest
 m = open(os.path.join(ROOT, "AGENT_MANIFEST.md"), encoding="utf-8").read()
-check("T9 MANIFEST-001: 10 Sektionen + Kaskade", m.count("## ") >= 10 and "Kaskade" not in "" and "ATC-AI-GOV-MANIFEST-001" in m)
+casc = ["Org-Policy", "Manifest", "Org-AGENTS.md", "Repo-AGENTS.md"]
+pos = [m.find(x) for x in casc]
+check("T9 MANIFEST-001: 10 Sektionen + Kaskade vollstaendig u. geordnet",
+      m.count("## ") >= 10 and all(p >= 0 for p in pos)
+      and pos == sorted(pos) and "ATC-AI-GOV-MANIFEST-001" in m)
 
 # T10: agov_check.py lauffaehig (Syntax)
 import py_compile
@@ -56,5 +62,35 @@ check("T14 Snapshot-Record: 4 Pflichtfelder, Commit+Hash korrekt",
       all(k in sn for k in ("registry_version", "registry_commit", "registry_hash", "approved_standards"))
       and len(sn["registry_commit"]) == 40 and len(sn["registry_hash"]) == 64)
 
-print(f"\n{'ALLE ' + str(14 - len(fails)) + '/14 GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
+# T15: Manifest-Versionskonsistenz (Header == Selbstreferenz == Footer, Audit P1-04/M1)
+hdr = re.search(r"Version: \*\*(\d+\.\d+\.\d+)\*\*", m)
+foot = re.search(r"\*v(\d+\.\d+\.\d+)", m)
+refs = re.findall(r"\(v(\d+\.\d+\.\d+)\)", m)
+check("T15 Manifest-Version konsistent (Header=Selbstreferenz=Footer)",
+      bool(hdr and foot and refs) and foot.group(1) == hdr.group(1)
+      and all(r == hdr.group(1) for r in refs))
+
+# T16: Cross-File-Konsistenz (Org-Scope-SSOT + Versionschluessel, Audit P1-04/M1)
+import glob as _g
+sc = yaml.safe_load(open(os.path.join(ROOT, "ai/org-scope.yaml"), encoding="utf-8"))
+cnt = sc["organization_meta"]["repository_count"]
+rd = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+def _has_version(p):
+    d = yaml.safe_load(open(p, encoding="utf-8"))
+    if not isinstance(d, dict):
+        return False
+    if "version" in d:
+        return True
+    # Version kann auch unter dem Haupt-Schluessel liegen (checks.yaml etc.)
+    return any(isinstance(v, dict) and "version" in v for v in d.values())
+try:
+    all_vers = all(_has_version(p) for p in _g.glob(os.path.join(ROOT, "ai", "*.yaml")))
+    parse_ok = True
+except yaml.YAMLError:
+    all_vers, parse_ok = False, False
+check("T16 Cross-File: ai/*.yaml parsbar, Versionsschluessel, Org-Scope-SSOT (27) in README+Manifest",
+      cnt == 27 and str(cnt) in rd and str(cnt) in m and all_vers and parse_ok)
+
+total = 16
+print(f"\n{'ALLE ' + str(total - len(fails)) + '/' + str(total) + ' GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
 sys.exit(1 if fails else 0)
