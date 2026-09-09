@@ -6,6 +6,10 @@
 > Repo-spezifische AGENTS.md ERGÄNZEN diese Regeln — sie dürfen keine höhere
 > Sicherheits-, Compliance- oder Governance-Regel stillschweigend aushebeln.
 
+**Hierarchie-Kaskade:** Org-Policy → AGENT_MANIFEST → Org-AGENTS.md (dieses
+Dokument) → Repo-AGENTS.md → Verzeichnis-Regeln → Task; spezifischere Regeln
+ergänzen, hebeln nie höhere aus.
+
 ## 1. Arbeits-Sequenz (Pflicht je Auftrag)
 
 1. **Identität feststellen** (Modul 00): AGENT_MANIFEST-Registrierung, Git-Identität.
