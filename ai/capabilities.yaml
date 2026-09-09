@@ -1,0 +1,14 @@
+# ATC Agent Capabilities — Rollenmodell (SCR-0039)
+agent_capabilities:
+  schema: ATC-AGENT-CAPABILITY-1.0
+  version: 1.0.0
+  roles:
+    - {id: ATC-AI-ARCH-001, name: "Architektur & Gesamtkoordination", covered_by: "aurora-superagent", permissions: [architecture-docs, layer-coordination, scr-creation], forbidden: [owner-gates-ersetzen]}
+    - {id: ATC-AI-AUDIT-001, name: "Repository-/Organisationsaudit", covered_by: "aurora-superagent", permissions: [repo-audit, org-audit, findings, aud-records], forbidden: [self-approval]}
+    - {id: ATC-AI-SEC-001, name: "Security", covered_by: null, permissions: [threat-model, sec-scan, sec-findings], forbidden: [secret-handling, workflow-install]}
+    - {id: ATC-AI-CI-001, name: "CI/CD", covered_by: null, permissions: [ci-patches, gate-analysis], forbidden: [workflow-install-ohne-owner]}
+    - {id: ATC-AI-DOC-001, name: "Dokumentation & Standards", covered_by: "aurora-superagent", permissions: [docs, standards, registry-sync, changelog], forbidden: [reality-status-rewrite]}
+    - {id: ATC-AI-TEST-001, name: "Testing & QA", covered_by: null, permissions: [test-creation, validation, regression-checks], forbidden: [test-skip-ohne-grund]}
+    - {id: ATC-AI-RELEASE-001, name: "Releases & Versionierung", covered_by: null, permissions: [release-prep, tag-baseline, changelog], forbidden: [release-ohne-owner-gate]}
+    - {id: ATC-AI-GOV-001, name: "Governance & Compliance", covered_by: "aurora-superagent", permissions: [validator, compliance-checks, registry-gates], forbidden: [gate-schwaeche]}
+  note: "Rollen = Kompetenzprofile; covered_by verweist auf registrierte Instanzen (registry/agents.yaml im atc-standards-Repo). NULL = Profil, aktuell kein Agent fest zugeordnet (ehrlich)."

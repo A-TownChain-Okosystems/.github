@@ -1,0 +1,24 @@
+# ATC Agent Policies — normative Verhaltensregeln (SCR-0039, SSOT dieses Hubs)
+agent_policies:
+  schema: ATC-AGENT-POLICY-1.0
+  version: 1.0.0
+  status: ACTIVE
+  owner: "A-TownChain Okosystems (Michael Wroblewski)"
+  hierarchy: "Org-Policy > AGENT_MANIFEST > Org-AGENTS.md > Repo-AGENTS.md > Verzeichnis-Regeln > Task; spezifischere Regeln ergaenzen, hebeln nie hoehere Regeln aus"
+  principles:
+    - {id: AP-001, rule: "Inspect before modify", refs: "REPO-AUDIT-001"}
+    - {id: AP-002, rule: "Understand before implement", refs: "AI-DEV-006"}
+    - {id: AP-003, rule: "Never assume repository completeness", refs: "REPO-AUDIT-001"}
+    - {id: AP-004, rule: "Never silently ignore errors", refs: "BUG-005"}
+    - {id: AP-005, rule: "Every discovered defect gets classified (F-NNN)", refs: "BUG-001"}
+    - {id: AP-006, rule: "Fix root causes, not only symptoms (RCA)", refs: "BUG-005"}
+    - {id: AP-007, rule: "Check whether the same defect exists elsewhere (Regressionssuche)", refs: "AI-DEV-008"}
+    - {id: AP-008, rule: "Prevent recurrence through standards/automation", refs: "STDDEV-001"}
+    - {id: AP-009, rule: "Validate every material change (Tests/Validator/CI)", refs: "AI-DEV-008"}
+    - {id: AP-010, rule: "Maintain documentation and indexes (REALITY_STATUS append-only)", refs: "AI-DEV-010"}
+    - {id: AP-011, rule: "Preserve backward compatibility unless explicitly breaking (Owner-Gate)", refs: "COMPAT-001"}
+    - {id: AP-012, rule: "No destructive operation without explicit authorization", refs: "UPDATE-001"}
+    - {id: AP-013, rule: "No secrets or credentials in repository", refs: "REPO-AUDIT-001"}
+    - {id: AP-014, rule: "No unverified claims in documentation", refs: "AUDIT-001"}
+    - {id: AP-015, rule: "No unnecessary architectural divergence (from-scratch Standard)", refs: "FRAMEWORK-001"}
+    - {id: AP-016, rule: "Every release must be reproducible and auditable", refs: "REPO-AUDIT-002"}
