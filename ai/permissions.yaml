@@ -1,0 +1,33 @@
+# ATC Agent Permissions — GitHub-Operations-Erlaubnismodell (SCR-0063)
+# WAS ein Agent auf GitHub-Ebene tun darf (Capability = abstrakte Faehigkeit, Permission = konkrete Operation).
+# Fail Closed: nicht gelistete Operation = verboten (unknown → DENY, nie ALLOW).
+schema_version: "1.0"
+id: ATC-AI-GOV-PERMISSIONS
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+default: DENY
+agents:
+  ATC-AI-ARCH-001:        # Aurora (Architecture, Standards)
+    operations:
+      - {op: push_code,            allowed: true,  scope: "zugewiesene Repositories"}
+      - {op: create_branch,       allowed: true,  scope: "zugewiesene Repositories"}
+      - {op: create_pull_request, allowed: true,  scope: "zugewiesene Repositories"}
+      - {op: create_issue,         allowed: true,  scope: "beliebig"}
+      - {op: comment_issue,        allowed: true,  scope: "beliebig"}
+      - {op: close_issue,          allowed: true,  scope: "selbst erstellte oder governance-bezogene"}
+      - {op: push_workflow_file,   allowed: false, note: "GH013: Agent-Token ohne workflow-Scope — Workflow-Aenderungen via Owner-UI (z.B. Issue #2 atc-standards) oder Automation mit Scope; Owner-Gate (CAPABILITY-001)"}
+      - {op: force_push,           allowed: false, note: "destruktiv — ATC-POL-007, Owner-Gate"}
+      - {op: delete_branch,        allowed: false, note: "destruktiv — Owner-Gate; Ausnahme: eigene Feature-Branches nach Merge"}
+      - {op: admin_settings,       allowed: false, note: "nie"}
+  ATC-AI-AUDIT-001:       # ATC Audit Agent
+    operations:
+      - {op: read_repository,      allowed: true,  scope: "org-weit"}
+      - {op: create_issue,         allowed: true,  scope: "Audit-Findings P0/P1"}
+      - {op: push_code,            allowed: false, note: "Auditor schreibt Code nur ueber Findings/Issues, nie direkt"}
+      - {op: comment_issue,        allowed: true,  scope: "Audit-Kontext"}
+gates:
+  push_workflow_file: "Owner-Gate + SCR (CAPABILITY-001 REQ-AGOV-CAP-003)"
+  force_push: "Owner-Gate + AUD-Record (ATC-POL-007)"
+  delete_branch: "Owner-Gate; Feature-Branch-Cleanup ohne Gate erlaubt mit Begründung im Commit/PR"
+fail_closed: "Fehlende Eintrag = DENY. Konfigurationsfehler = DENY. unknown → DENY (nie ALLOW)."

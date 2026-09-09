@@ -1,0 +1,22 @@
+# ATC Agent Workflow — verbindlicher Prozess mit Gates (SCR-0063)
+# Die Governance-Kette (ATC-AI-GOV-001 REQ-AIGOV-001) als ausfuehrbares Prozessobjekt.
+schema_version: "1.0"
+id: ATC-AI-GOV-WORKFLOW
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+stages:
+  - {id: DISCOVER,  gate: "AGENTS-Kaskade + Registry-Binding gelesen (ATC-POL-001)", evidence: "task-referenz"}
+  - {id: UNDERSTAND,gate: "Stand aktueller Stand (fetch) + Betroffene erkannt", evidence: "analyse-notiz"}
+  - {id: PLAN,      gate: "SCR/Task-Referenz + Impact-Analyse", evidence: "plan-dokument"}
+  - {id: IMPLEMENT, gate: "Scope-Treue + Capability-Deckung", evidence: "diff"}
+  - {id: TEST,      gate: "Tests + Validatoren lokal gruen", evidence: "test-output"}
+  - {id: AUDIT,     gate: "AUD-Record erstellt (AI-DEV-009)", evidence: "aud-record-id"}
+  - {id: DOCUMENT,  gate: "Doku-Sync geprueft (ATC-POL-006)", evidence: "doku-diff"}
+  - {id: REVIEW,    gate: "Diff-Review final (ATC-POL-005) + Regression (POL-004/010)", evidence: "review-notiz"}
+  - {id: COMMIT,    gate: "Commit-Trailer [SCR/agent] + ehrliche Message (ATC-POL-008)", evidence: "commit-sha"}
+  - {id: PR,        gate: "AGOV-Gate: P0/P1-FAIL blockiert", evidence: "ci-run"}
+  - {id: HUMAN_APPROVAL, gate: "Owner-Gate fuer P0-Themen/normative Aenderungen", evidence: "approval-ref"}
+  - {id: MERGE,      gate: "Merge-Gate (governance-rules.yaml): FAIL/PENDING => NO MERGE", evidence: "merge-sha"}
+skip_rules: "Kein Stufe-Auslassen bei material changes; AUDIT und REVIEW sind fuer P0-Aenderungen zwingend."
+human_merge: true

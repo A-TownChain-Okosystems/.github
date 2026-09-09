@@ -1,0 +1,36 @@
+# ATC-CHECK-009 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-009
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: permissions-block je workflow
+    type: workflow_permissions
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-009
+metadata:
+  automation: AUTO
+  category: quality
+  level: MUST
+  name: github-actions-permissions-block-je-workflow
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  expect: permissions-block je workflow
+  type: workflow_permissions
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

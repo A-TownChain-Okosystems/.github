@@ -1,0 +1,37 @@
+# ATC-CHECK-008 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-008
+evaluation:
+  fail_closed: true
+  pass_when:
+  - path: .github/CODEOWNERS
+    type: file_exists
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-008
+metadata:
+  automation: AUTO
+  category: quality
+  level: MAY
+  name: codeowners-vorhanden
+  severity: P2
+remediation:
+  creates_finding: always
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  path: .github/CODEOWNERS
+  type: file_exists
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

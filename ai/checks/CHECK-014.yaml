@@ -1,0 +1,40 @@
+# ATC-CHECK-014 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-014
+evaluation:
+  fail_closed: true
+  pass_when:
+  - path: README.md
+    pattern: REALITY_STATUS|Status
+    type: content_match
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-014
+metadata:
+  automation: MANUAL
+  category: quality
+  level: SHOULD
+  name: dokumentationskonsistenz-kanonisch-reality_status
+  severity: P2
+remediation:
+  creates_finding: always
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  note: 'MANUAL: Doku-Konsistenz pruefen'
+  path: README.md
+  pattern: REALITY_STATUS|Status
+  type: content_match
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

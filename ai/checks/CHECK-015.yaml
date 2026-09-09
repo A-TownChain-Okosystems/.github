@@ -1,0 +1,37 @@
+# ATC-CHECK-015 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-015
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: Manifest-/Versionsangaben konsistent
+    type: version_consistency
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-015
+metadata:
+  automation: HYBRID
+  category: quality
+  level: SHOULD
+  name: versionierung-konsistent-manifest-baseline
+  severity: P2
+remediation:
+  creates_finding: always
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  expect: Manifest-/Versionsangaben konsistent
+  type: version_consistency
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

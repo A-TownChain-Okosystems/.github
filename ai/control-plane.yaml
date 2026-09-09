@@ -1,0 +1,27 @@
+# ATC Organization Governance Control Plane — P0-Enforcement-Grenze (SCR-0063)
+# Definiert EINDEUTIG, wie zentrale Governance auf Repositories vererbt und erzwungen wird.
+schema_version: "1.0"
+id: ATC-AI-GOV-CONTROL-PLANE
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+enforcement_boundary:
+  ssot: "Dieses .github-Repository ist das Organisations-Profil-Repository: sein Stamm-AGENTS.md und seine ai/-Artefakte gelten org-weit als zentrale Governance-Quelle."
+  inheritance: "Repositories erben zentrale Policies/Capabilities vom Hub (Org-Profil-Mechanismus); repo-lokale AGENTS.md MUSS auf den Hub verweisen (Org-Verweisblock, AGOV-CHECK-002/003)."
+  local_binding_rule: "Jedes Repository MIT aktiver Agenten-Bindung (.github/ai/agent.yaml mit agents.allowed) MUSS repo-lokale capabilities.yaml UND policies.yaml besitzen (STANDARD DEFINES IT = FILE IMPLEMENTS IT; Audit-Fund 09.09.: 404 in atc-standards). Repos ohne eigene Agenten-Bindung erben vollstaendig vom Hub (Verdict: INHERITED, Evidence: Hub-SHA)."
+  enforcement_kanäle:
+    - "AGOV-GATE: GitHub-Actions je Push/PR (Merge-Block bei P0/P1)"
+    - "org_governance_scan.py: zentraler Cross-Repo-Validator (Phase 6) — prueft AGENTS/MANIFEST/agent.yaml/capabilities/policies/audit/checks/CI/Evidence je Repository und berechnet den Repository-Status"
+    - "A1-Manifest-Gate: required_standards == ALLE Registry-Standards (dynamische Bindung)"
+artifacts:
+  identity: {file: AGENT_MANIFEST.md, resp: "Identitaet"}
+  machine_identity: {file: ai/agent.yaml, resp: "Maschinenidentitaet"}
+  capabilities: {file: ai/capabilities.yaml, resp: "Berechtigungsmodell"}
+  permissions: {file: ai/permissions.yaml, resp: "GitHub-Operationen-Erlaubnismodell"}
+  policies: {file: ai/policies.yaml, resp: "Regeln (AP + ATC-POL)"}
+  workflow: {file: ai/workflow.yaml, resp: "Verbindlicher Agenten-Workflow mit Gates"}
+  checks: {files: "ai/checks/CHECK-001..020.yaml", resp: "Messung (Objekte) + ai/checks.yaml (Katalog)"}
+  schemas: {files: "ai/schemas/*.schema.yaml", resp: "Validierung"}
+  audit: {files: "ai/audit/*.yaml", resp: "Bewertung + Finding-Schema"}
+  governance_rules: {file: ai/governance-rules.yaml, resp: "Snapshot/Merge-Gate/Exception/Conflict"}
+status_computation: "ai/audit/audit-policy.yaml (P0→BLOCKED … keine→VERIFIED)"

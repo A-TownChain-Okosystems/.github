@@ -1,0 +1,36 @@
+# ATC-CHECK-016 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-016
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: kein Junk im finalen Diff
+    type: git_diff_clean
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-016
+metadata:
+  automation: MANUAL
+  category: quality
+  level: MUST
+  name: git-diff-sauber-final-review,-atc-pol-005
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  expect: kein Junk im finalen Diff
+  type: git_diff_clean
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

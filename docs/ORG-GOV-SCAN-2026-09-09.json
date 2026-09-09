@@ -1,0 +1,384 @@
+{
+ "scan_id": "ORG-GOV-SCAN-2026-09-09",
+ "generated": "2026-09-09T09:45:58.875230+00:00",
+ "repos": {
+  "a-townchain": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "a-townchain-os": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "a-townchain-os-docs": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-algorithm": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-compute": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-contracts": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-explorer": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-indexer": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-interop": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-launchpad": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-marketplace": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-mining": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-node": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-oracle": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-sdk": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-shivacore": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-standards": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-storage": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-vm": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-wallet": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atc-zkp": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "atclang": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "aurora-ai": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "genesis-chronicles": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "genesis-engine": {
+   "status": "NON-COMPLIANT",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "PASS",
+    "capabilities.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "policies.yaml (lokal, Pflicht bei Agenten-Bindung)": "FAIL",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  },
+  "globus-os": {
+   "status": "COMPLIANT-WITH-FINDINGS",
+   "findings": {
+    "AGENTS.md": "PASS",
+    "Org-Bindung (AGOV-CHECK-002)": "PASS",
+    "agent.yaml": "N/A",
+    "capabilities/policies": "INHERITED",
+    "Audit-Records": "PASS",
+    "README": "PASS",
+    "LICENSE": "PASS",
+    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "CI letzter Lauf": "PASS"
+   }
+  }
+ },
+ "summary": {
+  "COMPLIANT-WITH-FINDINGS": 16,
+  "NON-COMPLIANT": 10
+ }
+}

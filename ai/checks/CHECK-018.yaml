@@ -1,0 +1,36 @@
+# ATC-CHECK-018 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-018
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: keine destruktiven Operationen ohne Autorisierung
+    type: no_destructive
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-018
+metadata:
+  automation: MANUAL
+  category: security
+  level: MUST
+  name: keine-destruktiven-operationen-ohne-autorisierung-atc-pol-00
+  severity: P0
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  expect: keine destruktiven Operationen ohne Autorisierung
+  type: no_destructive
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

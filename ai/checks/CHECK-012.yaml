@@ -1,0 +1,36 @@
+# ATC-CHECK-012 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-012
+evaluation:
+  fail_closed: true
+  pass_when:
+  - pattern: tests?/|test_.*\.(py|rs|ts)|tools/test_
+    type: tests_present
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-012
+metadata:
+  automation: AUTO
+  category: quality
+  level: MUST
+  name: tests-vorhanden
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  pattern: tests?/|test_.*\.(py|rs|ts)|tools/test_
+  type: tests_present
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

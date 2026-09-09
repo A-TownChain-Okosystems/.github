@@ -1,0 +1,37 @@
+# ATC-CHECK-020 — generiert von tools/gen_check_objects.py (Phase 2, SCR-0063)
+alias: AGOV-CHECK-020
+evaluation:
+  fail_closed: true
+  pass_when:
+  - schema: agents-md-structure
+    type: schema_valid
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-020
+metadata:
+  automation: AUTO
+  category: governance
+  level: MUST
+  name: agents.md-schema-struktur-valide
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  note: Struktur/Schema der AGENTS.md
+  schema: agents-md-structure
+  type: schema_valid
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0
