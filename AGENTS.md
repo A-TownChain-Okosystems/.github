@@ -1,6 +1,8 @@
 # ATC Organisations-AGENTS.md — Master-Einstieg für alle Agenten (SCR-0057)
 
-> Verbindlicher Org-Standard für jeden Agenten in jedem ATC-Repository.
+> Verbindlicher Org-Standard für jeden Agenten in jedem ATC-Repository —
+> Teil des **ATC Org-weiten Agent-Governance-Systems** (SCR-0058). Selbst-
+> Compliance: geprüft via tools/agov_check.py (AGOV-CHECK-001..020).
 > Repo-spezifische AGENTS.md ERGÄNZEN diese Regeln — sie dürfen keine höhere
 > Sicherheits-, Compliance- oder Governance-Regel stillschweigend aushebeln.
 
