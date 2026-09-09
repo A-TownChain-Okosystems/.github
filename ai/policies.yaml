@@ -1,24 +1,43 @@
-# ATC Agent Policies — normative Verhaltensregeln (SCR-0057, SSOT dieses Hubs)
+# ATC Agent Policies — normative Verhaltensregeln (SCR-0057/0058)
+# Zwei Ebenen: AP-001..016 (Grundsätze, menschenlesbar) und ATC-POL-001..010
+# (maschinenprüfbar: severity/enabled/requirement). MUST/SHOULD/MAY-Modell:
+# MUST-Verstoß = FAIL, SHOULD-Verstoß = WARN (Begründungspflicht), MAY = N/A.
 agent_policies:
   schema: ATC-AGENT-POLICY-1.0
-  version: 1.0.0
+  schema_version: "1.0"
+  version: 1.1.0
   status: ACTIVE
   owner: "A-TownChain Okosystems (Michael Wroblewski)"
   hierarchy: "Org-Policy > AGENT_MANIFEST > Org-AGENTS.md > Repo-AGENTS.md > Verzeichnis-Regeln > Task; spezifischere Regeln ergaenzen, hebeln nie hoehere Regeln aus"
   principles:
-    - {id: AP-001, rule: "Inspect before modify", refs: "REPO-AUDIT-001"}
+    - {id: AP-001, rule: "Inspect before modify", refs: "REPO-AUDIT-001, ATC-POL-001"}
     - {id: AP-002, rule: "Understand before implement", refs: "AI-DEV-006"}
-    - {id: AP-003, rule: "Never assume repository completeness", refs: "REPO-AUDIT-001"}
+    - {id: AP-003, rule: "Never assume repository completeness (vor SCR-Vergabe: fetch)", refs: "REPO-AUDIT-001"}
     - {id: AP-004, rule: "Never silently ignore errors", refs: "BUG-005"}
     - {id: AP-005, rule: "Every discovered defect gets classified (F-NNN)", refs: "BUG-001"}
-    - {id: AP-006, rule: "Fix root causes, not only symptoms (RCA)", refs: "BUG-005"}
-    - {id: AP-007, rule: "Check whether the same defect exists elsewhere (Regressionssuche)", refs: "AI-DEV-008"}
+    - {id: AP-006, rule: "Fix root causes, not only symptoms (RCA)", refs: "BUG-005, ATC-POL-004"}
+    - {id: AP-007, rule: "Check whether the same defect exists elsewhere (Regressionssuche)", refs: "AI-DEV-008, ATC-POL-010"}
     - {id: AP-008, rule: "Prevent recurrence through standards/automation", refs: "STDDEV-001"}
-    - {id: AP-009, rule: "Validate every material change (Tests/Validator/CI)", refs: "AI-DEV-008"}
-    - {id: AP-010, rule: "Maintain documentation and indexes (REALITY_STATUS append-only)", refs: "AI-DEV-010"}
+    - {id: AP-009, rule: "Validate every material change (Tests/Validator/CI)", refs: "AI-DEV-008, ATC-POL-003"}
+    - {id: AP-010, rule: "Maintain documentation and indexes (REALITY_STATUS append-only)", refs: "AI-DEV-010, ATC-POL-006"}
     - {id: AP-011, rule: "Preserve backward compatibility unless explicitly breaking (Owner-Gate)", refs: "COMPAT-001"}
-    - {id: AP-012, rule: "No destructive operation without explicit authorization", refs: "UPDATE-001"}
-    - {id: AP-013, rule: "No secrets or credentials in repository", refs: "REPO-AUDIT-001"}
-    - {id: AP-014, rule: "No unverified claims in documentation", refs: "AUDIT-001"}
+    - {id: AP-012, rule: "No destructive operation without explicit authorization", refs: "UPDATE-001, ATC-POL-007"}
+    - {id: AP-013, rule: "No secrets or credentials in repository", refs: "REPO-AUDIT-001, ATC-POL-002"}
+    - {id: AP-014, rule: "No unverified claims in documentation", refs: "AUDIT-001, ATC-POL-008"}
     - {id: AP-015, rule: "No unnecessary architectural divergence (from-scratch Standard)", refs: "FRAMEWORK-001"}
     - {id: AP-016, rule: "Every release must be reproducible and auditable", refs: "REPO-AUDIT-002"}
+  policies:
+    - {id: ATC-POL-001, name: inspect-before-modify, level: MUST, severity: P1, enabled: true, requirement: "Repository instructions must be discovered before modification."}
+    - {id: ATC-POL-002, name: no-secrets, level: MUST, severity: P0, enabled: true, requirement: "Secrets must not be committed."}
+    - {id: ATC-POL-003, name: validate-changes, level: MUST, severity: P1, enabled: true, requirement: "Material changes must have validation evidence."}
+    - {id: ATC-POL-004, name: regression-check, level: MUST, severity: P1, enabled: true, requirement: "Resolved defects must be checked for recurrence."}
+    - {id: ATC-POL-005, name: diff-review, level: MUST, severity: P1, enabled: true, requirement: "The final Git diff must be reviewed."}
+    - {id: ATC-POL-006, name: documentation-sync, level: SHOULD, severity: P2, enabled: true, requirement: "Behavior-changing changes must update relevant documentation."}
+    - {id: ATC-POL-007, name: destructive-operation-protection, level: MUST, severity: P0, enabled: true, requirement: "Destructive operations require explicit authorization."}
+    - {id: ATC-POL-008, name: truthful-reporting, level: MUST, severity: P0, enabled: true, requirement: "Agents must not claim validation that did not occur."}
+    - {id: ATC-POL-009, name: workflow-security, level: MUST, severity: P1, enabled: true, requirement: "GitHub Actions must follow least-privilege principles."}
+    - {id: ATC-POL-010, name: cross-repository-regression, level: MUST, severity: P1, enabled: true, requirement: "Shared defects must be assessed across affected repositories."}
+  verdict_mapping:
+    MUST: "Verstoß = FAIL (P-gewichtet, blockierend bei P0/P1)"
+    SHOULD: "Verstoß = WARN (Begründungspflicht, kein Block)"
+    MAY: "Verstoß = N/A (Best Practice, empfohlen)"

@@ -1,0 +1,33 @@
+# ATC Agent Governance Checks — ATC-AI-GOV-CHECK-001..020 (SCR-0058)
+# Versionierter, maschinenpruefbarer CHECK-Katalog der Agent-Governance.
+# Ausfuehrung: tools/agov_check.py (AUTO-Checks via GitHub-API; MANUAL zur
+# Task-Zeit). Repo-Ebene detailliert: registry/repo-audit-checks.yaml
+# (CHECK-001..064, ATC-STD-REPO-AUDIT-002) — hier nur die AGOV-Sicht.
+agov_checks:
+  id: ATC-AI-GOV-CHECK
+  version: "1.0.0"
+  status: ACTIVE
+  category: Governance
+  owner: "A-TownChain Okosystems (Michael Wroblewski)"
+  verdict_model: "MUST-Verstoß = FAIL (blockierend P0/P1); SHOULD-Verstoß = WARN (Begründungspflicht); MAY = N/A"
+  checks:
+    - {id: AGOV-CHECK-001, name: "AGENTS.md vorhanden", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-002, name: "AGENT_MANIFEST-Anbindung (Org-Verweisblock)", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-003, name: "Lokale AGENTS-Hierarchie erkennbar (Kaskade referenziert)", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-004, name: "README vorhanden", level: SHOULD, severity: P2, automation: AUTO}
+    - {id: AGOV-CHECK-005, name: "LICENSE vorhanden (Apache-2.0 gem. SCR-0036)", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-006, name: "SECURITY.md vorhanden", level: SHOULD, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-007, name: "CHANGELOG vorhanden", level: SHOULD, severity: P2, automation: AUTO}
+    - {id: AGOV-CHECK-008, name: "CODEOWNERS vorhanden", level: MAY, severity: P2, automation: AUTO}
+    - {id: AGOV-CHECK-009, name: "GitHub-Actions permissions-Block je Workflow", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-010, name: "Secret Scan (Pattern)", level: MUST, severity: P0, automation: AUTO}
+    - {id: AGOV-CHECK-011, name: "Dependency Lockfile vorhanden", level: SHOULD, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-012, name: "Tests vorhanden", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-013, name: "Build/CI erfolgreich (letzter Lauf)", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-014, name: "Dokumentationskonsistenz (kanonisch REALITY_STATUS)", level: SHOULD, severity: P2, automation: MANUAL}
+    - {id: AGOV-CHECK-015, name: "Versionierung konsistent (Manifest-Baseline)", level: SHOULD, severity: P2, automation: HYBRID}
+    - {id: AGOV-CHECK-016, name: "Git Diff sauber (final review, ATC-POL-005)", level: MUST, severity: P1, automation: MANUAL}
+    - {id: AGOV-CHECK-017, name: "Keine Debug-Artefakte committet", level: SHOULD, severity: P2, automation: AUTO}
+    - {id: AGOV-CHECK-018, name: "Keine destruktiven Operationen ohne Autorisierung (ATC-POL-007)", level: MUST, severity: P0, automation: MANUAL}
+    - {id: AGOV-CHECK-019, name: "Workflow-Security least-privilege (kein write-all)", level: MUST, severity: P1, automation: AUTO}
+    - {id: AGOV-CHECK-020, name: "AGENTS.md Schema/Struktur valide", level: MUST, severity: P1, automation: AUTO}

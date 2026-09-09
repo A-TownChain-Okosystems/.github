@@ -1,7 +1,45 @@
 standard: ATC-AAS-001
 repository: .github
 scope: org-hub
-agents:
+schema_version: "1.0"
+version: 1.1.0
+organization:
+  id: A-TownChain-Okosystems
+  governance: ATC-AI-GOV
+agent:
+  id: ATC-AI-ARCH-001
+  name: Aurora (Base44 Superagent)
+  role: architecture
+  version: "1.0.0"
+  status: active
+scope_def:
+  level: organization
+  restrictions:
+  - assigned-repositories-only
+capabilities:
+- READ_REPOSITORY
+- ANALYZE_CODE
+- WRITE_CODE
+- MODIFY_DOCUMENTATION
+- RUN_TESTS
+- PERFORM_AUDITS
+- CREATE_ISSUES
+- CREATE_PULL_REQUESTS
+# Bewusst NICHT vergeben (Manifest §5): MODIFY_WORKFLOWS (GH013), MODIFY_INFRASTRUCTURE, PERFORM_RELEASE
+governance:
+  manifest: AGENT_MANIFEST.md
+  instructions: AGENTS.md
+  policies: ai/policies.yaml
+  checks: ai/checks.yaml
+  capabilities_matrix: ai/capabilities.yaml
+requirements:
+  inspect_before_modify: true
+  validate_changes: true
+  security_review: true
+  regression_review: true
+  diff_review: true
+  documentation_review: true
+roles:
   allowed:
   - ATC-AI-ARCH-001
   - ATC-AI-AUDIT-001
