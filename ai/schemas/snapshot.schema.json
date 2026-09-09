@@ -1,20 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "ATC-AGOV-SNAPSHOT-1.0",
-  "title": "Registry Snapshot Record",
+  "$id": "atc://schemas/snapshot.schema.json",
+  "title": "ATC Registry Snapshot",
   "type": "object",
   "required": [
-    "snapshot_id",
+    "agent",
+    "approved_standards",
+    "binding",
+    "candidate_standards",
     "created",
-    "registry_version",
+    "draft_standards",
     "registry_commit",
     "registry_hash",
-    "approved_standards"
+    "registry_status",
+    "registry_version",
+    "snapshot_id",
+    "task"
   ],
   "properties": {
     "snapshot_id": {
-      "type": "string",
-      "pattern": "^SNAPSHOT-\\d{4}-\\d{2}-\\d{2}"
+      "type": "string"
     },
     "created": {
       "type": "string"
@@ -29,18 +34,24 @@
       "type": "string"
     },
     "registry_commit": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{40}$"
+      "type": "string"
     },
     "registry_hash": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{16,64}$"
+      "type": "string"
     },
     "approved_standards": {
-      "type": "integer",
-      "minimum": 1
+      "type": "integer"
     },
     "registry_status": {
+      "type": "object"
+    },
+    "candidate_standards": {
+      "type": "integer"
+    },
+    "draft_standards": {
+      "type": "integer"
+    },
+    "binding": {
       "type": "object"
     }
   }

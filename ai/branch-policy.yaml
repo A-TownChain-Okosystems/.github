@@ -1,0 +1,28 @@
+# Branch-Protection als Governance-Objekt — Soll-Zustand (SCR-0066, Audit-Block 11)
+# gov_drift.py vergleicht Soll gegen GitHub-Ist: Desired != Actual => GOV-DRIFT-Finding.
+version: "1.0.0"
+status: ACTIVE
+branch_policy:
+  .github:
+    main:
+      require_pull_request: true
+      required_reviews: 1
+      dismiss_stale_reviews: true
+      require_status_checks: false    # flip auf true, sobald GOV-SELF-AUDIT-001-Workflow existiert (M3)
+      enforce_admins: true            # F-045: Admin-Push-Bypass geschlossen (Owner-Entscheidung 09.09.)
+      allow_force_push: false
+      allow_deletions: false
+  default_all_repositories:
+    main:
+      require_pull_request: true
+      required_reviews: 1
+      dismiss_stale_reviews: false
+      require_status_checks: false
+      enforce_admins: false            # Agent-Direktpush per Owner-Mandat erlaubt (ausser .github)
+      allow_force_push: false
+      allow_deletions: false
+severity_mapping:
+  enforce_admins_drift: {".github": P1, default: P2}
+  missing_protection: {".github": P1, default: P2}
+  force_push_allowed: P1
+  deletions_allowed: P1

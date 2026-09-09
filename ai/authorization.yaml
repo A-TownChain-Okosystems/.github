@@ -1,0 +1,31 @@
+# Agent Authorization / Permission Attestation (SCR-0066, Audit-Block 5)
+# Kette: Capability -> Authorization -> Repository -> Branch -> Operation -> Approval
+version: "1.0.0"
+status: ACTIVE
+authorization:
+  - agent: ATC-AI-ARCH-001
+    instance: aurora-superagent
+    repository: "*"
+    branch: main
+    operation: write
+    paths: ["**", "!.github/workflows/**"]
+    approval_required: false
+    constraints:
+      - "GH013: Workflow-Dateien gesperrt (kein workflow-Scope) — T8"
+      - "P0-Operationen (Repo-Loeschung, Force-Push): approval_required erzwingen (POL-002)"
+  - agent: ATC-AI-ARCH-001
+    instance: aurora-superagent
+    repository: .github
+    branch: main
+    operation: write
+    paths: ["**", "!.github/workflows/**"]
+    approval_required: true
+    note: "Owner-Entscheidung 09.09. (Ja zu PR + 10 Gates): Governance-Aenderungen am Hub kuenftig via PR + Review; enforce_admins=true (F-045 geschlossen)."
+  - agent: ATC-AI-AUDIT-001
+    instance: aurora-superagent
+    repository: "*"
+    branch: main
+    operation: read
+    paths: ["**"]
+    approval_required: false
+    note: "Audit-Profil: read-only inkl. GitHub-API-Metadaten (Branch-Protection-Ist-Zustand fuer gov_drift)"

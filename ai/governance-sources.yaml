@@ -1,0 +1,25 @@
+# Governance Source-of-Truth-Matrix (SCR-0066, Audit-Block 1)
+# Regel: Bei Konflikten gewinnt die canonical-Datei. Validator-Bindung:
+# tools/* und tests lesen ausschliesslich canonical-Quellen.
+version: "1.0.0"
+status: ACTIVE
+governance_sources:
+  identity: {canonical: AGENT_MANIFEST.md}
+  agent_instance: {canonical: ai/agent.yaml}
+  policies: {canonical: ai/policies.yaml}
+  checks: {canonical: ai/checks.yaml}
+  merge_gates: {canonical: ai/governance-rules.yaml}
+  workflow: {canonical: ai/workflow.yaml}
+  control_plane: {canonical: ai/control-plane.yaml}
+  org_scope: {canonical: ai/org-scope.yaml}
+  authorization: {canonical: ai/authorization.yaml}
+  branch_policy: {canonical: ai/branch-policy.yaml}
+  exceptions: {canonical: ai/exceptions.yaml}
+  findings_schema: {canonical: ai/audit/finding-schema.yaml}
+  findings_registry: {canonical: "atc-standards/registry/findings.yaml"}
+  standards_registry: {canonical: "atc-standards/registry/standards.yaml"}
+  registry_snapshot: {canonical: "ai/audit/SNAPSHOT-2026-09-09.json"}
+rules:
+  - "Bei Konflikten gewinnt die canonical-Datei (Registry + Repository schlagen Wiki/README/Chat)."
+  - "Ableitungen (README, AGENTS.md) duerfen keine normativen Zahlen duplizieren, nur Quellverweise."
+  - "Jede neue Governance-Datei MUSS hier registriert werden (Discovery-Invariante DISC-INV-003)."

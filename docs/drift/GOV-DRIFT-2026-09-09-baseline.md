@@ -1,0 +1,28 @@
+== GOV-DRIFT (27 Repos geprueft) ==
+  [DRIFT P1] .github: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] a-townchain: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] a-townchain-os: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] a-townchain-os-docs: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-algorithm: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-compute: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-contracts: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-explorer: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-indexer: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-interop: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-launchpad: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-marketplace: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-mining: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-node: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-oracle: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-sdk: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-shivacore: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-storage: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-vm: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-wallet: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atc-zkp: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] atclang: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] aurora-ai: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] genesis-chronicles: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] genesis-engine: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+  [DRIFT P2] globus-os: missing_protection — erwartet: Protection aktiv | actual: kein Protection-Record
+RESULT: P1-BLOCKER: 1 (26 Drift-Findings gesamt)

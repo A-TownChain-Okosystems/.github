@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atc://schemas/authorization.schema.json",
+  "title": "ATC authorization",
+  "type": "object",
+  "required": [
+    "authorization",
+    "status",
+    "version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "authorization": {
+      "type": "array"
+    }
+  }
+}

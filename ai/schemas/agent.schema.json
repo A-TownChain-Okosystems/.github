@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atc://schemas/agent.schema.json",
+  "title": "ATC agent",
+  "type": "object",
+  "required": [
+    "agent",
+    "capabilities",
+    "compliance",
+    "governance",
+    "organization",
+    "repository",
+    "required_standards",
+    "requirements",
+    "roles",
+    "schema_version",
+    "scope",
+    "scope_def",
+    "standard",
+    "version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "standard": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "object"
+    },
+    "agent": {
+      "type": "object"
+    },
+    "scope_def": {
+      "type": "object"
+    },
+    "capabilities": {
+      "type": "array"
+    },
+    "governance": {
+      "type": "object"
+    },
+    "compliance": {
+      "type": "object"
+    },
+    "requirements": {
+      "type": "object"
+    },
+    "roles": {
+      "type": "object"
+    },
+    "required_standards": {
+      "type": "array"
+    }
+  }
+}

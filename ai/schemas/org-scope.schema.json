@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atc://schemas/org-scope.schema.json",
+  "title": "ATC org-scope",
+  "type": "object",
+  "required": [
+    "organization",
+    "organization_meta",
+    "repositories",
+    "status",
+    "version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "organization_meta": {
+      "type": "object"
+    },
+    "repositories": {
+      "type": "array"
+    }
+  }
+}

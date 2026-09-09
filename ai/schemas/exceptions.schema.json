@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atc://schemas/exceptions.schema.json",
+  "title": "ATC exceptions",
+  "type": "object",
+  "required": [
+    "exceptions",
+    "id",
+    "owner",
+    "rules",
+    "schema_version",
+    "status",
+    "version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array"
+    },
+    "exceptions": {
+      "type": "array"
+    }
+  }
+}

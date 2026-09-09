@@ -12,7 +12,15 @@ properties:
   registry_ref: {type: string, pattern: "^F-[0-9]{3,}$", description: "Verweis auf registry/findings.yaml (BUG-001-Kurz-ID), wenn dort geführt"}
   repository: {type: string}
   severity: {enum: [P0, P1, P2, P3]}
-  status: {enum: [OPEN, IN-PROGRESS, REMEDIATED, RECHECK-PENDING, VERIFIED, REJECTED]}
+  owner: {type: string, description: "Zustaendiger fuer Remediation"}
+  component: {type: string}
+  root_cause: {type: string}
+  affected_scope: {type: string, description: "betroffene Repos/Services/Agenten"}
+  duplicate_of: {type: string, description: "F-ID bei Dubletten (Duplicate Detection)"}
+  regression_check: {type: string, description: "Test-ID, der Wiederholung verhindert"}
+  resolution: {type: string}
+  validation_evidence: {type: string}
+  status: {enum: [OPEN, CLASSIFIED, ASSIGNED, IN-PROGRESS, REMEDIATED, RECHECK-PENDING, FIXED, VALIDATED, CLOSED, VERIFIED, REJECTED]}
   evidence:
     type: object
     required: [kind, detail]

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atc://schemas/branch-policy.schema.json",
+  "title": "ATC branch-policy",
+  "type": "object",
+  "required": [
+    "branch_policy",
+    "severity_mapping",
+    "status",
+    "version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "branch_policy": {
+      "type": "object"
+    },
+    "severity_mapping": {
+      "type": "object"
+    }
+  }
+}

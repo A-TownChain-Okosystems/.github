@@ -91,6 +91,70 @@ except yaml.YAMLError:
 check("T16 Cross-File: ai/*.yaml parsbar, Versionsschluessel, Org-Scope-SSOT (27) in README+Manifest",
       cnt == 27 and str(cnt) in rd and str(cnt) in m and all_vers and parse_ok)
 
-total = 16
+# T17: Schema-Selbstvalidierung — alle Kern-Dateien gegen ai/schemas/ (Audit-Block 2)
+def _validate_schema(data, schema):
+    if not isinstance(data, dict):
+        return False
+    for k in schema.get("required", []):
+        if k not in data:
+            return False
+    tmap = {"object": lambda v: isinstance(v, dict), "array": lambda v: isinstance(v, list),
+            "string": lambda v: isinstance(v, str),
+            "integer": lambda v: isinstance(v, int) and not isinstance(v, bool),
+            "boolean": lambda v: isinstance(v, bool),
+            "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)}
+    for k, spec in schema.get("properties", {}).items():
+        if k not in data:
+            continue
+        fn = tmap.get(spec.get("type"), lambda v: True)
+        if not fn(data[k]) or ("enum" in spec and data[k] not in spec["enum"]):
+            return False
+    return True
+
+_schema_pairs = [
+    ("ai/agent.yaml", "ai/schemas/agent.schema.json"),
+    ("ai/governance-sources.yaml", "ai/schemas/governance-sources.schema.json"),
+    ("ai/org-scope.yaml", "ai/schemas/org-scope.schema.json"),
+    ("ai/authorization.yaml", "ai/schemas/authorization.schema.json"),
+    ("ai/branch-policy.yaml", "ai/schemas/branch-policy.schema.json"),
+    ("ai/exceptions.yaml", "ai/schemas/exceptions.schema.json"),
+]
+_ok17 = True
+for ypath, spath in _schema_pairs:
+    _sch = json.load(open(os.path.join(ROOT, spath), encoding="utf-8"))
+    _dat = yaml.safe_load(open(os.path.join(ROOT, ypath), encoding="utf-8"))
+    if not _validate_schema(_dat, _sch):
+        _ok17 = False
+        print(f"    Schema-Verstoß: {ypath} gegen {os.path.basename(spath)}")
+_sn_path = sorted(_g.glob(os.path.join(ROOT, "ai/audit/SNAPSHOT-*.json")))[-1]
+_sn_sch = json.load(open(os.path.join(ROOT, "ai/schemas/snapshot.schema.json"), encoding="utf-8"))
+check("T17 Schema-Selbstvalidierung (6 YAML-Dateien + Snapshot gegen ai/schemas/)",
+      _ok17 and _validate_schema(json.load(open(_sn_path, encoding="utf-8")), _sn_sch))
+
+# T18: Authorization-Matrix gueltig (Audit-Block 5)
+import yaml as _y2
+az = _y2.safe_load(open(os.path.join(ROOT, "ai/authorization.yaml"), encoding="utf-8"))["authorization"]
+_req18 = {"agent", "instance", "repository", "operation", "paths", "approval_required"}
+check("T18 Authorization-Matrix: Eintrags-Schema + Agent-IDs bekannt + GH013 abgebildet",
+      all(_req18 <= set(e) for e in az)
+      and all(e["agent"] in m for e in az)
+      and any("GH013" in str(e.get("constraints", "")) for e in az))
+
+# T19: Exceptions Fail Closed (Audit-Block 4) — abgelaufene = inaktiv
+ex = _y2.safe_load(open(os.path.join(ROOT, "ai/exceptions.yaml"), encoding="utf-8"))["exceptions"]
+_today = "2026-09-09"
+check("T19 Exceptions: expiry Pflicht, keine abgelaufene AKTIVE, OWNER-Genehmigung",
+      all(e.get("expires") and e["expires"] >= _today and e.get("approved_by") == "OWNER"
+          for e in ex if e.get("status") == "ACTIVE"))
+
+# T20: Branch-Policy Soll-Zustand vollstaendig (Audit-Block 11)
+bp = _y2.safe_load(open(os.path.join(ROOT, "ai/branch-policy.yaml"), encoding="utf-8"))["branch_policy"]
+check("T20 Branch-Policy: .github enforce_admins=true (F-045), keine Force-Pushes/Deletions, Defaults + Severity-Mapping",
+      bp[".github"]["main"]["enforce_admins"] is True
+      and bp[".github"]["main"]["allow_force_push"] is False
+      and bp[".github"]["main"]["allow_deletions"] is False
+      and "default_all_repositories" in bp)
+
+total = 20
 print(f"\n{'ALLE ' + str(total - len(fails)) + '/' + str(total) + ' GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
 sys.exit(1 if fails else 0)
