@@ -1,0 +1,28 @@
+# ATC-CHECK-010 — Secret Scan (P0, fail-closed) — Pilot-Referenzobjekt (SCR-0062)
+id: ATC-CHECK-010
+version: 1.0.0
+status: ACTIVE
+alias: AGOV-CHECK-010
+metadata:
+  name: no-secrets-committed
+  category: security
+  severity: P0
+  level: MUST
+  automation: AUTO
+scope:
+  level: repository
+requirement:
+  type: secret_scan
+  pattern: "(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|gho_[A-Za-z0-9]{36}|-----BEGIN (RSA |EC )?PRIVATE KEY-----|sk-[A-Za-z0-9]{20,})"
+evaluation:
+  pass_when:
+    - matches: 0
+  fail_closed: true      # Scan nicht ausfuehrbar => FAIL (P0-Regel), nie PASS
+result:
+  allowed: [PASS, FAIL]
+remediation:
+  required_on: [FAIL]
+  creates_finding: always
+evidence:
+  required: true
+  kind: [command_output, git_diff]

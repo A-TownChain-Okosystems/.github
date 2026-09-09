@@ -1,0 +1,26 @@
+# ATC Governance Audit Policy — ATC-AI-GOV-AUDIT-001 (SCR-0062, Phase 1)
+# Produktionslogik: CHECK → EVIDENCE → RESULT → FINDING → ISSUE → FIX → RECHECK → VERIFIED
+schema_version: "1.0"
+id: ATC-AI-GOV-AUDIT-POLICY
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+control_principles:  # ATC-AI-GOV-001 — verbindlich
+  fail_closed: "Bei P0/P1-Regeln: unknown → FAIL, missing evidence → FAIL, invalid configuration → FAIL. NIE unknown → PASS."
+  evidence_first: "Jeder PASS beruht auf ueberpruefbarer Evidence (Execution → Evidence → Result)."
+  no_self_certification: "Ein Agent behauptet Compliance nicht — die Checks beweisen sie. 'Security geprüft' ohne Check-Ausführung + Ergebnis + Evidence + Timestamp + Auditor ist ungültig (ATC-POL-008)."
+  persistent_findings: "Jedes Problem erhaelt ATC-FINDING-YYYY-NNNNNN und bleibt bis VERIFIED verfolgbar (ATC-AI-GOV-FINDING-001)."
+severity_reaction:  # Standardreaktionen
+  P0: {reaction: BLOCK, merge: blocked}
+  P1: {reaction: BLOCK/MUST-FIX, merge: blocked_until_fix}
+  P2: {reaction: FIX-REQUIRED, merge: allowed_with_finding}
+  P3: {reaction: TRACK, merge: allowed}
+repository_status_computation:  # Auditor berechnet je Repository
+  rules:
+    - {if: "P0-Finding offen", then: BLOCKED}
+    - {if: "P1-Finding offen", then: NON-COMPLIANT}
+    - {if: "nur P2 offen", then: COMPLIANT-WITH-FINDINGS}
+    - {if: "nur P3 offen", then: COMPLIANT}
+    - {if: "keine offenen Findings", then: VERIFIED}
+run_types: [AGOV-FULL, AGOV-DELTA, AGOV-GATE]  # Details ATC-AI-GOV-AUDIT-001 REQ-AGOV-AUD-001
+evidence_chain: {per_check: [check_id, execution, evidence, result, timestamp, auditor_agent_id]}

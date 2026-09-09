@@ -1,0 +1,15 @@
+# ATC Policy Schema — ATC-AI-GOV-POLICY-001 REQ-AGOV-POL-001/002 (SCR-0062, Phase 1)
+# Validiert: ai/policies.yaml Eintraege (ATC-POL-NNN) und Grundsaezte (AP-NNN)
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "atc://schemas/policy.schema.yaml"
+title: ATC Agent Policy
+type: object
+required: [id, name, level, severity, enabled, requirement]
+properties:
+  id: {type: string, pattern: "^ATC-POL-[0-9]{3,}$"}
+  name: {type: string, pattern: "^[a-z0-9-]+$"}
+  level: {enum: [MUST, SHOULD, MAY]}              # REQ-AGOV-POL-002
+  severity: {enum: [P0, P1, P2, P3]}              # Severity-Modell ATC-AI-GOV-001 §5
+  enabled: {type: boolean}                        # Deaktivierung nur via Owner (REQ-AGOV-POL-003)
+  requirement: {type: string, minLength: 10}
+  refs: {type: array, items: {type: string}}

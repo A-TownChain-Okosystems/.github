@@ -1,0 +1,27 @@
+# ATC-AI-GOV v1.0 — Implementierungs-Phasen (Owner-Architektur-Freeze 09.09., SCR-0062)
+schema_version: "1.0"
+id: ATC-AI-GOV-PHASES
+version: "1.0.0"
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+phases:
+  - {id: PHASE-1,  name: "Governance-Schemas",                status: DONE,    artifacts: "ai/schemas/agent+policy+check.schema.yaml, ai/audit/audit-policy+finding-schema.yaml"}
+  - {id: PHASE-2,  name: "CHECK-001..020 als Objekte",         status: STARTED, artifacts: "ai/checks/CHECK-NNN.yaml (Pilot: 001, 010; Rest aus checks.yaml zu generieren)"}
+  - {id: PHASE-3,  name: "ATC Governance Auditor",              status: PLANNED, artifacts: "tools/atc_governance_auditor.py (unabhaengige Check-Ausfuehrung, Evidence-Kette, Repository-Status)"}
+  - {id: PHASE-4,  name: "GitHub-Actions-Enforcement",         status: PLANNED, artifacts: "AGOV-Gate je PR/Push (Merge-Block bei P0/P1)"}
+  - {id: PHASE-5,  name: "Issue/PR-Automation",                status: PLANNED, artifacts: "Findings → Issues automatisch; Recheck → VERIFIED"}
+  - {id: PHASE-6,  name: "Cross-Repository-Audit",              status: PLANNED, artifacts: "Org-Lauf ueber alle 26+ Repos (AGOV-FULL)"}
+  - {id: PHASE-7,  name: "Organization-Compliance-Dashboard",  status: PLANNED, artifacts: "Zentrale Status-Sicht (BLOCKED/NON-COMPLIANT/COMPLIANT-WITH-FINDINGS/COMPLIANT/VERIFIED je Repo)"}
+governance_chain: [IDENTITY, AUTHORIZATION, SCOPE, INSTRUCTIONS, POLICIES, DISCOVERY, AUDIT, TASK,
+                   IMPLEMENTATION, CHECKS, SECURITY, TESTS, REGRESSION, DIFF-REVIEW, DOCUMENTATION,
+                   PR-RELEASE, POST-CHANGE-AUDIT, VERIFIED]
+responsibilities:   # Vermeidung der Mega-AGENTS.md
+  AGENTS.md: "Verhalten"
+  AGENT_MANIFEST.md: "Identität"
+  agent.yaml: "Maschinenidentität"
+  capabilities.yaml: "Berechtigungsmodell"
+  policies.yaml: "Regeln"
+  CHECK-NNN: "Messung"
+  FINDING: "festgestellter Verstoß"
+  AUDIT: "Bewertung"
+  ISSUE: "operative Behebung"
+  RECHECK: "Verifikation"

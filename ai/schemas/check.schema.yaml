@@ -1,0 +1,57 @@
+# ATC Check Object Schema — ATC-AI-GOV-CHECK-001 REQ-AGOV-CHK-001 (SCR-0062, Phase 1)
+# Validiert: ai/checks/CHECK-NNN.yaml — jedes CHECK ist ein eigenes maschinenlesbares Objekt
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "atc://schemas/check.schema.yaml"
+title: ATC Governance Check
+type: object
+required: [id, version, status, metadata, scope, requirement, evaluation, result, remediation, evidence]
+properties:
+  id: {type: string, pattern: "^ATC-CHECK-[0-9]{3,}$", example: "ATC-CHECK-001"}
+  version: {type: string, pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+  status: {enum: [ACTIVE, DRAFT, DEPRECATED]}
+  alias: {type: string, pattern: "^AGOV-CHECK-[0-9]{3,}$", description: "1:1-Referenz auf Katalog-ID in ai/checks.yaml"}   # Mapping ATC-CHECK-NNN ↔ AGOV-CHECK-NNN
+  metadata:
+    type: object
+    required: [name, category, severity]
+    properties:
+      name: {type: string, pattern: "^[a-z0-9-]+$"}
+      category: {type: string}
+      severity: {enum: [P0, P1, P2, P3]}
+      level: {enum: [MUST, SHOULD, MAY]}          # MUST-Verstoß = FAIL, SHOULD = WARN, MAY = N/A
+      automation: {enum: [AUTO, MANUAL, HYBRID]}  # REQ-AGOV-CHK-002 (kein falsches AUTO, ATC-POL-008)
+  scope:
+    type: object
+    properties:
+      level: {enum: [organization, repository, directory, workflow, task]}
+      applies_to: {type: array, items: {type: string}}
+  requirement:
+    type: object
+    required: [type]
+    properties:
+      type: {enum: [file_exists, content_match, workflow_permissions, secret_scan, ci_success, file_pattern, version_consistency, git_diff_clean, no_destructive, tests_present, dependency_lockfile, schema_valid, api_state]}
+      path: {type: string}
+      pattern: {type: string}
+      expect: {}
+  evaluation:
+    type: object
+    required: [pass_when]
+    properties:
+      pass_when: {type: array, minItems: 1, items: {}}
+      fail_closed: {type: boolean, default: true, description: "unknown/missing evidence/invalid config => FAIL, nie PASS (ATC-AI-GOV-001 REQ-AGOV-008)"}
+  result:
+    type: object
+    required: [allowed]
+    properties:
+      allowed: {type: array, items: {enum: [PASS, FAIL, WARN, N/A]}}
+  remediation:
+    type: object
+    required: [required_on]
+    properties:
+      required_on: {type: array, items: {enum: [FAIL, WARN]}}
+      creates_finding: {enum: [always, on_fail, never]}   # REQ-AGOV-CHK-004
+  evidence:
+    type: object
+    required: [required]
+    properties:
+      required: {type: boolean}                   # Evidence First: kein PASS ohne Evidence (ATC-AI-GOV-001 REQ-AGOV-009)
+      kind: {type: array, items: {enum: [api_response, file_content, ci_run, command_output, git_diff]}}

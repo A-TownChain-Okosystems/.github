@@ -1,0 +1,39 @@
+# ATC Finding Schema — ATC-AI-GOV-FINDING-001 (SCR-0062, Phase 1)
+# Persistente Governance-Findings des ATC Governance Auditor
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "atc://schemas/finding.schema.yaml"
+title: ATC Governance Finding
+type: object
+required: [finding_id, check_id, repository, severity, status, evidence, detected_at, detected_by, remediation, verification]
+properties:
+  finding_id: {type: string, pattern: "^ATC-FINDING-[0-9]{4}-[0-9]{6,}$", example: "ATC-FINDING-2026-000001"}
+  check_id: {type: string, pattern: "^ATC-CHECK-[0-9]{3,}$"}
+  alias_check_id: {type: string, pattern: "^AGOV-CHECK-[0-9]{3,}$", description: "Legacy-Katalog-ID"}
+  registry_ref: {type: string, pattern: "^F-[0-9]{3,}$", description: "Verweis auf registry/findings.yaml (BUG-001-Kurz-ID), wenn dort geführt"}
+  repository: {type: string}
+  severity: {enum: [P0, P1, P2, P3]}
+  status: {enum: [OPEN, IN-PROGRESS, REMEDIATED, RECHECK-PENDING, VERIFIED, REJECTED]}
+  evidence:
+    type: object
+    required: [kind, detail]
+    properties:
+      kind: {enum: [api_response, file_content, ci_run, command_output, git_diff]}
+      detail: {type: string}
+      timestamp: {type: string, format: date-time}
+  detected_at: {type: string, format: date-time}
+  detected_by: {type: string, pattern: "^ATC-AI-[A-Z]+-[0-9]{3,}$"}   # Auditor-Agent-ID — keine Selbstzertifizierung
+  remediation:
+    type: object
+    required: [required]
+    properties:
+      required: {type: boolean}
+      issue_ref: {type: string}
+      owner: {type: string}
+  verification:
+    type: object
+    required: [status]
+    properties:
+      status: {enum: [PENDING, VERIFIED, FAILED]}
+      verified_by: {type: string, pattern: "^ATC-AI-[A-Z]+-[0-9]{3,}$|^owner$"}
+      verified_at: {type: string, format: date-time}
+      recheck_check_id: {type: string, pattern: "^ATC-CHECK-[0-9]{3,}$"}

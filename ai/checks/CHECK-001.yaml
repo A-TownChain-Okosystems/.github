@@ -1,0 +1,28 @@
+# ATC-CHECK-001 — Pilot-Referenzobjekt (SCR-0062, Phase-2-Eroeffnung)
+id: ATC-CHECK-001
+version: 1.0.0
+status: ACTIVE
+alias: AGOV-CHECK-001
+metadata:
+  name: organization-agents-present
+  category: governance
+  severity: P1
+  level: MUST
+  automation: AUTO
+scope:
+  level: repository
+requirement:
+  type: file_exists
+  path: AGENTS.md
+evaluation:
+  pass_when:
+    - file_exists: true
+  fail_closed: true      # unknown/missing evidence => FAIL, nie PASS
+result:
+  allowed: [PASS, FAIL, WARN, N/A]
+remediation:
+  required_on: [FAIL]
+  creates_finding: on_fail
+evidence:
+  required: true
+  kind: [api_response, file_content]
