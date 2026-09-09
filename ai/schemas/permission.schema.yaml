@@ -1,0 +1,30 @@
+# ATC Permission Schema — GOV-004/009, Capability ≠ Permission (SCR-0064)
+# Capability = abstrakte Faehigkeit; Permission = konkrete Operation mit Scope.
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "atc://schemas/permission.schema.yaml"
+title: ATC Agent Permissions
+type: object
+required: [schema_version, id, version, status, default, agents]
+properties:
+  schema_version: {type: string, pattern: "^1\\.[0-9]+$"}
+  id: {type: string, const: "ATC-AI-GOV-PERMISSIONS"}
+  version: {type: string, pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+  status: {enum: [ACTIVE, DRAFT, DEPRECATED]}
+  default: {enum: [DENY, ALLOW], description: "MUSS DENY sein (Fail Closed: nicht gelistete Operation = verboten)"}
+  agents:
+    type: object
+    additionalProperties:
+      type: object
+      required: [operations]
+      properties:
+        operations:
+          type: array
+          items:
+            type: object
+            required: [op, allowed]
+            properties:
+              op: {type: string, pattern: "^[a-z_]+$"}
+              allowed: {type: boolean}
+              scope: {type: string, description: "zugewiesene Repositories | beliebig"}
+              note: {type: string}
+  gates: {type: object, additionalProperties: {type: string}}

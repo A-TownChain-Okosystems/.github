@@ -1,0 +1,21 @@
+# ATC Handoff Schema — ATC-AI-GOV-HANDOFF-001 (SCR-0064, maschinenlesbar)
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "atc://schemas/handoff.schema.yaml"
+title: ATC Agent Handoff
+type: object
+required: [handoff_id, source_agent, target_agent, task, scope, status, completed_work, changed_files, findings, tests, risks, next_action, evidence, timestamp]
+properties:
+  handoff_id: {type: string, pattern: "^ATC-HANDOFF-[0-9]{4}-[0-9]{3,}$", example: "ATC-HANDOFF-2026-001"}
+  source_agent: {type: string, pattern: "^ATC-AI-[A-Z]+-[0-9]{3,}$"}
+  target_agent: {type: string, pattern: "^ATC-AI-[A-Z]+-[0-9]{3,}$"}
+  task: {type: string}
+  scope: {type: object, properties: {level: {}, target: {}}}
+  status: {enum: [DISCOVERED, ANALYZING, IMPLEMENTED, TESTED, VERIFYING, BLOCKED, DONE]}
+  completed_work: {type: string}
+  changed_files: {type: array, items: {type: string}}
+  findings: {type: array, items: {type: string, pattern: "^(ATC-FINDING-[0-9]{4}-[0-9]{6,}|F-[0-9]{3,}|keine)$"}}
+  tests: {type: string}
+  risks: {type: string}
+  next_action: {type: string, minLength: 10}
+  evidence: {type: object, properties: {kind: {enum: [commit-sha, test-output, aud-record, diff]}, detail: {type: string}}}
+  timestamp: {type: string, format: date-time}

@@ -25,14 +25,15 @@ phases:
   name: Governance-Schemas
   status: DONE
 - artifacts: ai/checks/CHECK-001..020.yaml (alle Objekte, Generator tools/gen_check_objects.py)
+    + Agent-Governance-Checks AGENT-001..015 (SCR-0064)
   id: PHASE-2
   name: CHECK-001..020 als Objekte
   status: DONE
-- artifacts: tools/atc_governance_auditor.py (unabhaengige Check-Ausfuehrung, Evidence-Kette,
-    Repository-Status)
+- artifacts: tools/authorize.py (Authorization Engine, SCR-0064) + AGENT-001..015-Checks;
+    vollstaendiger Auditor folgt
   id: PHASE-3
   name: ATC Governance Auditor
-  status: PLANNED
+  status: STARTED
 - artifacts: AGOV-Gate je PR/Push (Merge-Block bei P0/P1)
   id: PHASE-4
   name: GitHub-Actions-Enforcement
@@ -63,4 +64,4 @@ responsibilities:
   capabilities.yaml: Berechtigungsmodell
   policies.yaml: Regeln
 schema_version: '1.0'
-version: 1.1.0
+version: 1.2.0

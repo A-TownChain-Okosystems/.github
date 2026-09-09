@@ -1,0 +1,36 @@
+# ATC-CHECK-AGENT-015 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: version.agent == version.manifest
+    type: version_consistency
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-015
+metadata:
+  automation: MANUAL
+  category: governance
+  level: SHOULD
+  name: agent-version-kompatibel-agent.yaml-vs.-manifest
+  severity: P2
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  expect: version.agent == version.manifest
+  type: version_consistency
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

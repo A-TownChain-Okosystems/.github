@@ -1,0 +1,35 @@
+# ATC-CHECK-AGENT-005 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - schema: capability.schema.yaml
+    type: schema_valid
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-005
+metadata:
+  automation: AUTO
+  category: agent-auth
+  level: MUST
+  name: capabilities-gültig-explizit,-nie-rollen-abgeleitet
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  schema: capability.schema.yaml
+  type: schema_valid
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

@@ -1,0 +1,37 @@
+# ATC-CHECK-AGENT-008 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - pattern: inherit|local_policies
+    type: content_match
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-008
+metadata:
+  automation: AUTO
+  category: governance
+  level: SHOULD
+  name: policy-konflikte-lokal-vs.-hub
+  severity: P2
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  path: .github/ai/policies.yaml
+  pattern: inherit|local_policies
+  type: content_match
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

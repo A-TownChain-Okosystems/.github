@@ -1,0 +1,36 @@
+# ATC-CHECK-AGENT-014 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - schema: handoff.schema.yaml
+    type: schema_valid
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-014
+metadata:
+  automation: AUTO
+  category: governance
+  level: SHOULD
+  name: handoff-vollständig-10-pflichtfelder-+-evidence
+  severity: P2
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+  - WARN
+requirement:
+  schema: handoff.schema.yaml
+  type: schema_valid
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

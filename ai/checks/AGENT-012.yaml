@@ -1,0 +1,35 @@
+# ATC-CHECK-AGENT-012 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - expect: force_push/delete_branch nur via Owner-Gate
+    type: no_destructive
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-012
+metadata:
+  automation: MANUAL
+  category: security
+  level: MUST
+  name: destructive-action-authorization
+  severity: P0
+remediation:
+  creates_finding: always
+  required_on:
+  - FAIL
+requirement:
+  expect: force_push/delete_branch nur via Owner-Gate
+  type: no_destructive
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

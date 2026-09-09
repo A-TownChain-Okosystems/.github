@@ -1,0 +1,35 @@
+# ATC-CHECK-AGENT-013 — Agent-Governance-Check (SCR-0064); Ausfuehrung: org_governance_scan.py + authorize.py
+evaluation:
+  fail_closed: true
+  pass_when:
+  - path: docs/
+    type: file_exists
+evidence:
+  kind:
+  - api_response
+  - file_content
+  required: true
+id: ATC-CHECK-AGENT-013
+metadata:
+  automation: AUTO
+  category: audit
+  level: MUST
+  name: audit-evidence-vorhanden-aud-record-je-task
+  severity: P1
+remediation:
+  creates_finding: on_fail
+  required_on:
+  - FAIL
+requirement:
+  path: docs/
+  type: file_exists
+result:
+  allowed:
+  - PASS
+  - FAIL
+  - WARN
+  - N/A
+scope:
+  level: repository
+status: ACTIVE
+version: 1.0.0

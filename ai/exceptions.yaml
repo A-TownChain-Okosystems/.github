@@ -1,0 +1,16 @@
+# ATC Policy Exceptions — GOV-025 (SCR-0064)
+# Regel: KEINE dauerhaften Ausnahmen ohne Ablaufdatum (expires MUSS gesetzt sein).
+schema_version: "1.0"
+id: ATC-AI-GOV-EXCEPTIONS
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+rules:
+  - "Jede Ausnahme referenziert genau eine Policy (ATC-POL-NNN) und max. einen Scope."
+  - "expires ist PFLICHT; abgelaufene Ausnahmen sind automatisch inaktiv (Fail Closed)."
+  - "approved_by: OWNER ist Pflicht; Agent darf keine Selbst-Ausnahme erteilen (No Self-Certification)."
+  - "Jede Ausnahme wird im Audit-Lauf geprueft (Drift/Erosion-Erkennung)."
+exceptions: []
+# Beispiel (auskommentiert):
+#  - {id: ATC-EXC-001, policy: ATC-POL-009, repository: legacy-repo, reason: "Migration pending",
+#     approved_by: OWNER, expires: "2026-12-31", status: ACTIVE, scr: SCR-XXXX}

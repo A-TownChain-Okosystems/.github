@@ -1,0 +1,24 @@
+# ATC Compliance State Machine — GOV-020 (SCR-0064)
+schema_version: "1.0"
+id: ATC-AI-GOV-STATE-MACHINE
+version: "1.0.0"
+status: ACTIVE
+owner: "A-TownChain Okosystems (Michael Wroblewski)"
+states: [DISCOVERED, AUDITING, COMPLIANT, COMPLIANT_WITH_FINDINGS, NON_COMPLIANT, BLOCKED, REMEDIATION, RECHECK, VERIFIED]
+transitions:
+  DISCOVERED:             [AUDITING]
+  AUDITING:               [COMPLIANT, COMPLIANT_WITH_FINDINGS, NON_COMPLIANT, BLOCKED]
+  COMPLIANT:              [VERIFIED, AUDITING]           # VERIFIED nach Evidence-Archivierung; Re-Audit jederzeit
+  COMPLIANT_WITH_FINDINGS:[REMEDIATION, AUDITING]
+  NON_COMPLIANT:          [REMEDIATION, BLOCKED]
+  BLOCKED:               [REMEDIATION]
+  REMEDIATION:            [RECHECK]
+  RECHECK:                [VERIFIED, NON_COMPLIANT, BLOCKED]   # FAIL im Recheck = Rueckfall, nie still CLOSED
+  VERIFIED:               [AUDITING]                      # naechster Audit-Zyklus
+mapping_from_severity:   # deterministische Eingangs-Berechnung (audit-policy.yaml)
+  P0_offen: BLOCKED
+  P1_offen: NON_COMPLIANT
+  nur_P2:   COMPLIANT_WITH_FINDINGS
+  nur_P3:   COMPLIANT
+  keine:    VERIFIED-Kandidat (nach Evidence-Archivierung)
+invalid_transitions: "Jeder Sprung ohne definierte Transition = Governance-Verstoß (AUD-Record + Finding AGENT-003-Verstoßklasse)"
