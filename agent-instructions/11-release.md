@@ -1,4 +1,4 @@
-# 11 — Release (SCR-0039)
+# 11 — Release (SCR-0057)
 
 1. Jedes Release MUSS reproduzierbar und auditierbar sein (AP-016): Tag,
    CHANGELOG, Evidence, AUD-Records.

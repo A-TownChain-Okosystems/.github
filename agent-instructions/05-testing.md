@@ -1,4 +1,4 @@
-# 05 — Testing & Validierung (SCR-0039)
+# 05 — Testing & Validierung (SCR-0057)
 
 1. Jede materielle Änderung wird validiert (AP-009): Tests, Validatoren,
    CI-Grün als Minimum — „kompiliert ≠ fertig".

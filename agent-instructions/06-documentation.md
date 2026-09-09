@@ -1,4 +1,4 @@
-# 06 — Dokumentation (SCR-0039)
+# 06 — Dokumentation (SCR-0057)
 
 1. REALITY_STATUS.md (a-townchain-os-docs) ist kanonisch und APPEND-ONLY —
    keine Parallel-Statusdateien anlegen (AP-010: Indexe/Doku pflegen).

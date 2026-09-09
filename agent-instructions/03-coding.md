@@ -1,4 +1,4 @@
-# 03 — Coding-Regeln (SCR-0039)
+# 03 — Coding-Regeln (SCR-0057)
 
 1. Kernel (ShivaCore): strikt Rust, no_std, bare-metal — Linux-basierte
    Ansätze sind explizit ABGELEHNT. ATCLang für App-/Contract-Ebene.

@@ -1,4 +1,4 @@
-# ATC Org-AGENT_MANIFEST — Rollenmodell (SCR-0039)
+# ATC Org-AGENT_MANIFEST — Rollenmodell (SCR-0057)
 
 Org-weites Rollenmanifest; die Registrierung konkreter Agent-Instanzen bleibt in
 den Repos (atc-standards/.github/ai/agent.yaml, registry/agents.yaml SSOT).

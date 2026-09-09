@@ -1,4 +1,4 @@
-# ATC Organisations-AGENTS.md — Master-Einstieg für alle Agenten (SCR-0039)
+# ATC Organisations-AGENTS.md — Master-Einstieg für alle Agenten (SCR-0057)
 
 > Verbindlicher Org-Standard für jeden Agenten in jedem ATC-Repository.
 > Repo-spezifische AGENTS.md ERGÄNZEN diese Regeln — sie dürfen keine höhere
@@ -39,7 +39,7 @@ Engineering-Relevanz. OS-Standard: GlobusOS/ShivaCore bare-metal Rust (no_std);
 keine Linux-basierten Kernel-Ansätze. App-/Contract-Ebene: ATCLang. Desktop:
 Rust (std) + egui. Copyright: „Michael Wroblewski". Kanonisch: REALITY_STATUS.md
 (a-townchain-os-docs, append-only). Standards-SSOT: registry/ im atc-standards-Repo
-(396 Standards, Validator-Gates je CI-Lauf). Chain-ID: 658467. Lizenz: Apache-2.0
+(433 Standards (Stand 09.09.2026), Validator-Gates je CI-Lauf). Chain-ID: 658467. Lizenz: Apache-2.0
 (Repos) + ATC-LICENSE-System (Ökosystem-Ebene, licenses/ im atc-standards-Repo).
 
-*ATC Org-AGENTS.md v1.0.0 · SCR-0039 · 09.09.2026 · Aurora (Superagent)*
+*ATC Org-AGENTS.md v1.0.0 · SCR-0057 · 09.09.2026 · Aurora (Superagent)*

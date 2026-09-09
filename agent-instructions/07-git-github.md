@@ -1,4 +1,4 @@
-# 07 — Git & GitHub (SCR-0039)
+# 07 — Git & GitHub (SCR-0057)
 
 1. Commit-Konvention: aussagekräftige Messages + `[agent: <id>]`-Signatur +
    SCR-Referenz bei Standard-/Governance-Änderungen; keine Force-Pushes auf

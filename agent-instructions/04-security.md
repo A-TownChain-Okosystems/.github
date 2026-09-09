@@ -1,4 +1,4 @@
-# 04 — Security (SCR-0039)
+# 04 — Security (SCR-0057)
 
 1. KEINE Secrets/Credentials in Repos (AP-013) — Fund sofort melden, nie
    kommittieren; Scanner-/AUD-Record-Pflicht.

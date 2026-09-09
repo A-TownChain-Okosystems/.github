@@ -1,4 +1,4 @@
-# 00 — Agent-Identität (SCR-0039)
+# 00 — Agent-Identität (SCR-0057)
 
 1. Vor JEDEM Auftrag: Identität feststellen. Nur registrierte Agenten arbeiten
    in ATC-Repos (AGENT_MANIFEST / registry/agents.yaml im atc-standards-Repo).
