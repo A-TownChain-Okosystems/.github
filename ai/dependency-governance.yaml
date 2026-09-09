@@ -1,0 +1,15 @@
+# Dependency & Supply-Chain Governance (SCR-0067, Bloecke 8/9)
+version: "1.0.0"
+status: ACTIVE
+dependency_audit:
+  chain: [DEPENDENCY-AUDIT, Vulnerability, License, Version, Compatibility, Remediation]
+  rules:
+    - "Alle Laufzeit-Abhaengigkeiten deklariert (requirements.txt/Cargo.toml/package.json, ATC-STD-CI-001)."
+    - "Lockfiles werden geprueft (AGOV-CHECK-015 Baseline); CVE-Scan via Dependabot (Rollout 26/26, Issue #96)."
+    - "Versionsschranken fuer jede Abhaengigkeit (CI-004); transitive Abhaengigkeiten unterliegen derselben Audit-Kette."
+supply_chain:
+  chain: [GitHub-Actions, untrusted-third-party-action, pin-by-SHA, permission-audit, security-approval]
+  rules:
+    - "Third-Party-Actions auf SHA pinnen (nicht auf Tag); eigene Actions ueber atc-standards/RequireReview."
+    - "Container/Docker-Base-Images: minimal, versioniert; Release-Artefakte mit SBOM + Build-Provenance (P2-14: Tooling geplant)."
+    - "Signierung: GPG/Release-Key ausstehend (AUD-001 F-006-Familie); bis dahin: Signatur-Check-Agent taeglich (30-Tage-Fenster)."

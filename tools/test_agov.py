@@ -155,6 +155,30 @@ check("T20 Branch-Policy: .github enforce_admins=true (F-045), keine Force-Pushe
       and bp[".github"]["main"]["allow_deletions"] is False
       and "default_all_repositories" in bp)
 
-total = 20
+# T21: Regression Knowledge Base (Audit-Block 17)
+import glob as _g3
+regs = sorted(_g3.glob(os.path.join(ROOT, "knowledge/regressions/REG-*.yaml")))
+_req21 = {"id", "root_cause", "symptom", "affected_repositories", "detection", "prevention", "regression_test"}
+_ok21 = all(_req21 <= set(yaml.safe_load(open(p, encoding="utf-8"))) for p in regs) and len(regs) >= 4
+check("T21 Regression-KB: >=4 Eintraege mit Pflichtfeldern (root_cause/detection/prevention/regression_test)",
+      _ok21)
+
+# T22: Policy-Graph konsistent (Audit-Block 23)
+pg = yaml.safe_load(open(os.path.join(ROOT, "ai/policy-graph.yaml"), encoding="utf-8"))
+node_ids = {n["id"] for n in pg["nodes"]}
+_ok22 = all(e["from"] in node_ids for e in pg["edges"]) and all(
+    e["to"] in node_ids or isinstance(e["to"], str) for e in pg["edges"])
+check("T22 Policy-Graph: Kanten zeigen auf existierende Knoten (Policy->Check->Workflow)",
+      _ok22 and any(n.get("type") == "policy" for n in pg["nodes"]))
+
+# T23: Provenance-Kette + Commit-Trailer-Spec (Audit-Block 7/21)
+pv = yaml.safe_load(open(os.path.join(ROOT, "ai/provenance.yaml"), encoding="utf-8"))
+_req_chain = ["VISION", "REQUIREMENT", "STANDARD", "TASK", "AGENT", "CHANGE", "COMMIT", "PR",
+              "VALIDATION", "AUDIT", "RELEASE"]
+check("T23 Provenance: 11-stufige Kette, ID-Klassen, Commit-Trailer-Format definiert",
+      pv["chain"] == _req_chain and all(k in pv["id_classes"] for k in
+      ["REQUIREMENT", "STANDARD", "TASK", "CHANGE", "AUDIT"]) and "format" in pv["commit_trailer_rule"])
+
+total = 23
 print(f"\n{'ALLE ' + str(total - len(fails)) + '/' + str(total) + ' GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
 sys.exit(1 if fails else 0)

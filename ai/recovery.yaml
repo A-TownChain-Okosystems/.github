@@ -1,0 +1,17 @@
+# Governance Disaster Recovery (SCR-0067, Block 21)
+version: "1.0.0"
+status: ACTIVE
+controls:
+  GOV-ROLLBACK-001:
+    trigger: "falsche Policy aktiv (z.B. Policy sperrt berechtigten Agenten oder laesst Kritisches durch)"
+    procedure: "revert-Commit via PR + Review; Governance-Version vorher/nachher dokumentieren; gov_drift + T1-T23 nach Rollback verpflichtend"
+  GOV-RECOVERY-001:
+    trigger: "beschaeftigter Governance-Zustand (Schema/Registry/Validator defekt)"
+    procedure: "Git-Historie = Autoritaet; letzter verifizierter Zustand = letzter main-Commit mit gruenem Self-Test; Wiederherstellung: checkout + Testlauf + Evidence in AUDIT"
+  GOV-RESTORE-001:
+    trigger: "kompromittierte Governance-Version (z.B. manipulierter Validator)"
+    procedure: "Version invalidieren (Regelwerk entfernen), vorherige Version als verbindlich deklarieren, Sicherheits-Incident-Verschraenkung (incident.yaml), Neu-Signierung sobald Release-Key verfuegbar"
+invariants:
+  - "Git-Historie ist Wiederherstellungs-Autoritaet (GitLab/GitHub-fail-safe)."
+  - "Kein Rollback ohne PR + Review (F-045 gilt auch hier)."
+  - "Jeder Recovery-Vorgang erzeugt ein AUDIT-Objekt (Rekonstruktion per provenance.yaml)."

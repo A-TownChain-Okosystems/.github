@@ -35,3 +35,26 @@
 - test_agov.py: 16 -> 20 Tests, alle GRUEN.
 - F-045 GESCHLOSSEN: enforce_admins=true auf .github/main nach Owner-Entscheidung
   (PR + 10 Gates fuer Governance-Aenderungen, gilt auch fuer Agenten).
+
+## [Unreleased] — 09.09.2026 (SCR-0067, Control-Plane Phase 2: fehlende Komponenten)
+- ai/policy-graph.yaml + tools/gov_impact.py: Policy Dependency Graph +
+  Governance Change Impact Analysis (P1-10: Aenderung -> betroffene
+  Policies/Checks/Tests/Workflows/Repos, risk + owner_gate).
+- knowledge/regressions/ (P2-12): 4 echte Fehlerfamilien der Org als
+  maschinenlesbare Regression-Records (root_cause/detection/prevention/
+  regression_test) + T21.
+- ai/provenance.yaml (P2-11/21): 11-stufige Provenance-Kette, ID-Klassen,
+  Session/Task-Identity-Commit-Trailer (Zielform) + T23.
+- ai/repository-lifecycle.yaml (P2-15/16): Bootstrap NEW->...->COMPLIANT +
+  Decommissioning ACTIVE->...->ARCHIVED mit Checklisten.
+- ai/dependency-governance.yaml (P2-13/14): Dependency-Audit-Kette +
+  Supply-Chain-Regeln (SHA-Pinning, SBOM, Signierung).
+- ai/recovery.yaml (P2-19): GOV-ROLLBACK/RECOVERY/RESTORE-001 mit
+  Invarianten (Git-Historie = Autoritaet, kein Rollback ohne PR).
+- tools/gov_score.py (P2-17): Compliance-Score — offene P1 = BLOCKED,
+  Score verschleiert nichts; P2-Debt als Liste.
+- ai/incident-loop.yaml (P2-25): Incident->RCA->...->Org-Wide-Scan mit
+  Pflicht-Regression-Eintrag.
+- docs/TEST-COVERAGE-MATRIX.md (P2-24): Control->Policy->Validator->Test je Regel.
+- test_agov.py: 20 -> 23 Tests; SSOT-Matrix um 7 neue canonical-Dateien erweitert.
+- PR-Pflicht (F-045): Phase 2 wird als erster Hub-PR ueber Review gemerged.

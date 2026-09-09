@@ -1,0 +1,20 @@
+# Provenance Chain & Session/Task Identity (SCR-0067, Audit-Bloecke 7/21)
+version: "1.0.0"
+status: ACTIVE
+chain: [VISION, REQUIREMENT, STANDARD, TASK, AGENT, CHANGE, COMMIT, PR, VALIDATION, AUDIT, RELEASE]
+id_classes:
+  REQUIREMENT: "REQ-XXXX"
+  STANDARD: "ATC-STD-XXX"
+  TASK: "TASK-XXXXX"
+  AGENT: "ATC-AI-XXX-XXX"
+  CHANGE: "SCR-XXXX"
+  COMMIT-TRAILER: "scr: SCR-XXXX · task: TASK-XXXXX · agent: ATC-AI-XXX-XXX"
+  PR: "PR #NNN (GitHub)"
+  VALIDATION: "T-XX (test_agov) / AGOV-CHECK-XXX"
+  AUDIT: "ATC-FINDING-YYYY-NNNNNN"
+  RELEASE: "REL-XXXXX"
+commit_trailer_rule:
+  format: "[agent: <agent-id>]"      # aktuell gepflegt (AGENT_MANIFEST-Convention)
+  target: "scr: SCR-XXXX · task: TASK-XXXXX · agent: <id>"   # Zielform (Session/Task Identity, B21)
+  enforcement: "EMPFEHLUNG ab SCR-0067; Pflicht sobald AuditTrail/LogChain (Roadmap P2-11) live ist"
+reconstruction_rule: "Wer hat wann im Rahmen welchen Tasks welche Aenderung vorgenommen — vollstaendige Rueckverfolgbarkeit Kette-auf-Kette."

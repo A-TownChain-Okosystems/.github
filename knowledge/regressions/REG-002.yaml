@@ -1,0 +1,9 @@
+id: REG-002
+root_cause: unparierbares_governance_yaml
+symptom: "governance-Datei existiert, ist aber ungueltiges YAML — Tools crashen oder ueberspringen"
+affected_repositories: ".github/ai/state-machine.yaml"
+detection: "T16-Parse-Gate"
+prevention: GOV-Schema-Pflicht (T17)
+regression_test: T17
+knowledge_ref: "SCR-0065-Zusatzfund"
+added: "2026-09-09"

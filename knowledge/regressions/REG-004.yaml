@@ -1,0 +1,9 @@
+id: REG-004
+root_cause: admin_push_umgeht_pr_gates
+symptom: "normativ PR-Pflicht, technisch aber Admin-Direktpush moeglich (Policy != Enforcement)"
+affected_repositories: ".github/main vor 09.09."
+detection: "gov_drift.py (enforce_admins-Check)"
+prevention: branch-policy (ai/branch-policy.yaml)
+regression_test: T20
+knowledge_ref: "F-045"
+added: "2026-09-09"
