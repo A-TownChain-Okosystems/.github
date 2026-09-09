@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ATC-AGOV-SNAPSHOT-1.0",
+  "title": "Registry Snapshot Record",
+  "type": "object",
+  "required": [
+    "snapshot_id",
+    "created",
+    "registry_version",
+    "registry_commit",
+    "registry_hash",
+    "approved_standards"
+  ],
+  "properties": {
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^SNAPSHOT-\\d{4}-\\d{2}-\\d{2}"
+    },
+    "created": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "registry_version": {
+      "type": "string"
+    },
+    "registry_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "registry_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16,64}$"
+    },
+    "approved_standards": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "registry_status": {
+      "type": "object"
+    }
+  }
+}

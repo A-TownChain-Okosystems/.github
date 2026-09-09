@@ -48,4 +48,47 @@ Rust (std) + egui. Copyright: „Michael Wroblewski". Kanonisch: REALITY_STATUS.
 (433 Standards (Stand 09.09.2026), Validator-Gates je CI-Lauf). Chain-ID: 658467. Lizenz: Apache-2.0
 (Repos) + ATC-LICENSE-System (Ökosystem-Ebene, licenses/ im atc-standards-Repo).
 
-*ATC Org-AGENTS.md v1.0.0 · SCR-0057 · 09.09.2026 · Aurora (Superagent)*
+## 5. Registry-Snapshot & dynamische Bindung (SCR-0059)
+
+Neue APPROVED-Standards sind ab Freigabe verbindlich — ABER der Compliance-Scope
+eines **laufenden** Tasks MUSS reproduzierbar festgehalten sein: Jede wesentliche
+Aufgabe beginnt mit einem **Registry-Snapshot** (registry_version, registry_commit,
+registry_hash, approved_standards), Aufzeichnung nach `.github/ai/audit/` (je Repo)
+bzw. `ai/audit/` (Hub); Schema `ai/schemas/snapshot.schema.json`. Scope-Wechsel
+während eines Tasks = neuer Task mit neuem Snapshot — kein stiller Kompetenzwechsel.
+Später beweisbar: „Welche Standards waren für DIESEN Task verbindlich?"
+
+## 6. MERGE-GATE (normativ)
+
+Agenten-PRs werden NICHT gemerged, solange nicht sämtliche obligatorischen Gates
+PASS sind: **1 Agent Identity · 2 Standards Compliance · 3 Registry · 4 Validation ·
+5 Mutation · 6 Repository Audit · 7 Audit Record · 8 Documentation · 9 Review ·
+10 Human Approval.** FAIL oder PENDING in einem verpflichtenden Gate ⇒ **NO MERGE**
+(ausgenommen nur eine genehmigte Ausnahme gem. §7). Maschinenlesbar:
+`ai/governance-rules.yaml`. Bekannte Durchsetzungs-Lücke: PR-Pflicht wird derzeit
+von Admin-Pushes gebypasst (F-045) — owner-seitig offen.
+
+## 7. EXCEPTION RULE (Ausnahme-/Notfallprozess)
+
+Ein Agent DARF keinen verbindlichen Standard eigenmächtig außer Kraft setzen. Ist
+ein Standard technisch nicht erfüllbar, MUSS der Agent: **1** den Konflikt
+identifizieren, **2** einen AUD-Record erstellen, **3** den betroffenen Standard
+referenzieren, **4** die Abweichung dokumentieren, **5** eine Ausnahme beantragen,
+**6** auf HUMAN APPROVAL warten. Ohne genehmigte Ausnahme gilt: **Validation = FAIL,
+Merge = BLOCKED.** Verhindert: „konnte ihn nicht erfüllen → ignoriere ihn."
+Notfall-Pfad: UPDATE-001 Emergency-Regel (dokumentieren + nachholen).
+
+## 8. STANDARD CONFLICT RULE (Priorität)
+
+`ATC-STD-000 → APPROVED Governance-Standards → spezialisierte Standards →
+Repo-spezifische Standards → Task-Anforderungen.` Eine niedrigere Stufe DARF keine
+höhere überschreiben; unauflösbare Konflikte ⇒ HUMAN REVIEW. Maschinenlesbar und
+normativ festgeschrieben: `ai/governance-rules.yaml` (SCR-0059).
+
+## 9. Fehlende Tool-/CI-Fähigkeit (P2)
+
+Kann ein Gate technisch nicht ausgeführt werden (Tool/CI fehlt), gilt: KEIN stiller
+SKIP — Befund klassifizieren (F-NNN), Gate = PENDING, EXCEPTION RULE anwenden.
+SKIP nur mit dokumentierter Begründung (REPO-AUDIT-002: SKIP ohne Begründung = P1).
+
+*ATC Org-AGENTS.md v1.1.0 · SCR-0057/0058/0059 · 09.09.2026 · Aurora (Superagent)*

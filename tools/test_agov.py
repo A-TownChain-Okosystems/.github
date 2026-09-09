@@ -43,5 +43,18 @@ import py_compile
 py_compile.compile(os.path.join(ROOT, "tools/agov_check.py"), doraise=True)
 check("T10 agov_check.py kompiliert", True)
 
-print(f"\n{'ALLE ' + str(10 - len(fails)) + '/10 GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
+import json
+g = yaml.safe_load(open(os.path.join(ROOT, "ai/governance-rules.yaml"), encoding="utf-8"))["governance_rules"]
+check("T11 governance-rules: 10 Merge-Gates, NO-MERGE-Regel",
+      len(g["merge_gate"]["gates"]) == 10 and "NO MERGE" in g["merge_gate"]["rule"])
+check("T12 governance-rules: Exception 6 Schritte, FAIL/BLOCKED ohne Approval",
+      len(g["exception_rule"]["steps"]) == 6 and g["exception_rule"]["without_approval"]["merge"] == "BLOCKED")
+check("T13 governance-rules: Konflikt-Hierarchie ATC-STD-000 zuerst",
+      g["conflict_priority"]["order"][0] == "ATC-STD-000" and len(g["conflict_priority"]["order"]) == 5)
+sn = json.load(open(os.path.join(ROOT, "ai/audit/SNAPSHOT-2026-09-09.json"), encoding="utf-8"))
+check("T14 Snapshot-Record: 4 Pflichtfelder, Commit+Hash korrekt",
+      all(k in sn for k in ("registry_version", "registry_commit", "registry_hash", "approved_standards"))
+      and len(sn["registry_commit"]) == 40 and len(sn["registry_hash"]) == 64)
+
+print(f"\n{'ALLE ' + str(14 - len(fails)) + '/14 GRÜN' if not fails else 'ROT: ' + ', '.join(fails)}")
 sys.exit(1 if fails else 0)

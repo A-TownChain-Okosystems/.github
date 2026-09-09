@@ -1,0 +1,38 @@
+# ATC Agent Governance Rules — normative Maschinenregeln (SCR-0059)
+# Verbindlich fuer alle Agenten in allen ATC-Repos; interpretation zusammen
+# mit AGENTS.md §5-9 und AGENT_MANIFEST.md. SSOT fuer Agenten-Regeln = HUB.
+governance_rules:
+  id: ATC-AI-GOV-RULES
+  version: "1.0.0"
+  status: ACTIVE
+  owner: "A-TownChain Okosystems (Michael Wroblewski)"
+  registry_snapshot:
+    binding: dynamic
+    snapshot_required: true
+    snapshot_record:
+      required: true
+      location: ".github/ai/audit/"
+      schema: "ai/schemas/snapshot.schema.json"
+      fields: [registry_version, registry_commit, registry_hash, approved_standards]
+    scope_change_rule: "Scope-Wechsel waehrend eines Tasks = neuer Task + neuer Snapshot"
+  merge_gate:
+    rule: "FAIL oder PENDING in einem verpflichtenden Gate => NO MERGE"
+    gates: [agent_identity, standards_compliance, registry, validation, mutation,
+            repository_audit, audit_record, documentation, review, human_approval]
+    exception_only: true
+    known_gap: "PR-Pflicht wird von Admin-Pushes gebypasst (F-045) — Owner-Punkt"
+  exception_rule:
+    steps: [konflikt_identifizieren, aud_record_erstellen, standard_referenzieren,
+            abweichung_dokumentieren, ausnahme_beantragen, human_approval_abwarten]
+    without_approval: {validation: FAIL, merge: BLOCKED}
+    emergency_path: "ATC-STD-UPDATE-001 Emergency-Regel (dokumentieren + nachholen)"
+  conflict_priority:
+    order:
+    - ATC-STD-000
+    - approved-governance-standards
+    - specialized-standards
+    - repository-specific-standards
+    - task-requirements
+    rule: "Niedrigere Stufe überschreibt nie eine höhere; unauflösbar => HUMAN REVIEW"
+  missing_capability:
+    rule: "Kein stiller SKIP — F-NNN, Gate=PENDING, EXCEPTION RULE; SKIP nur mit Begruendung (sonst P1)"

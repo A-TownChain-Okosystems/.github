@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "SNAPSHOT-2026-09-09",
+  "created": "2026-09-09T09:40:00+02:00",
+  "agent": "aurora-superagent",
+  "task": "SCR-0059 Governance-H\u00e4rtung (AGOV)",
+  "registry_version": "433 Standards (Stand 09.09.2026, [unreleased])",
+  "registry_commit": "e8144081549cfa43e07cfd481bfcda04c94bda30",
+  "registry_hash": "95cc288003fd2b0a3057d7eff85993295d86c047b5f4a85a31ebaf7e243567a6",
+  "approved_standards": 395,
+  "registry_status": {
+    "approved": 395,
+    "candidate": 37,
+    "draft": 1
+  }
+}

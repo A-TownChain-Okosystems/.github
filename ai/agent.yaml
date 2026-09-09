@@ -32,6 +32,18 @@ governance:
   policies: ai/policies.yaml
   checks: ai/checks.yaml
   capabilities_matrix: ai/capabilities.yaml
+compliance:
+  registry: "registry/standards.yaml (atc-standards, SSOT)"
+  binding: dynamic
+  snapshot_required: true
+  snapshot_record:
+    required: true
+    location: .github/ai/audit/
+    fields:
+    - registry_version
+    - registry_commit
+    - registry_hash
+    - approved_standards
 requirements:
   inspect_before_modify: true
   validate_changes: true
