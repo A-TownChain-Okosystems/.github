@@ -1,0 +1,325 @@
+{
+ "summary": {
+  "org": "A-TownChain-Okosystems",
+  "generated": "2026-09-10",
+  "repos_checked": 25,
+  "compliant": 25,
+  "findings": 0,
+  "exempt": [
+   {
+    "repo": ".github",
+    "grund": "Governance-Hub (eigenes Regime)"
+   },
+   {
+    "repo": "a-townchain-os-docs",
+    "grund": "Docs-Hub (kanonische Doku-Struktur)"
+   },
+   {
+    "repo": "demo-repository",
+    "grund": "ungoverned (F-059, Owner-Entscheidung offen)"
+   }
+  ]
+ },
+ "results": [
+  {
+   "repo": "a-townchain",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 228,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "a-townchain-os",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 27,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-algorithm",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 31,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-compute",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 27,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-contracts",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 105,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-explorer",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 61,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-indexer",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 51,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-interop",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 59,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-launchpad",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 27,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-marketplace",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 74,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-mining",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 31,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-node",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 17,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-oracle",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 32,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-sdk",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 87,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-shivacore",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 138,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-standards",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 815,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": "EXEMPT"
+  },
+  {
+   "repo": "atc-storage",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 32,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-vm",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 25,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": false,
+   "specs": true
+  },
+  {
+   "repo": "atc-wallet",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 86,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atc-zkp",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 48,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "atclang",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 119,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "aurora-ai",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 402,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "genesis-chronicles",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 81,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "genesis-engine",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 97,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  },
+  {
+   "repo": "globus-os",
+   "verdict": "COMPLIANT",
+   "findings": [],
+   "files": 203,
+   "must_ok": 11,
+   "gov_ci": true,
+   "badge": true,
+   "license": "OK",
+   "has_impl": true,
+   "specs": true
+  }
+ ]
+}
