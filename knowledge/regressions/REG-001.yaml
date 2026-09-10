@@ -1,0 +1,9 @@
+id: REG-001
+root_cause: undeklarierte_ci_dependency
+symptom: "workflow laeuft gruen, obwohl Validator-Abhaengigkeit auf Runner fehlt"
+affected_repositories: "atc-standards naming-governance.yml + 25x governance-ci.yml"
+detection: "AGOV-CHECK-013 / E-5-Regressionstest"
+prevention: ATC-STD-CI-001
+regression_test: T-CI-001 (test_ci_dependency_governance.py)
+knowledge_ref: "ATC-ERR-0002 / PATTERN-010"
+added: "2026-09-09"

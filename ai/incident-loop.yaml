@@ -1,0 +1,15 @@
+# Incident -> Governance Feedback Loop (SCR-0067, Block 25)
+# Grundprinzip des Owners: Fehler nicht nur beheben, sondern Wiederholung verhindern.
+version: "1.0.0"
+status: ACTIVE
+chain: [INCIDENT, RCA, FINDING, ROOT_CAUSE, MISSING_CONTROL, STANDARD_CHANGE,
+        VALIDATOR_CHANGE, REGRESSION_TEST, ORG_WIDE_SCAN]
+rules:
+  - "Jeder Incident endet entweder in einem Regression-Knowledge-Eintrag (knowledge/regressions/) oder begruendet, warum keine fehlende Kontrolle vorlag."
+  - "ORG_WIDE_SCAN ist Pflicht: gleiche Fehlerklasse wird org-weit gesucht (ERR-005/CI-008-Pattern)."
+  - "Standard Change + Validator Change laufen via SCR -> PR + 10 Gates (F-045-Kette)."
+linkage:
+  incident: ai/incident.yaml
+  findings: ai/audit/finding-schema.yaml
+  regressions: knowledge/regressions/
+  standards: atc-standards (Registry + Repository schlagen Wiki)

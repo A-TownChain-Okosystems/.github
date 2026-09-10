@@ -1,0 +1,9 @@
+id: REG-003
+root_cause: readme_slimming_entfernt_pflichtgates
+symptom: "README-Verschlankung entfernt ATC-STD-README-001-Pflichtinhalte, CI bricht"
+affected_repositories: "atc-standards README (Owner-Commit 9b2d4a5)"
+detection: "AGOV-CHECK-004 + README-13-Gates"
+prevention: ATC-STD-README-001
+regression_test: T-DOC-001 (readme-gates)
+knowledge_ref: "P1-005"
+added: "2026-09-09"

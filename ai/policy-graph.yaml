@@ -1,0 +1,17 @@
+# Policy Dependency Graph (SCR-0067, Audit-Block 23/18)
+# Wenn Policy X geaendert wird: welche Checks, Tests, Repos muessen erneut validiert werden?
+version: "1.0.0"
+status: ACTIVE
+nodes:
+  - {id: ATC-POL-001, type: policy, file: ai/policies.yaml, validates: [T18], checks: [AGOV-CHECK-001, AGOV-CHECK-002]}
+  - {id: ATC-POL-002, type: policy, file: ai/policies.yaml, validates: [T6, T18], checks: [AGOV-CHECK-010]}
+  - {id: ATC-POL-009, type: policy, file: ai/policies.yaml, validates: [T8], checks: [AGOV-CHECK-009], workflows: ".github/workflows/*"}
+  - {id: AGOV-CHECK-009, type: check, file: ai/checks.yaml, tested_by: [T8]}
+  - {id: ATC-STD-CI-001, type: standard, file: "atc-standards/standards/cicd/", tested_by: [E-5], scopes: [alle-27-repos]}
+edges:
+  - {from: ATC-POL-009, to: AGOV-CHECK-009, relation: validated_by}
+  - {from: ATC-POL-009, to: ".github/workflows/*", relation: governs}
+  - {from: ATC-STD-CI-001, to: alle-27-repos, relation: applies_to}
+rules:
+  - "Aenderung an einem policy-Knoten => alle validates/checks/workflows erneut laufen lassen (gov_impact.py berechnet das je Datei)."
+  - "Der Graph ist Teil der SSOT-Matrix (governance-sources.yaml: policy_graph)."

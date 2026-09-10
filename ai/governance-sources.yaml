@@ -19,6 +19,12 @@ governance_sources:
   findings_registry: {canonical: "atc-standards/registry/findings.yaml"}
   standards_registry: {canonical: "atc-standards/registry/standards.yaml"}
   registry_snapshot: {canonical: "ai/audit/SNAPSHOT-2026-09-09.json"}
+  policy_graph: {canonical: ai/policy-graph.yaml}
+  provenance: {canonical: ai/provenance.yaml}
+  repository_lifecycle: {canonical: ai/repository-lifecycle.yaml}
+  dependency_governance: {canonical: ai/dependency-governance.yaml}
+  recovery: {canonical: ai/recovery.yaml}
+  regression_knowledge_base: {canonical: "knowledge/regressions/"}
 rules:
   - "Bei Konflikten gewinnt die canonical-Datei (Registry + Repository schlagen Wiki/README/Chat)."
   - "Ableitungen (README, AGENTS.md) duerfen keine normativen Zahlen duplizieren, nur Quellverweise."

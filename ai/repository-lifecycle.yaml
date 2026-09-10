@@ -1,0 +1,13 @@
+# Repository Lifecycle: Bootstrap + Decommissioning (SCR-0067, Bloecke 14/15)
+version: "1.0.0"
+status: ACTIVE
+bootstrap:
+  states: [NEW_REPOSITORY, DISCOVERY, CLASSIFICATION, AGENTS_MD, GOVERNANCE_BLOCK,
+           AGENT_MANIFEST, SECURITY_BASELINE, CI_BASELINE, CODEOWNERS, AUDIT, COMPLIANT]
+  rule: "Kein Repo entsteht ausserhalb der Governance: Discovery erfasst jedes neue Org-Repo (AGOV-CHECK-002 Org-Verweisblock Pflicht), ai/org-scope.yaml wird regeneriert, nicht manuell gepflegt."
+decommissioning:
+  states: [ACTIVE, DEPRECATION, ARCHIVE_REVIEW, DEPENDENCY_CHECK, DATA_SECRET_REVIEW,
+           FINAL_AUDIT, ARCHIVED]
+  checklist: [letzte-Releases, offene-Security-Findings, aktive-Agents, Secrets,
+              Dependencies, externe-Integrationen, Redirect-Deprecation, Archive-Status]
+  rule: "Vor ARCHIVED: FINAL_AUDIT muss SHOWSTOPPER-frei sein; org-scope.yaml und Manifest regenerieren."
