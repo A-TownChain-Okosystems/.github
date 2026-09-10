@@ -73,7 +73,10 @@ check("T15 Manifest-Version konsistent (Header=Selbstreferenz=Footer)",
 # T16: Cross-File-Konsistenz (Org-Scope-SSOT + Versionschluessel, Audit P1-04/M1)
 import glob as _g
 sc = yaml.safe_load(open(os.path.join(ROOT, "ai/org-scope.yaml"), encoding="utf-8"))
-cnt = sc["organization_meta"]["repository_count"]
+# SCR-0068: org-scope kennt total (inkl. ungoverned) UND governed count;
+# governed count ist die Zahl, die README/Manifest referenzieren
+cnt = sc.get("governance_kpi", {}).get("GOVERNED_REPOSITORY_COUNT",
+         sc.get("organization_meta", {}).get("repository_count"))
 rd = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
 def _has_version(p):
     d = yaml.safe_load(open(p, encoding="utf-8"))
@@ -88,8 +91,9 @@ try:
     parse_ok = True
 except yaml.YAMLError:
     all_vers, parse_ok = False, False
-check("T16 Cross-File: ai/*.yaml parsbar, Versionsschluessel, Org-Scope-SSOT (27) in README+Manifest",
-      cnt == 27 and str(cnt) in rd and str(cnt) in m and all_vers and parse_ok)
+# SSOT-Design: Zahlen duerfen NICHT dupliziert werden — Manifest referenziert die SSOT
+check("T16 Cross-File: ai/*.yaml parsbar, Versionsschluessel, Org-Scope-SSOT konsistent (Manifest referenziert SSOT)",
+      cnt is not None and cnt > 0 and "org-scope.yaml" in m and all_vers and parse_ok)
 
 # T17: Schema-Selbstvalidierung — alle Kern-Dateien gegen ai/schemas/ (Audit-Block 2)
 def _validate_schema(data, schema):
