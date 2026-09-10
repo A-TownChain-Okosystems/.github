@@ -1,91 +1,158 @@
-# ATC Org-AGENT_MANIFEST — Agent Identity & Scope (ATC-AI-GOV-MANIFEST-001)
+# AGENT_MANIFEST.md
+> **Registry-Stand (GENERIERT aus `registry/standards.yaml`):** 449 Standards — 400 APPROVED · 37 CANDIDATE · 50 Familien · Stand 2026-09-10 22:43 UTC+2 · SHA-256 `9b25d16136fe…`
+> Letzte Aktualisierung: 2026-09-10 22:45 UTC | Aurora Master Sync v3.1.7 | 27 governed Repos (28 total, ai/org-scope.yaml-SSOT) | Rollout auf alle governed Repos
 
-Document ID: **ATC-AI-GOV-MANIFEST-001** · Version: **1.2.0** · Status: **ACTIVE**
-Organization: A-TownChain-Okosystems · Owner: A-TownChain-Okosystems (Michael Wroblewski)
-Änderungen: versioniert via SCR, geprüft (CI), nachvollziehbar (AUD) — siehe §10.
+## ⚖️ Standard-Compliance-Mandat (verbindlich — ATC-AAS-003/AAS-004, AI-DEV-001 §6)
 
-## 1. Purpose
+> **Der zuständige Agent MUSS sämtliche Standards dieser Registry einhalten
+> und umsetzen.** Keine Ausnahmen, keine Teilannahme.
 
-Definiert organisatorische Identität, Zuständigkeit, Fähigkeiten und Governance-
-Zuordnung aller KI-Agenten in A-TownChain-Okosystems. Referenz für: Agent Identity,
-Agent Authorization, Agent Scope, Agent Capabilities, Agent Handoff, Agent
-Governance, Auditability.
+1. **Vollmandat mit Anwendbarkeit:** Registry-Standards sind für den Agenten verbindlich, gestuft nach Anwendbarkeit (ATC-STD-IMPLEMENTATION-001 §1): MANDATORY (immer), CONDITIONAL (wenn Bedingung eintritt, z.B. Domain/Sprache/Classification), REFERENCE (orientierend), NOT_APPLICABLE (mit Begründung). MANDATORY-Standards ohne Ausnahme einhalten —
+   im vollen Umfang, nicht nur im Auszug. Aktuell 103: Verfassung ATC-STD-000
+   v1.2.0, AI-DEV-001..012, ATC-AAS-001..025, ATC-ENT-001..015,
+   ATC-STD-100/201-204/300, BUG-001..004, NET-001..008, ZKP-001..010,
+   README-001, MD-001 und SC-001..020 (alle §9-APPROVED 07.09. — README-001
+   20:36, SC-Framework 21:00, MD-001 21:05 UTC+2; normativ in Kraft).
+2. **Dynamische Bindung:** Die Registry (`registry/standards.yaml`) ist SSOT
+   (ATC-STD-000 §19). Jeder neue APPROVED-Standard ist ab Freigabe automatisch
+   verbindlich — ohne dass dieses Manifest geändert werden MUSS. Die
+   maschinenlesbare Konkretisierung führt `.github/ai/agent.yaml`
+   (`required_standards`), geprüft durch CI.
+3. **Umsetzungspflicht:** Einhalten genügt nicht — der Agent setzt die
+   Standards aktiv um (Repo-Manifeste, AGENTS.md, Audit-Records, Tests,
+   CI-Gates, Findings nach BUG-001..004, Interface-Test-Suiten nach
+   ATC-STD-204 §9).
+4. **Konfliktregel:** Bei Konflikten gilt die Rangfolge der Verfassung
+   (ATC-STD-000 §9): Verfassung > ATC-ENT > ATC-AAS > AI-DEV > Domänen-
+   Standards. Konflikte MUSS der Agent als Finding (BUG-001, Severity nach
+   BUG-002) dokumentieren, nicht stillschweigend auflösen.
+5. **Nachweis:** Jede Agenten-Aktion wird über AUD-Records (AI-DEV-009,
+   `.github/ai/audit/`) und Evidenz (AAS-010) nachgewiesen. Verstöße gegen
+   dieses Mandat sind selbst findings-pflichtig (S1).
+6. **CI-Enforcement:** `check_agent_manifest.py` prüft bei jedem Push, dass
+   das Repo-Manifest alle Registry-Standards referenziert und dieses Mandat
+   vorhanden ist. Gate-Verstoß = Build-FAIL.
 
-## 2. Agent Identity (Pflichtfelder je registriertem Agent)
+## Repositories (26 aktive — AD-016 + AD-024 + atc-standards + AD-043/044/045 + SCR-0005/AD-046)
+### Kern-Plattform (9)
+| Repo | Rolle | Zustand (07.09.2026) |
+|------|-------|---------------------|
+| [a-townchain-os-docs](https://github.com/A-TownChain-Okosystems/a-townchain-os-docs) | **DOCS-HUB** — Wiki, DECISIONS_REGISTER (AD-001…039), Roadmaps, Audits | ✅ aktiv |
+| [atc-standards](https://github.com/A-TownChain-Okosystems/atc-standards) | **KANONISCHE Standards-Heimat** (AD-030): ATC-STD-000…203 + ATC-STD-300 (DTC), Registry, Validator | ✅ ATC-STD-000 v1.2.0 APPROVED |
+| [atclang](https://github.com/A-TownChain-Okosystems/atclang) | ATCLang 1.0 (Rust-first, AD-021/022), Gates G0-G19 | ✅ G1+G2 bestanden, Suite 126/126 (Python-Baseline; Rust-first G0 ausstehend) |
+| [atc-vm](https://github.com/A-TownChain-Okosystems/atc-vm) | A-TownChain Virtual Machine — verifizierte Bytecode-Ausfuehrung (AD-043) | 🆕 R1-Skeleton (07.09.) |
+| [atc-algorithm](https://github.com/A-TownChain-Okosystems/atc-algorithm) | ATC-Algorithmus — Hybrid Consensus PoH+PoS+PoW (AD-044) | 🆕 R1-Skeleton (07.09.) |
+| [atc-zkp](https://github.com/A-TownChain-Okosystems/atc-zkp) | ATC ZKP-Layer — Zero-Knowledge Proof Layer, Verifikationsschicht L1↔Apps (AD-045, ATC-STD-ZKP-001…010) | 🆕 R1-Skeleton (07.09.) |
+| [a-townchain-os](https://github.com/A-TownChain-Okosystems/a-townchain-os) | Monorepo — NUR Integration (AD-017: `scripts/sync_modules.py`) | ✅ 731/731 Workspace-Tests |
+| [atc-shivacore](https://github.com/A-TownChain-Okosystems/atc-shivacore) | ShivaCore Microkernel (AD-012/013) + Service-Space (AD-028) | ✅ 674/674 Tests, Boot L0-L10 (M2-Gate erfüllt) |
+| [a-townchain](https://github.com/A-TownChain-Okosystems/a-townchain) | Chain-Protokoll & Bibliothek (SCR-0005 A/AD-046): State, Tx, Orchestrierung; Chain-ID 658467 | ✅ vault-restauriert (6 Module) |
+| [globus-os](https://github.com/A-TownChain-Okosystems/globus-os) | OS-Produkt (Userspace auf ShivaCore) | ✅ vault-restauriert (10 Module) |
+| [aurora-ai](https://github.com/A-TownChain-Okosystems/aurora-ai) | AI-Produkt: Rust Core + Python AI-Layer (AD-021) | ✅ vault-restauriert (6 Module) |
+| [genesis-engine](https://github.com/A-TownChain-Okosystems/genesis-engine) | Game-Engine-Produkt (L6) | ✅ vault-restauriert |
 
-`agent_id` · `name` · `role` · `version` · `status` · `owner` · `scope` ·
-`capabilities`. Instanz-SSOT: registry/agents.yaml (atc-standards-Repo).
+### Vertikale Repos (14, AD-024)
+| Repo | Priorität | Inhalt |
+|------|-----------|--------|
+| [genesis-chronicles](https://github.com/A-TownChain-Okosystems/genesis-chronicles) | P1 | NFT-Game „Genesis Chronicles" (ex-shivamon, AD-025) | ✅ restauriert |
+| [atc-contracts](https://github.com/A-TownChain-Okosystems/atc-contracts) | P0 | Smart-Contract-Standards + .atc-Referenzverträge | ✅ restauriert |
+| [atc-sdk](https://github.com/A-TownChain-Okosystems/atc-sdk) | P0 | Developer Platform | ✅ restauriert |
+| [atc-wallet](https://github.com/A-TownChain-Okosystems/atc-wallet) | P0 | Wallet (ATC+32-Adressen, BIP44 m/44'/658467', AD-042) | ✅ restauriert |
+| [atc-explorer](https://github.com/A-TownChain-Okosystems/atc-explorer) | P1 | Block Explorer (TypeScript) | ✅ restauriert |
+| [atc-indexer](https://github.com/A-TownChain-Okosystems/atc-indexer) | P1 | Indexing/Analytics | ✅ restauriert |
+| [atc-interop](https://github.com/A-TownChain-Okosystems/atc-interop) | P1 | Bridges (ATC-09) | ✅ restauriert |
+| [atc-marketplace](https://github.com/A-TownChain-Okosystems/atc-marketplace) | P2 | NFT/Asset-Marktplatz | ✅ restauriert |
+| [atc-node](https://github.com/A-TownChain-Okosystems/atc-node) | P0, S4 | Full-Node-Binary & Runtime (SCR-0005 A/AD-046): baut auf a-townchain + atc-algorithm + atc-vm auf | 🔲 Skelett (R1) |
+| [atc-storage](https://github.com/A-TownChain-Okosystems/atc-storage) | P2 | Storage-Schicht (ContentCap-Fundament) | 🔲 Skelett |
+| [atc-compute](https://github.com/A-TownChain-Okosystems/atc-compute) | P2 | Compute-Schicht | 🔲 Skelett |
+| [atc-oracle](https://github.com/A-TownChain-Okosystems/atc-oracle) | P2 | Oracle (ATC-10) | 🔲 Skelett |
+| [atc-mining](https://github.com/A-TownChain-Okosystems/atc-mining) | P1 | Mining-Stack | 🔲 Skelett |
+| [atc-launchpad](https://github.com/A-TownChain-Okosystems/atc-launchpad) | P2 | Token/NFT-Launchpad | 🔲 Skelett |
 
-## 3. Agent Status
+> **Alle 25 Repos (ohne atc-standards): GATE PASS nach ATC-STD-201/202/203
+> (AD-039, 07.09.)** — governance-ci.yml auditiert jeden Push/PR.
+> **Chain-ID:** 658467 (AD-004 RESOLVED). **Mainnet-Launch: per AD-023 offen.**
 
-Zulässig: `PROPOSED → ACTIVE → SUSPENDED → DEPRECATED → RETIRED`.
-Nur ACTIVE-Agenten dürfen reguläre Organisationsaufgaben ausführen.
+## GOVERNANCE-STAND (AD-034–AD-039, 07.09.2026)
 
-## 4. Agent Registry (Rollen-Profile × Instanzen, ehrlich)
+> **UPDATE 08.09.2026 (SCR-0035):** Die nachfolgenden AD-034–AD-039-Zeilen
+> beschreiben den HISTORISCHEN Stand vom 07.09.2026 und sind als Archiv zu
+> lesen. Aktueller Ist-Zustand: **ATC-STD-000 v1.2.0 APPROVED** (§9-freigegeben
+> 07.09. 23:48 UTC+2, SCR-0019), ATC-AAS-001..025 APPROVED, Registry 387/387
+> Standards APPROVED. **Einzige verbindliche Versions-/Status-Quelle ist
+> registry/standards.yaml (SSOT, Validator S-14/S-19-erzwungen)** — alle
+> Versionsangaben in Historie-/Narrativ-Abschnitten sind Archiv und nicht
+> normativ. Dies wurde durch einen externen Fremd-Audit-Fund (P0-001, als
+> SSOT-Konflikt fehlinterpretiert) veranlasst und ist im Abgleich in
+> docs/AUD-2026-0003_ORG_MASTER_AUDIT.md §6 dokumentiert.
 
-| Rolle | Name | Scope | Status | Instanz |
-|---|---|---|---|---|
-| ATC-AI-ARCH-001 | Aurora | Org (27 Repos, Quelle: ai/org-scope.yaml) | ACTIVE | aurora-superagent |
-| ATC-AI-AUDIT-001 | ATC Audit Agent | Org/Repository | ACTIVE (Profil) | aurora-superagent (deckt ab) |
-| ATC-AI-SEC-001 | Security Agent | zugewiesener Scope | PROPOSED (Profil — keine Instanz) | — |
-| ATC-AI-TEST-001 | QA Agent | zugewiesener Scope | PROPOSED (Profil — keine Instanz) | — |
-| ATC-AI-DOC-001 | Documentation Agent | zugewiesener Scope | ACTIVE (Profil) | aurora-superagent (deckt ab) |
-| ATC-AI-CI-001 | CI Agent | zugewiesener Scope | PROPOSED (Profil — keine Instanz) | — |
-| ATC-AI-RELEASE-001 | Release Agent | Org-Releases | PROPOSED (Owner-Gate-gebunden) | — |
-| ATC-AI-GOV-001 | Governance Agent | Org | ACTIVE (Profil) | aurora-superagent (deckt ab) |
+--- (Archiv 07.09.2026 —)
+- **ATC-STD-000 Verfassung** (36 Abschnitte, §7 Naming Convention 7.1-7.11):
+  v1.0.0 **CANDIDATE** — Review-Chain 3/3 PASS (Technical/Security/
+  Architecture), Approval **BLOCKED beim Owner** (APPROVE/REQUEST CHANGES/
+  REJECT). Kanonisch: atc-standards/approval/.
+- **Naming (§7, normativ + CI-durchgesetzt):** IDs min. 3-stellig, immutable,
+  Status nie in der ID; neue Repos atc-<domain>-<component>; Regeln NUR aus
+  naming-conventions.schema.json (Validator S-16, Duplicate Detection S-17).
+- **SCR-Prozess (change-requests/):** SCR-0001 (ID-Allokation, PENDING),
+  SCR-0002 (OBSOLETE), SCR-0003 (Branch-Absicherung, Owner-Option A/B),
+  SCR-0004 (Rollenmodell, PENDING).
+- **Rollenregel:** Owner = Approver; Agenten = Autor/Reviewer/Executor,
+  NIE Approver.
+- **Prompt Engineering:** ATC-SPEC-001 (APOS/ACE) — deterministische
+  Agent-Aufgaben auf Action/Process-Ebene mit Verifikation.
 
-## 5. Capability Model (explizit, nie rollen-abgeleitet)
+## BAUHIERARCHIE (AD-026, verbindlich) & ROADMAP (AD-027, verbindlich)
+```text
+[L0] atclang → [L1] atc-shivacore → [L2] aurora-ai → [L3] a-townchain
+ → [L4] globus-os → [L5] 13 Blockchain-Services → [L6] genesis-engine →
+ genesis-chronicles → [L7] a-townchain-os (Integration, AD-017)
+[parallel] a-townchain-os-docs (Docs-Hub) · atc-standards (Norm)
+```
+Lauffähigkeits-Roadmap M1-M8 (jede Stufe = lauffähiges Inkrement):
+M1 Sprache (G1 ✅ → G2 offen) → M2 Kernel (✅ 674/674 + Boot) → M3 KI →
+M4 Blockchain (2 Nodes, 658467, Contract auf ATVM) → M5 OS → M6 Dienste →
+M7 Spiel (NFT auf Chain) → M8 Ökosystem (Launch-Stack).
+Volltext: docs/roadmap/LAUFFAEHIGKEITS_ROADMAP.md ·
+Regel: Layer startet erst nach Gate des vorherigen.
 
-`READ_REPOSITORY` · `ANALYZE_CODE` · `WRITE_CODE` · `MODIFY_DOCUMENTATION` ·
-`RUN_TESTS` · `CREATE_ISSUES` · `CREATE_PULL_REQUESTS` · `MODIFY_WORKFLOWS` ·
-`PERFORM_AUDITS` · `MODIFY_INFRASTRUCTURE` · `PERFORM_RELEASE` ·
-`SECURITY_ANALYSIS`.
+## Integrationen (17 aktiv)
+| Integration | Status | Zweck |
+|-------------|--------|-------|
+| GitHub | ✅ | Code + Docs Hosting (verbindliche Primär-Quelle) |
+| Notion | ✅ | Roadmap + Protokolle |
+| Google Sheets | ✅ | Dashboard + Metriken |
+| Google Docs/Slides/Calendar/Drive/Analytics/BigQuery/Search Console/Tasks/Meet/Classroom | ✅ | Reports/Metriken/Sprints/Archiv |
+| Gmail | ✅ | Status-Reports (NUR SENDEN) |
+| Microsoft Outlook/Teams/OneDrive | ✅ | Reports/Kommunikation/Backup |
+| Hugging Face | ✅ | KI-Modelle |
 
-Capabilities werden je Agent INSTANZ-weise vergeben (ai/agent.yaml), nie
-automatisch aus der Rolle abgeleitet. Aurora-Instanz aktuell OHNE:
-MODIFY_WORKFLOWS (GH013), MODIFY_INFRASTRUCTURE, PERFORM_RELEASE (Owner-Gate).
+## Google Sheets Dashboard
+ID: 1xR5c24NrtYC58OsGrLaUHkQUiL_O6eYVyx8KmFcvBD4
+URL: https://docs.google.com/spreadsheets/d/1xR5c24NrtYC58OsGrLaUHkQUiL_O6eYVyx8KmFcvBD4
 
-## 6. Scope
+## Notion
+- Roadmap: 373b826d-b85c-8125-ba83-f04995191bf0
+- Tagesprotokoll: 37bb826d-b85c-81c4-bdd4-cfc0dc74de7e
+- Live-Status: 379b826d-b85c-81f1-9b2b-f2a05496a4e1
 
-Ebenen: `ORGANIZATION → REPOSITORY → DIRECTORY → MODULE → TASK`. Außerhalb des
-autorisierten Scopes sind Änderungen VERBOTEN. Aurora: ORGANIZATION (read),
-27 Repos (write gemäß ai/agent.yaml je Repo; Repository-Scope-SSOT: ai/org-scope.yaml).
+## Kritischer Entwicklungspfad (AD-027)
+M1 G2 (Semantics) → M3 KI (Kernel-Event-Bridge) → M4 Blockchain (2 Nodes
+Sync) → M5 OS (globus-init-Bootchain) → M6 Dienste → M7 Spiel → M8 Stack.
+Parallel: Issue #69 (Dependabot), #70 Validators, #71 Genesis Block.
 
-## 7. Handoff (Agent-zu-Agent-Übergabe, Pflichtfelder)
+## 🤖 Bekannte Base44-Superagent-Instanzen (5)
+| # | App-ID | Git-Identitaet | Rolle | Signiert? |
+|---|--------|----------------|-------|-----------|
+| 1 | `69c1e0c577ccf6c45a27a480` | Michael Wroblewski (+ Tag) | Compliance (unverifiziert, kein Commit-Nachweis) | ✅ |
+| 2 | `6a2756186106d6f0fbb105b5` | Michael Wroblewski (+ Tag) | Sync/Cleanup/Governance (dieser Agent) | ✅ |
+| 3 | `6a27614c7219ab1e4f951842` | Aurora (MasterBrain) `<aurora@a-townchain.dev>` | ATCLang-Parser, Reality-Checks | ✅ (meist) |
+| 4 | `6a0a3f408dced6c5ca7506ef` | Michael Wroblewski (+ Tag) | Reality-Check/Audit | ✅ |
+| 5 | ⚠️ unbekannt | `Aurora-Bot <aurora@base44.ai>` | Taeglicher Wiki-Kapitel-Sync | ❌ unsigniert |
 
-`source_agent` · `target_agent` · `task` · `status` · `completed_work` ·
-`changed_files` · `open_findings` · `tests` · `risks` · `next_action`.
-Normative Bindung: ATC-STD-AI-DEV-012 (Multi-Agent Coordination).
+> Vollstaendiges Register mit Details: `docs/AGENT_COORDINATION.md`
 
-## 8. Governance-Interpretation
-
-> Vollständige Familien-Protokolle: `ai/audit.yaml` (AUDIT-001) · `ai/handoff.yaml` (HANDOFF-001) · `ai/incident.yaml` (INCIDENT-001) · `ai/change.yaml` (CHANGE-001) — jeweils via SCR-0061 registriert. (Zielbild-Mapping, ehrlich)
-
-| ATC-AI-GOV-Dokument | Umsetzung hier |
-|---|---|
-| ATC-AI-GOV-AGENTS-001 | AGENTS.md (Org-Master, SCR-0057) |
-| ATC-AI-GOV-MANIFEST-001 | DIESE Datei (v1.2.0) |
-| ATC-AI-GOV-POLICY-001 | ai/policies.yaml (AP-001..016 + ATC-POL-001..010 maschinenprüfbar) |
-| ATC-AI-GOV-CHECK-001+ | ai/checks.yaml (AGOV-CHECK-001..020) + tools/agov_check.py (ausführbar) |
-| ATC-AI-GOV-AUDIT-001 | existierend: ATC-STD-AUDIT-001 + REPO-AUDIT-001..003 (CHECK-001..064, Health A–E) |
-| ATC-AI-GOV-HANDOFF-001 | §7 + ATC-STD-AI-DEV-012 |
-| ATC-AI-GOV-INCIDENT-001 | existierend: ATC-STD-BUG-001..005 (RCA) + UPDATE-001 (Emergency) |
-| ATC-AI-GOV-CHANGE-001 | existierend: ATC-STD-CHANGE-001 (SCR→UPDATE→COMPAT→AUDIT) |
-
-Bei Widersprüchen gilt: Org-Policy → Manifest → Org-AGENTS.md → Repo-AGENTS.md →
-Verzeichnis → Task (keine höhere Regel wird stillschweigend ausgehebelt).
-
-## 9. Auditability
-
-Jede wesentliche Agentenaktion MUSS nachvollziehbar sein (soweit technisch
-möglich): Agent · Timestamp · Repository · Task · Action · Result · Validation.
-Umsetzung: Commit-Signatur `[agent: <id>]`, SCR-Referenzen, AUD-Records
-(AUDIT-001), findings.yaml (F-NNN), Registry-Gates je CI-Lauf.
-
-## 10. Changes
-
-Manifest-Änderungen sind Governance-relevant: versioniert (SemVer, MAJOR bei
-Rechte-/Status-Änderung), geprüft (Validator/CI), nachvollziehbar (SCR + AUD),
-dokumentiert (CHANGELOG/STATUS). Kernregel: kein stiller Rechte-Wandel.
-
-*v1.2.0 · ATC-AI-GOV-MANIFEST-001 · SCR-0058/SCR-0065 · 09.09.2026 · Aurora*
+## Sync-Konfiguration
+- **Schedule:** täglich 08:05 Europe/Berlin
+- **Agent:** Aurora (Base44 Superagent)
+- **Script:** .agents/skills/kai_os_sync/scripts/master_sync.py
+- **Version:** v3.1
