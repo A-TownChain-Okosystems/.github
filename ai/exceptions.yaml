@@ -1,21 +1,30 @@
 # ATC Policy Exceptions — GOV-025 (SCR-0064)
 # Regel: KEINE dauerhaften Ausnahmen ohne Ablaufdatum (expires MUSS gesetzt sein).
+# Fail Closed: abgelaufene Ausnahmen sind automatisch inaktiv.
+# risiko + kompensationskontrolle PFLICHT (keine unkompensierte Risikouebernahme).
+# review_date PFLICHT; Ausnahmen laufen ab.
 schema_version: "1.0"
 id: ATC-AI-GOV-EXCEPTIONS
-version: "1.0.0"
+version: "1.1.0"
 status: ACTIVE
 owner: "A-TownChain Okosystems (Michael Wroblewski)"
 rules:
   - "Jede Ausnahme referenziert genau eine Policy (ATC-POL-NNN) und max. einen Scope."
-  - "Ausnahmen laufen ab — abgelaufene Ausnahmen sind inaktiv (Fail Closed); review_date PFLICHT."
-  - "risiko + kompensationskontrolle PFLICHT (keine unkompensierte Risikouebernahme)."
   - "expires ist PFLICHT; abgelaufene Ausnahmen sind automatisch inaktiv (Fail Closed)."
   - "approved_by: OWNER ist Pflicht; Agent darf keine Selbst-Ausnahme erteilen (No Self-Certification)."
+  - "risiko + kompensationskontrolle PFLICHT (keine unkompensierte Risikouebernahme)."
+  - "Ausnahmen laufen ab — abgelaufene Ausnahmen sind inaktiv; review_date PFLICHT."
   - "Jede Ausnahme wird im Audit-Lauf geprueft (Drift/Erosion-Erkennung)."
-exceptions: []
-# Beispiel (auskommentiert):
-#  - {id: ATC-EXC-001, policy: ATC-POL-009, repository: legacy-repo, reason: "Migration pending",
-#     approved_by: OWNER, expires: "2026-12-31", status: ACTIVE, scr: SCR-XXXX,
-#     risiko: "P2 — geringe Angriffsflaeche bis Migrationsende",
-#     kompensationskontrolle: "AGOV-CHECK-009 je Push",
-#     review_date: "2026-10-15", genehmiger: "Michael Wroblewski"}
+exceptions:
+  - id: ATC-EXC-001
+    policy: ATC-POL-009
+    repository: ".github (PR #4, SCR-0077)"
+    reason: "Ein-Personen-Org: kein zweiter Reviewer mit Write-Access verfuegbar — beide Aurora-Instanzen teilen den GitHub-Account ShivaCoreDev, Self-Approval technisch unmoeglich (422)"
+    approved_by: OWNER
+    expires: "2026-09-30"
+    status: ACTIVE
+    scr: SCR-0077
+    risiko: "P2 — Owner-Approval liegt schriftlich vor (Chat 10.09. 20:58); Merge-Inhalt vollstaendig verifiziert (23/23 Tests)"
+    kompensationskontrolle: "AGOV T1-T23 + agov_check + gov_drift --repo .github gruen; Post-Merge-Verifikation gegen main; Exception laeuft am 30.09. ab (Fail Closed)"
+    review_date: "2026-09-15"
+    genehmiger: "Michael Wroblewski"

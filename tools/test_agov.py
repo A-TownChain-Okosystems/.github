@@ -146,7 +146,7 @@ check("T18 Authorization-Matrix: Eintrags-Schema + Agent-IDs bekannt + GH013 abg
 
 # T19: Exceptions Fail Closed (Audit-Block 4) — abgelaufene = inaktiv
 ex = _y2.safe_load(open(os.path.join(ROOT, "ai/exceptions.yaml"), encoding="utf-8"))["exceptions"]
-_today = "2026-09-09"
+_today = __import__("datetime").date.today().isoformat()
 check("T19 Exceptions: expiry Pflicht, keine abgelaufene AKTIVE, OWNER-Genehmigung",
       all(e.get("expires") and e["expires"] >= _today and e.get("approved_by") == "OWNER"
           for e in ex if e.get("status") == "ACTIVE"))
