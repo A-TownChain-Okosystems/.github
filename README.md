@@ -12,7 +12,7 @@ Erzeugung via tools/gen_org_scope.py — Zählungen nie von Hand pflegen).
 
 **Hierarchie (spezifischer ergänzt, nie höhere Regeln ausgehebelt):**
 Org-Policy → AGENT_MANIFEST → Org-AGENTS.md → Repo-AGENTS.md → Verzeichnis-Regeln → Task.
-**Fachliche Wahrheit:** Registry-SSOTs im atc-standards-Repo (433 Standards (Stand 09.09.2026),
+**Fachliche Wahrheit:** Registry-SSOT = `atc-standards/registry/standards.yaml` — verbindliche Zahlen ausschließlich als State-Block (State-ID + Registry-SHA-256) im atc-standards-README; dieser Hub speichert KEINE eigenen Standards-Zahlen (ATC-STD-003 §4, SCR-0090).
 Validator S-01..S-25) · kanonisch: REALITY_STATUS.md (a-townchain-os-docs).
 
 *Copyright (c) 2026 Michael Wroblewski · Apache-2.0 · SCR-0057*
