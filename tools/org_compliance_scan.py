@@ -75,7 +75,20 @@ def fetch_tree(repo, token):
     with tarfile.open(fileobj=buf, mode="r:gz") as tf:
         names = tf.getnames()
         root = os.path.commonpath([n for n in names if n]) + "/"
-        tf.extractall(tmp, filter="data")
+        # SCR-0092: robuste Extraktion — absolute Symlinks (z.B. venv-bin/python3)
+        # ueberspringen statt den Scan abbrechen zu lassen (tarfile.AbsoluteLinkError).
+        import warnings as _w
+        skipped = 0
+        for _m in tf.getmembers():
+            if _m.issym() and (_m.linkname.startswith("/") or _m.linkname.startswith("\\") or _m.name.startswith("/")):
+                skipped += 1
+                continue
+            try:
+                tf.extract(_m, tmp, filter="data")
+            except (tarfile.AbsoluteLinkError, tarfile.OutsideDestinationError, OSError):
+                skipped += 1
+        if skipped:
+            print(f"  Hinweis: {skipped} Tarball-Mitglieder (Symlinks/unsicher) uebersprungen")
     return os.path.join(tmp, root.rstrip("/"))
 
 def read(root, rel):
