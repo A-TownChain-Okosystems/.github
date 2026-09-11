@@ -38,6 +38,30 @@ def ci_state(repo):
             return r["conclusion"]
     return "running"
 
+
+def workflow_perm_class(repo):
+    """Echte AGOV-CHECK-009/019-Pruefung: je Workflow mind. ein permissions-Block
+    (top-level ODER job-level), kein write-all. OAuth-Scope: nur Lesezugriff noetig."""
+    import base64, re
+    tree = api(f"https://api.github.com/repos/{ORG}/{repo}/git/trees/main?recursive=1")
+    if not tree:
+        return "N/A"
+    wfs = [t["path"] for t in tree.get("tree", [])
+           if t["path"].startswith(".github/workflows/") and t["path"].endswith((".yml", ".yaml"))]
+    if not wfs:
+        return "N/A"
+    bad = []
+    for wf in wfs:
+        d = api(f"https://api.github.com/repos/{ORG}/{repo}/contents/{wf}")
+        if not d or "content" not in d:
+            continue  # Fail Closed bei API-Fehler behandelbar: naechster Lauf
+        body = base64.b64decode(d["content"]).decode(errors="replace")
+        has_block = re.search(r"^permissions:", body, re.M) or re.search(r"^\s+permissions:", body, re.M)
+        write_all = re.search(r"permissions:\s*\n?\s*(all|write-all)|:\s*write-all", body) and "write-all" in body
+        if write_all or not has_block:
+            bad.append(wf.split("/")[-1])
+    return "FAIL (" + ", ".join(bad[:3]) + ")" if bad else "PASS"
+
 def scan_repo(repo, workflows_only_ci=False):
     f = {}  # findings
     agents_md = content(repo, "AGENTS.md")
@@ -58,7 +82,7 @@ def scan_repo(repo, workflows_only_ci=False):
         any(True for _ in [1]) and file_exists(repo, "docs")) else "WARN"
     f["README"] = "PASS" if file_exists(repo, "README.md") else "FAIL"
     f["LICENSE"] = "PASS" if file_exists(repo, "LICENSE") else "FAIL"
-    f["Workflow-Permissions (AGOV-CHECK-009)"] = "WARN"  # Detailpruefung via agov_check.py je Repo
+    f["Workflow-Permissions (AGOV-CHECK-009/019)"] = workflow_perm_class(repo)
     ci = ci_state(repo)
     f["CI letzter Lauf"] = {"success": "PASS", "failure": "FAIL"}.get(ci, "WARN" if ci == "running" else "N/A")
     return f

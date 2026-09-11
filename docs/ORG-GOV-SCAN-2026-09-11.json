@@ -1,9 +1,9 @@
 {
  "scan_id": "ORG-GOV-SCAN-2026-09-11",
- "generated": "2026-09-11T18:36:52.020378+00:00",
+ "generated": "2026-09-11T18:50:00.338424+00:00",
  "repos": {
   "a-townchain": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -13,12 +13,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "a-townchain-os": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -28,12 +28,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "a-townchain-os-docs": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -42,12 +42,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-algorithm": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -57,12 +57,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-compute": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -72,12 +72,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-contracts": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -86,12 +86,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-explorer": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -100,12 +100,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-indexer": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -115,12 +115,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-interop": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -130,12 +130,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-launchpad": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -145,12 +145,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-marketplace": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -160,12 +160,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-mining": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -175,12 +175,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-node": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -189,12 +189,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-oracle": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -204,12 +204,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-sdk": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -218,12 +218,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-shivacore": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -233,12 +233,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-standards": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -248,12 +248,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-storage": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -263,12 +263,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-vm": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -278,12 +278,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atc-wallet": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -293,12 +293,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
-    "CI letzter Lauf": "WARN"
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
+    "CI letzter Lauf": "PASS"
    }
   },
   "atc-zkp": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -308,12 +308,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "atclang": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -323,12 +323,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "aurora-ai": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -337,7 +337,7 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
@@ -351,12 +351,12 @@
     "Audit-Records": "WARN",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "FAIL (proof-html.yml)",
     "CI letzter Lauf": "PASS"
    }
   },
   "genesis-chronicles": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -365,12 +365,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "genesis-engine": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -380,12 +380,12 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   },
   "globus-os": {
-   "status": "COMPLIANT-WITH-FINDINGS",
+   "status": "COMPLIANT",
    "findings": {
     "AGENTS.md": "PASS",
     "Org-Bindung (AGOV-CHECK-002)": "PASS",
@@ -394,12 +394,13 @@
     "Audit-Records": "PASS",
     "README": "PASS",
     "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009)": "WARN",
+    "Workflow-Permissions (AGOV-CHECK-009/019)": "PASS",
     "CI letzter Lauf": "PASS"
    }
   }
  },
  "summary": {
-  "COMPLIANT-WITH-FINDINGS": 27
+  "COMPLIANT": 26,
+  "COMPLIANT-WITH-FINDINGS": 1
  }
 }
