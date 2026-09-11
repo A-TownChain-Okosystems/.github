@@ -1,6 +1,6 @@
 {
  "scan_id": "ORG-GOV-SCAN-2026-09-11",
- "generated": "2026-09-11T18:50:00.338424+00:00",
+ "generated": "2026-09-11T18:59:41.449231+00:00",
  "repos": {
   "a-townchain": {
    "status": "COMPLIANT",
@@ -341,20 +341,6 @@
     "CI letzter Lauf": "PASS"
    }
   },
-  "demo-repository": {
-   "status": "COMPLIANT-WITH-FINDINGS",
-   "findings": {
-    "AGENTS.md": "PASS",
-    "Org-Bindung (AGOV-CHECK-002)": "PASS",
-    "agent.yaml": "N/A",
-    "capabilities/policies": "INHERITED",
-    "Audit-Records": "WARN",
-    "README": "PASS",
-    "LICENSE": "PASS",
-    "Workflow-Permissions (AGOV-CHECK-009/019)": "FAIL (proof-html.yml)",
-    "CI letzter Lauf": "PASS"
-   }
-  },
   "genesis-chronicles": {
    "status": "COMPLIANT",
    "findings": {
@@ -400,7 +386,9 @@
   }
  },
  "summary": {
-  "COMPLIANT": 26,
-  "COMPLIANT-WITH-FINDINGS": 1
+  "COMPLIANT": 26
+ },
+ "excluded": {
+  "demo-repository": "Demo/Test-Repo \u2014 Owner-Entscheidung 11.09.2026: von Org-Compliance ausgeschlossen"
  }
 }

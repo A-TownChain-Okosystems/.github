@@ -10,6 +10,10 @@ TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN")
 ORG = "A-TownChain-Okosystems"
 H = {"Authorization": f"token {TOKEN}", "Accept": "application/vnd.github.v3+json"}
 
+# Owner-Anweisung 11.09.2026 (Michael Wroblewski): Demo-/Test-Repos werden von der
+# Org-Compliance-Bewertung ausgeschlossen (kein Produktions-Code, kein Governance-Ziel).
+EXCLUDED_REPOS = {"demo-repository": "Demo/Test-Repo — Owner-Entscheidung 11.09.2026: von Org-Compliance ausgeschlossen"}
+
 def api(url):
     req = urllib.request.Request(url, headers=H)
     try:
@@ -104,6 +108,9 @@ for r in sorted(repos, key=lambda x: x["name"]):
     name = r["name"]
     if name == ".github":
         continue
+    if name in EXCLUDED_REPOS:
+        print(f"⚪ {name:28s} EXCLUDED ({EXCLUDED_REPOS[name]})")
+        continue
     findings = scan_repo(name)
     status, fails, warns = repo_status(findings)
     report["repos"][name] = {"status": status, "findings": findings}
@@ -112,6 +119,7 @@ for r in sorted(repos, key=lambda x: x["name"]):
     print(f"{mark} {name:28s} {status}")
     for k in fails:
         print(f"    🔴 FAIL: {k}")
+report["excluded"] = {k: v for k, v in EXCLUDED_REPOS.items()}
 report["summary"] = count
 json.dump(report, open(f"docs/ORG-GOV-SCAN-{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json", "w"), indent=1)
 print("\nSummary:", count)
