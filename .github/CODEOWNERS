@@ -1,0 +1,4 @@
+# CODEOWNERS — .github Hub (SCR-0095)
+# Control-Plane-Aenderungen erfordern Human-Review. Agenten (ShivaCoreDev) sind
+# Executor/Auditor/Maintainer — NIE Approver (ATC-STD-003 par.9).
+* @A-TownChain
