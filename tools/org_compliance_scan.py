@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 ATC Org-Compliance-Scan (SCR-0074/0075, F-091) — wiederverwendbares Tool.
 
@@ -24,35 +23,64 @@ Exit-Code: 0 (oder 1 mit --strict). Report: JSON + Markdown + Konsolen-Tabelle.
 Kopplung: läuft wöchentlich via .github/workflows/org-compliance-scan.yml UND
 ist Pflicht-Bestandteil jedes SCR-Abschlusses (Agent-Koordination, Hub-AGENTS.md).
 """
-import argparse, io, json, os, re, sys, tarfile, tempfile
-import requests
+
+import argparse
+import io
+import json
+import os
+import re
+import sys
+import tarfile
+import tempfile
 from datetime import datetime, timezone
+
+import requests
 
 ORG_DEFAULT = "A-TownChain-Okosystems"
 API = "https://api.github.com"
 
-MUST = [".atc/repository.yaml", ".atc/compliance.yaml", ".atc/lifecycle.yaml",
-        ".atc/ownership.yaml", "AGENTS.md", "AGENT_MANIFEST.md", "CODEOWNERS",
-        "SECURITY.md", "STATUS.md", "CHANGELOG.md", "README.md"]
+MUST = [
+    ".atc/repository.yaml",
+    ".atc/compliance.yaml",
+    ".atc/lifecycle.yaml",
+    ".atc/ownership.yaml",
+    "AGENTS.md",
+    "AGENT_MANIFEST.md",
+    "CODEOWNERS",
+    "SECURITY.md",
+    "STATUS.md",
+    "CHANGELOG.md",
+    "README.md",
+]
 
 # Spec-Check-Klasse: Doku-/Standards-Repos tragen ihre Spec-Last anderswo.
-EXEMPT_SPECS = {"atc-standards": "Standards-SSOT (normative standards/)",
-                "a-townchain-os-docs": "Docs-Hub (kanonische Doku-Struktur)",
-                ".github": "Governance-Hub (eigenes Regime)",
-                "demo-repository": "ungoverned (F-059, Owner-Entscheidung offen)"}
+EXEMPT_SPECS = {
+    "atc-standards": "Standards-SSOT (normative standards/)",
+    "a-townchain-os-docs": "Docs-Hub (kanonische Doku-Struktur)",
+    ".github": "Governance-Hub (eigenes Regime)",
+    "demo-repository": "ungoverned (F-059, Owner-Entscheidung offen)",
+}
 
-BADGE = re.compile(r"ATC[\s-]*COMPLIANCE", re.I)
-LIZBAD = re.compile(r"proprietary|all\s+rights\s+reserved|UNLICENSED", re.I)
-PASSCLAIM = re.compile(r"passing|tests?\s*[:=]?\s*pass\b", re.I)
+BADGE = re.compile(r"ATC[\s-]*COMPLIANCE", re.IGNORECASE)
+LIZBAD = re.compile(r"proprietary|all\s+rights\s+reserved|UNLICENSED", re.IGNORECASE)
+PASSCLAIM = re.compile(r"passing|tests?\s*[:=]?\s*pass\b", re.IGNORECASE)
 IMPL_END = (".rs", ".py", ".ts", ".tsx", ".js", ".go", ".c", ".cpp")
-SKIP_PATH = re.compile(r"(^|/)(\.git|archive|archives|node_modules|target|dist|build|docs/archive|monorepo-legacy)(/|$)")
+SKIP_PATH = re.compile(
+    r"(^|/)(\.git|archive|archives|node_modules|target|dist|build|docs/archive|monorepo-legacy)(/|$)"
+)
+
 
 def gh(path, token, stream=False):
-    r = requests.get(API + path, headers={"Authorization": f"Bearer {token}"},
-                     timeout=60, stream=stream)
+    r = requests.get(
+        API + path,
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=60,
+        stream=stream,
+    )
     if r.status_code != 200:
         raise RuntimeError(f"API {path} -> {r.status_code}")
     return r
+
 
 def list_repos(org, token):
     repos, page = [], 1
@@ -64,9 +92,14 @@ def list_repos(org, token):
         page += 1
     return [r for r in repos if not r.get("archived") and not r.get("fork")]
 
+
 def fetch_tree(repo, token):
     """Repo-Tarball herunterladen, in Temp-Dir entpacken, Root-Pfad zurückgeben."""
-    data = gh(f"/repos/{repo['full_name']}/tarball/{repo['default_branch']}", token, stream=True)
+    data = gh(
+        f"/repos/{repo['full_name']}/tarball/{repo['default_branch']}",
+        token,
+        stream=True,
+    )
     buf = io.BytesIO()
     for chunk in data.iter_content(65536):
         buf.write(chunk)
@@ -77,19 +110,27 @@ def fetch_tree(repo, token):
         root = os.path.commonpath([n for n in names if n]) + "/"
         # SCR-0092: robuste Extraktion — absolute Symlinks (z.B. venv-bin/python3)
         # ueberspringen statt den Scan abbrechen zu lassen (tarfile.AbsoluteLinkError).
-        import warnings as _w
         skipped = 0
         for _m in tf.getmembers():
-            if _m.issym() and (_m.linkname.startswith("/") or _m.linkname.startswith("\\") or _m.name.startswith("/")):
+            if _m.issym() and (
+                _m.linkname.startswith("/")
+                or _m.linkname.startswith("\\")
+                or _m.name.startswith("/")
+            ):
                 skipped += 1
                 continue
             try:
                 tf.extract(_m, tmp, filter="data")
-            except (tarfile.AbsoluteLinkError, tarfile.OutsideDestinationError, OSError):
+            except (
+                tarfile.AbsoluteLinkError,
+                tarfile.OutsideDestinationError,
+                OSError,
+            ):
                 skipped += 1
         if skipped:
             print(f"  Hinweis: {skipped} Tarball-Mitglieder (Symlinks/unsicher) uebersprungen")
     return os.path.join(tmp, root.rstrip("/"))
+
 
 def read(root, rel):
     p = os.path.join(root, rel)
@@ -97,6 +138,7 @@ def read(root, rel):
         return open(p, encoding="utf-8", errors="replace").read()
     except OSError:
         return None
+
 
 def walk_files(root):
     out = []
@@ -107,6 +149,7 @@ def walk_files(root):
         for f in fs:
             out.append(os.path.normpath(os.path.join(rel, f)))
     return out
+
 
 def check_repo(repo, token):
     name = repo["name"]
@@ -138,19 +181,32 @@ def check_repo(repo, token):
             if f.startswith("licenses/"):
                 continue  # ATC-LICENSE-Registry: beschreibt Lizenz-TYPEN (inkl. PROPRIETARY-005), keine Lizenz-Zuordnung
             base = os.path.basename(f)
-            if (base in ("README.md",) or f.startswith(".atc/") or base in ("Cargo.toml", "package.json")):
+            if (
+                base in ("README.md",)
+                or f.startswith(".atc/")
+                or base in ("Cargo.toml", "package.json")
+            ):
                 txt = read(tree, f)
                 if txt and LIZBAD.search(txt):
                     bad.append(f)
         if bad:
             res["license_files_bad"] = bad
-            res["findings"].append(f"Lizenz-Reste (proprietary/ARR/UNLICENSED): {', '.join(bad[:5])}")
+            res["findings"].append(
+                f"Lizenz-Reste (proprietary/ARR/UNLICENSED): {', '.join(bad[:5])}"
+            )
         # 5) Claim-Ehrlichkeit: PASS-Claim ohne Implementierung?
-        impl = [f for f in files if f.endswith(IMPL_END) or os.path.basename(f) in ("Cargo.toml", "package.json", "setup.py", "pyproject.toml")]
+        impl = [
+            f
+            for f in files
+            if f.endswith(IMPL_END)
+            or os.path.basename(f) in ("Cargo.toml", "package.json", "setup.py", "pyproject.toml")
+        ]
         status = read(tree, "STATUS.md") or ""
         res["has_impl"] = bool(impl)
         if not impl and status and PASSCLAIM.search(status):
-            res["findings"].append("Unbelegter Build/Tests-PASS-Claim in STATUS.md ohne Implementierungsdateien")
+            res["findings"].append(
+                "Unbelegter Build/Tests-PASS-Claim in STATUS.md ohne Implementierungsdateien"
+            )
         # 6) Spec-Abdeckung
         specs = [f for f in files if f.startswith(("docs/specs/", "specs/"))]
         if name in EXEMPT_SPECS:
@@ -164,7 +220,9 @@ def check_repo(repo, token):
         return res
     finally:
         import shutil
+
         shutil.rmtree(tree.rsplit(os.sep, 1)[0], ignore_errors=True)
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -184,12 +242,20 @@ def main():
             continue
         res = check_repo(r, token)
         results.append(res)
-        print(f"{res['repo']:24s} {res['verdict']:9s} MUST {res.get('must_ok', 0)}/11 "
-              f"CI={res.get('gov_ci')} Badge={res.get('badge')} "
-              f"Liz={res.get('license')} Impl={res.get('has_impl')} Specs={res.get('specs')}")
+        print(
+            f"{res['repo']:24s} {res['verdict']:9s} MUST {res.get('must_ok', 0)}/11 "
+            f"CI={res.get('gov_ci')} Badge={res.get('badge')} "
+            f"Liz={res.get('license')} Impl={res.get('has_impl')} Specs={res.get('specs')}"
+        )
     bad = [x for x in results if x["verdict"] == "FINDINGS"]
-    summary = {"org": args.org, "generated": now, "repos_checked": len(results),
-               "compliant": len(results) - len(bad), "findings": len(bad), "exempt": exempt}
+    summary = {
+        "org": args.org,
+        "generated": now,
+        "repos_checked": len(results),
+        "compliant": len(results) - len(bad),
+        "findings": len(bad),
+        "exempt": exempt,
+    }
     report = {"summary": summary, "results": results}
     os.makedirs(args.output, exist_ok=True)
     jpath = os.path.join(args.output, f"ORG-COMPLIANCE-SCAN-{now}.json")
@@ -197,24 +263,36 @@ def main():
     mpath = os.path.join(args.output, f"ORG-COMPLIANCE-SCAN-{now}.md")
     with open(mpath, "w", encoding="utf-8") as m:
         m.write(f"# ATC Org-Compliance-Scan — {now}\n\n")
-        m.write(f"Generiert von `tools/org_compliance_scan.py` (SCR-0075, F-091). "
-                f"**{summary['compliant']}/{summary['repos_checked']} konform, {len(bad)} mit Findings.**\n\n")
-        m.write("| Repo | Verdict | MUST | CI | Badge | Lizenz | Impl | Specs |\n|---|---|---|---|---|---|---|---|\n")
-        for x in results:
-            m.write(f"| {x['repo']} | {x['verdict']} | {x.get('must_ok', 0)}/11 | "
-                    f"{res_str(x.get('gov_ci'))} | {res_str(x.get('badge'))} | {x.get('license')} | "
-                    f"{res_str(x.get('has_impl'))} | {x.get('specs')} |\n")
+        m.write(
+            f"Generiert von `tools/org_compliance_scan.py` (SCR-0075, F-091). "
+            f"**{summary['compliant']}/{summary['repos_checked']} konform, {len(bad)} mit Findings.**\n\n"
+        )
+        m.write(
+            "| Repo | Verdict | MUST | CI | Badge | Lizenz | Impl | Specs |\n|---|---|---|---|---|---|---|---|\n"
+        )
+        m.writelines(
+            f"| {x['repo']} | {x['verdict']} | {x.get('must_ok', 0)}/11 | "
+            f"{res_str(x.get('gov_ci'))} | {res_str(x.get('badge'))} | {x.get('license')} | "
+            f"{res_str(x.get('has_impl'))} | {x.get('specs')} |\n"
+            for x in results
+        )
         if bad:
             m.write("\n## Findings\n\n")
-            for x in bad:
-                m.write(f"### {x['repo']}\n" + "\n".join(f"- {f}" for f in x["findings"]) + "\n")
+            m.writelines(
+                f"### {x['repo']}\n" + "\n".join(f"- {f}" for f in x["findings"]) + "\n"
+                for x in bad
+            )
     print(f"\nReport: {jpath}\n         {mpath}")
-    print(f"Bilanz: {summary['compliant']}/{summary['repos_checked']} COMPLIANT, {len(bad)} FINDINGS")
+    print(
+        f"Bilanz: {summary['compliant']}/{summary['repos_checked']} COMPLIANT, {len(bad)} FINDINGS"
+    )
     if bad and args.strict:
         sys.exit(1)
 
+
 def res_str(v):
     return "OK" if v else "FAIL" if v is False else str(v)
+
 
 if __name__ == "__main__":
     main()
