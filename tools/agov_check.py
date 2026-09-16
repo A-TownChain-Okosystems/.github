@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-"""ATC Agent Governance Checker — AGOV-CHECK-001..020 (ai/checks.yaml, SCR-0058).
+"""ATC Agent Governance Checker — AGOV-CHECK-001..020 (SCR-0058).
 
-Fuehrt die AUTO-Checks je Repository via GitHub-API aus und erzeugt
-PASS/WARN/FAIL/N/A-Verdicts mit P-Gewichtung. MANUAL-Checks werden als N/A
-(dokumentationspflichtig) gefuehrt. Repo-Tiefe: REPO-AUDIT CHECK-001..064.
-
-Aufruf:  python3 tools/agov_check.py            (Org-weit)
-         python3 tools/agov_check.py atc-node   (ein Repo)
-Exit:    0 = kein blockierender FAIL · 1 = P0/P1-FAIL vorhanden
+Runs organization-wide or per-repository checks and emits PASS/WARN/FAIL/N/A
+verdict tuples. Exit 1 is reserved for blocking P0/P1 findings.
 """
 
 import base64
@@ -19,46 +14,59 @@ import sys
 import requests
 
 ORG = "A-TownChain-Okosystems"
-H = {"Authorization": "Bearer " + os.environ["GITHUB_ACCESS_TOKEN"]}
 API = "https://api.github.com"
 
 
+def headers():
+    token = os.environ.get("GITHUB_ACCESS_TOKEN")
+    if not token:
+        raise RuntimeError("GITHUB_ACCESS_TOKEN is required")
+    return {"Authorization": "Bearer " + token}
+
+
 def get(path):
-    r = requests.get(API + path, headers=H)
-    return r
+    return requests.get(API + path, headers=headers(), timeout=30)
+
+
+def verdict(status, note=""):
+    return (status, note)
 
 
 def repos():
     out, page = [], 1
     while True:
-        j = get(f"/orgs/{ORG}/repos?per_page=100&page={page}").json()
-        if not j:
+        response = get(f"/orgs/{ORG}/repos?per_page=100&page={page}")
+        response.raise_for_status()
+        batch = response.json()
+        if not batch:
             break
-        out += [x for x in j if not x.get("archived")]
+        out += [repo for repo in batch if not repo.get("archived")]
         page += 1
     return out
 
 
 def file_content(repo, path):
-    r = get(f"/repos/{ORG}/{repo}/contents/{path}")
-    if r.status_code != 200:
+    response = get(f"/repos/{ORG}/{repo}/contents/{path}")
+    if response.status_code != 200:
         return None
-    j = r.json()
-    if isinstance(j, list):
-        return [e["name"] for e in j]
-    return base64.b64decode(j["content"]).decode("utf-8", "replace")
+    data = response.json()
+    if isinstance(data, list):
+        return [entry["name"] for entry in data]
+    return base64.b64decode(data["content"]).decode("utf-8", "replace")
 
 
 def tree(repo):
-    r = get(f"/repos/{ORG}/{repo}/git/trees/main?recursive=1")
-    if r.status_code != 200:
-        r = get(f"/repos/{ORG}/{repo}/git/trees/HEAD?recursive=1")
-    return r.json().get("tree", []) if r.status_code == 200 else []
+    response = get(f"/repos/{ORG}/{repo}/git/trees/main?recursive=1")
+    if response.status_code != 200:
+        response = get(f"/repos/{ORG}/{repo}/git/trees/HEAD?recursive=1")
+    if response.status_code != 200:
+        return []
+    return response.json().get("tree", [])
 
 
 SECRET_PAT = [
-    re.compile(p)
-    for p in (
+    re.compile(pattern)
+    for pattern in (
         r"ghp_[A-Za-z0-9]{20,}",
         r"github_pat_[A-Za-z0-9_]{20,}",
         r"AKIA[0-9A-Z]{16}",
@@ -70,163 +78,146 @@ SECRET_PAT = [
 
 
 def check_repo(repo):
-    v = {}  # AGOV-CHECK-NNN -> (verdict, note)
-    tr = tree(repo)
-    paths = [t["path"] for t in tr]
+    findings = {}
+    paths = [entry["path"] for entry in tree(repo)]
 
-    ag = file_content(repo, "AGENTS.md")
-    v["001"] = ("PASS", "") if ag else ("FAIL", "AGENTS.md fehlt")
-    if ag:
-        ok = "ATC Org-weiten Agent-Governance-System" in ag
-        v["002"] = ("PASS" if ok else "FAIL", "" if ok else "Org-Verweisblock fehlt")
-        ok3 = "Kaskade" in ag and bool(re.search(r"^# ", ag, re.MULTILINE))
-        v["003"] = ("PASS" if ok3 else "FAIL", "" if ok3 else "Kaskade nicht erkennbar")
-        v["020"] = (
-            "PASS" if (ok and ok3 and len(ag) > 200) else "WARN",
-            "" if ok else "Struktur dünn",
-        )
+    agents = file_content(repo, "AGENTS.md")
+    findings["001"] = verdict("PASS") if agents else verdict("FAIL", "AGENTS.md fehlt")
+    if agents:
+        org_ref = "ATC Org-weiten Agent-Governance-System" in agents
+        cascade = "Kaskade" in agents and bool(re.search(r"^# ", agents, re.MULTILINE))
+        findings["002"] = verdict("PASS") if org_ref else verdict("FAIL", "Org-Verweisblock fehlt")
+        findings["003"] = verdict("PASS") if cascade else verdict("FAIL", "Kaskade nicht erkennbar")
+        findings["020"] = verdict("PASS") if org_ref and cascade and len(agents) > 200 else verdict("WARN", "Struktur dünn")
     else:
-        v["002"] = v["003"] = ("FAIL", "kein AGENTS.md")
-        v["020"] = ("FAIL", "kein AGENTS.md")
+        findings["002"] = verdict("FAIL", "kein AGENTS.md")
+        findings["003"] = verdict("FAIL", "kein AGENTS.md")
+        findings["020"] = verdict("FAIL", "kein AGENTS.md")
 
-    v["004"] = "PASS" if file_content(repo, "README.md") else ("WARN", "README fehlt")
-    lic = file_content(repo, "LICENSE")
-    if lic is None:
-        v["005"] = ("FAIL", "LICENSE fehlt")
+    findings["004"] = verdict("PASS") if file_content(repo, "README.md") else verdict("WARN", "README fehlt")
+
+    license_text = file_content(repo, "LICENSE")
+    if license_text is None:
+        findings["005"] = verdict("FAIL", "LICENSE fehlt")
     else:
-        v["005"] = ("PASS", "") if "Apache License" in lic[:2000] else ("WARN", "nicht Apache-2.0")
-    v["006"] = "PASS" if file_content(repo, "SECURITY.md") else ("WARN", "SECURITY.md fehlt")
-    v["007"] = "PASS" if file_content(repo, "CHANGELOG.md") else ("WARN", "CHANGELOG fehlt")
-    v["008"] = (
-        "PASS" if any(p.endswith("CODEOWNERS") for p in paths) else ("N/A", "MAY: nicht vorhanden")
-    )
+        findings["005"] = verdict("PASS") if "Apache License" in license_text[:2000] else verdict("WARN", "nicht Apache-2.0")
 
-    wf = file_content(repo, ".github/workflows")
-    wf = [f for f in (wf or []) if f.endswith((".yml", ".yaml"))]
-    if not wf:
-        v["009"] = v["019"] = ("N/A", "keine Workflows")
+    findings["006"] = verdict("PASS") if file_content(repo, "SECURITY.md") else verdict("WARN", "SECURITY.md fehlt")
+    findings["007"] = verdict("PASS") if file_content(repo, "CHANGELOG.md") else verdict("WARN", "CHANGELOG fehlt")
+    findings["008"] = verdict("PASS") if any(path.endswith("CODEOWNERS") for path in paths) else verdict("N/A", "MAY: nicht vorhanden")
+
+    workflows = file_content(repo, ".github/workflows") or []
+    workflows = [name for name in workflows if name.endswith((".yml", ".yaml"))]
+    if not workflows:
+        findings["009"] = verdict("N/A", "keine Workflows")
+        findings["019"] = verdict("N/A", "keine Workflows")
     else:
-        miss, wall = [], []
-        for f in wf:
-            c = file_content(repo, f".github/workflows/{f}") or ""
-            if "permissions:" not in c:
-                miss.append(f)
-            if re.search(r"permissions:\s*write-all", c):
-                wall.append(f)
-        v["009"] = (
-            ("PASS", "") if not miss else ("FAIL", f"ohne permissions-Block: {','.join(miss[:3])}")
-        )
-        v["019"] = ("PASS", "") if not wall else ("FAIL", f"write-all: {','.join(wall[:3])}")
+        missing_permissions, write_all = [], []
+        for name in workflows:
+            content = file_content(repo, f".github/workflows/{name}") or ""
+            if "permissions:" not in content:
+                missing_permissions.append(name)
+            if re.search(r"permissions:\s*write-all", content):
+                write_all.append(name)
+        findings["009"] = verdict("PASS") if not missing_permissions else verdict("FAIL", f"ohne permissions-Block: {','.join(missing_permissions[:3])}")
+        findings["019"] = verdict("PASS") if not write_all else verdict("FAIL", f"write-all: {','.join(write_all[:3])}")
 
-    # C-010: Secret-Scan (vereinfachter AUTO-Pattern-Scan)
-    sus = [p for p in paths if re.search(r"\.env$|\.pem$|\.key$|id_rsa|secret", p, re.IGNORECASE)]
-    hits = []
-    for p in sus[:15]:
-        c = file_content(repo, p)
-        if c and any(pat.search(c) for pat in SECRET_PAT):
-            hits.append(p)
-    for f in wf:
-        c = file_content(repo, f".github/workflows/{f}") or ""
-        if any(pat.search(c) for pat in SECRET_PAT):
-            hits.append(f)
-    v["010"] = ("FAIL", f"Pattern-Treffer: {hits[:3]}") if hits else ("PASS", "")
+    suspicious_paths = [path for path in paths if re.search(r"\.env$|\.pem$|\.key$|id_rsa|secret", path, re.IGNORECASE)]
+    secret_hits = []
+    for path in suspicious_paths[:15]:
+        content = file_content(repo, path)
+        if content and any(pattern.search(content) for pattern in SECRET_PAT):
+            secret_hits.append(path)
+    for name in workflows:
+        content = file_content(repo, f".github/workflows/{name}") or ""
+        if any(pattern.search(content) for pattern in SECRET_PAT):
+            secret_hits.append(name)
+    findings["010"] = verdict("FAIL", f"Pattern-Treffer: {secret_hits[:3]}") if secret_hits else verdict("PASS")
 
-    locks = (
-        "Cargo.lock",
-        "package-lock.json",
-        "yarn.lock",
-        "pnpm-lock.yaml",
-        "poetry.lock",
-        "Pipfile.lock",
-        "go.sum",
-    )
-    v["011"] = "PASS" if any(p in paths for p in locks) else ("WARN", "kein Lockfile")
-    tests = any(
-        re.search(r"(^|/)tests?/|_test\.|test_.*\.(py|rs)$|\.spec\.|\.test\.", p) for p in paths
-    )
-    has_code = any(
-        re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$|\.py$|\.rs$|\.ts$|\.js$", p)
-        for p in paths
-    )
-    if tests:
-        v["012"] = ("PASS", "")
+    lockfiles = {"Cargo.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "poetry.lock", "Pipfile.lock", "go.sum"}
+    findings["011"] = verdict("PASS") if lockfiles.intersection(paths) else verdict("WARN", "kein Lockfile")
+
+    has_tests = any(re.search(r"(^|/)tests?/|_test\.|test_.*\.(py|rs)$|\.spec\.|\.test\.", path) for path in paths)
+    has_code = any(re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$|\.py$|\.rs$|\.ts$|\.js$", path) for path in paths)
+    if has_tests:
+        findings["012"] = verdict("PASS")
     elif has_code:
-        v["012"] = ("FAIL", "Code-Repo ohne Tests")
+        findings["012"] = verdict("FAIL", "Code-Repo ohne Tests")
     else:
-        v["012"] = ("N/A", "reines Docs-Repo")
-    runs = get(f"/repos/{ORG}/{repo}/actions/runs?per_page=100").json().get("workflow_runs", [])
+        findings["012"] = verdict("N/A", "reines Docs-Repo")
+
+    runs_response = get(f"/repos/{ORG}/{repo}/actions/runs?per_page=100")
+    runs_response.raise_for_status()
+    runs = runs_response.json().get("workflow_runs", [])
     if not runs:
-        v["013"] = ("N/A", "keine CI-Läufe")
+        findings["013"] = verdict("N/A", "keine CI-Läufe")
     else:
         latest = {}
-        for rr in runs:
-            wf = rr.get("name", "?")
-            if wf not in latest:
-                latest[wf] = rr.get("conclusion")
-        bad = [f"{k}: {s}" for k, s in latest.items() if s == "failure"]
-        pending = [k for k, s in latest.items() if s is None]
-        if bad:
-            v["013"] = ("FAIL", "; ".join(bad))
+        for run in runs:
+            workflow_name = run.get("name", "?")
+            latest.setdefault(workflow_name, run.get("conclusion"))
+        failures = [f"{name}: {state}" for name, state in latest.items() if state == "failure"]
+        pending = [name for name, state in latest.items() if state is None]
+        if failures:
+            findings["013"] = verdict("FAIL", "; ".join(failures))
         elif pending:
-            v["013"] = ("WARN", f"in Arbeit: {','.join(pending)}")
+            findings["013"] = verdict("WARN", f"in Arbeit: {','.join(pending)}")
         else:
-            v["013"] = ("PASS", "")
+            findings["013"] = verdict("PASS")
 
-    v["014"] = v["016"] = v["018"] = ("N/A", "MANUAL — zur Task-Zeit zu führen")
-    vers = any(re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$", p) for p in paths)
-    v["015"] = "PASS" if vers else ("N/A", "kein Code-Build (reines Docs-Repo)")
-    dbg = [
-        p
-        for p in paths
-        if re.search(r"\.DS_Store$|(^|/)target/|(^|/)node_modules/|\.core$|\.log$", p)
-    ]
-    v["017"] = ("WARN", f"Artefakte: {dbg[:3]}") if dbg else ("PASS", "")
-    return v
+    findings["014"] = verdict("N/A", "MANUAL — zur Task-Zeit zu führen")
+    findings["016"] = verdict("N/A", "MANUAL — zur Task-Zeit zu führen")
+    findings["018"] = verdict("N/A", "MANUAL — zur Task-Zeit zu führen")
+    has_build_manifest = any(re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$", path) for path in paths)
+    findings["015"] = verdict("PASS") if has_build_manifest else verdict("N/A", "kein Code-Build (reines Docs-Repo)")
+
+    debug_artifacts = [path for path in paths if re.search(r"\.DS_Store$|(^|/)target/|(^|/)node_modules/|\.core$|\.log$", path)]
+    findings["017"] = verdict("WARN", f"Artefakte: {debug_artifacts[:3]}") if debug_artifacts else verdict("PASS")
+    return findings
 
 
 def main():
     only = sys.argv[1] if len(sys.argv) > 1 else None
-    rl = [only] if only else sorted(r["name"] for r in repos())
+    repo_list = [only] if only else sorted(repo["name"] for repo in repos())
     report, blocked = {}, []
     print(f"{'Repo':26s} FAIL WARN N/A  Blocker")
-    for rp in rl:
-        v = check_repo(rp)
-        report[rp] = v
-        fails = [k for k, x in v.items() if x[0] == "FAIL"]
-        warns = [k for k, x in v.items() if x[0] == "WARN"]
-        nas = [k for k, x in v.items() if x[0] == "N/A"]
-        p0p1 = [
-            k
-            for k in fails
-            if k in ("010", "018", "001", "002", "003", "009", "012", "013", "019", "020")
-        ]
-        if p0p1:
-            blocked.append(rp)
-        print(
-            f"{rp:26s} {len(fails):4d} {len(warns):4d} {len(nas):3d}  {'BLOCKIERT' if p0p1 else 'ok'} ({','.join(sorted(fails))})"
-        )
+    for repo in repo_list:
+        findings = check_repo(repo)
+        report[repo] = findings
+        failures = [code for code, result in findings.items() if result[0] == "FAIL"]
+        warnings = [code for code, result in findings.items() if result[0] == "WARN"]
+        not_applicable = [code for code, result in findings.items() if result[0] == "N/A"]
+        blocking = [code for code in failures if code in {"001", "002", "003", "009", "010", "012", "013", "018", "019", "020"}]
+        if blocking:
+            blocked.append(repo)
+        print(f"{repo:26s} {len(failures):4d} {len(warnings):4d} {len(not_applicable):3d}  {'BLOCKIERT' if blocking else 'ok'} ({','.join(sorted(failures))})")
+
     today = datetime.date.today().isoformat()
-    md = [
+    markdown = [
         f"# ATC AGOV-Check-Lauf vom {today} (SCR-0058)",
         "",
-        "Ausführung: tools/agov_check.py · Katalog: ai/checks.yaml (AGOV-CHECK-001..020)",
-        f"**Ergebnis: {len(rl)} Repos geprüft, {len(blocked)} mit blockierenden MUST-FAILs.**",
+        "Ausführung: `tools/agov_check.py` · Katalog: `ai/checks.yaml` (AGOV-CHECK-001..020)",
+        f"**Ergebnis: {len(repo_list)} Repos geprüft, {len(blocked)} mit blockierenden MUST-FAILs.**",
         "",
         "| Repo | FAIL-Checks | WARN-Checks | Blockiert |",
         "|---|---|---|---|",
     ]
-    for rp, v in sorted(report.items()):
-        f_ = ", ".join(sorted(k for k, x in v.items() if x[0] == "FAIL")) or "—"
-        w_ = ", ".join(sorted(k for k, x in v.items() if x[0] == "WARN")) or "—"
-        md.append(f"| {rp} | {f_} | {w_} | {'JA' if rp in blocked else 'nein'} |")
-    md += ["", "## Details", ""]
-    for rp, v in sorted(report.items()):
-        md.append(f"### {rp}")
-        for k in sorted(v):
-            md.append(f"- AGOV-CHECK-{k}: {v[k][0]}{' — ' + v[k][1] if v[k][1] else ''}")
-        md.append("")
-    open("docs/AGOV-RUN-" + today + ".md", "w", encoding="utf-8").write("\n".join(md))
-    print("\nReport: docs/AGOV-RUN-" + today + ".md | blockiert:", blocked or "keine")
+    for repo, findings in sorted(report.items()):
+        failures = ", ".join(sorted(code for code, result in findings.items() if result[0] == "FAIL")) or "—"
+        warnings = ", ".join(sorted(code for code, result in findings.items() if result[0] == "WARN")) or "—"
+        markdown.append(f"| {repo} | {failures} | {warnings} | {'JA' if repo in blocked else 'nein'} |")
+    markdown.extend(["", "## Details", ""])
+    for repo, findings in sorted(report.items()):
+        markdown.append(f"### {repo}")
+        for code in sorted(findings):
+            status, note = findings[code]
+            markdown.append(f"- AGOV-CHECK-{code}: {status}{' — ' + note if note else ''}")
+        markdown.append("")
+
+    report_path = f"docs/AGOV-RUN-{today}.md"
+    with open(report_path, "w", encoding="utf-8") as report_file:
+        report_file.write("\n".join(markdown))
+    print(f"\nReport: {report_path} | blockiert:", blocked or "keine")
     sys.exit(1 if blocked else 0)
 
 
