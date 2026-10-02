@@ -7,7 +7,8 @@ def write(root, rel, content):
 
 def test_secret_detection():
     with tempfile.TemporaryDirectory() as tmp:
-        root=Path(tmp); write(root,"x.txt","-----BEGIN RSA PRIVATE KEY-----")
+        root=Path(tmp)
+        write(root,"x.txt","-----BEGIN " + "RSA PRIVATE KEY-----")
         assert scan_secrets(root)
 
 def test_workflow_controls():
@@ -21,5 +22,7 @@ def test_workflow_controls():
 
 def test_lockfile_baseline():
     with tempfile.TemporaryDirectory() as tmp:
-        root=Path(tmp); write(root,"SECURITY.md","# Security"); write(root,"CODEOWNERS","* @ShivaCoreDev")
+        root=Path(tmp)
+        write(root,"SECURITY.md","# Security")
+        write(root,"CODEOWNERS","* @ShivaCoreDev")
         assert any(x["control"]=="SEC-P1-LOCKFILE" for x in scan_baseline(root))
