@@ -18,24 +18,35 @@ The policy directory MUST NOT be excluded by weakening the actual caller scan, c
 
 ## Canonical Ruff implementation
 
-The organization Ruff workflow currently uses:
+The organization Ruff workflow uses:
 
 - policy repository: A-TownChain-Okosystems/.github
-- policy SHA: 7994fca8b24aef3572be1fa44adaf9c59fc13eb8
+- reusable workflow SHA: pinned by each caller
+- policy bundle SHA: pinned separately by the reusable workflow
 - policy directory variable: POLICY_DIR=.org-github-policy
 - Ruff: 0.16.7
 - caller scans remain fail-closed
 
-The policy path is defined once and reused by checkout, configuration, and exclusion arguments.
+The workflow must record both exact SHAs because a Git commit cannot self-reference its own final SHA. The reusable workflow commit and the checked-out policy-content commit are therefore separate exact inputs.
 
-## Failure class
+## Failure classes
 
-Two prior incidents establish this as an infrastructure failure class:
+Three infrastructure failure classes are covered by this contract:
 
 - Markdown gate: policy checkout/layout caused the reusable workflow to address policy content incorrectly, producing an ENOENT failure.
 - Ruff gate: policy content was physically inside the caller workspace and was therefore included by ruff ... ., producing a self-scan failure.
+- Policy-bundle syntax: malformed TOML in a centrally supplied policy file caused CI to fail before it could make a valid statement about caller code.
 
-These are classified as WORKSPACE-ISOLATION, not caller-code baseline findings.
+The first two are classified as WORKSPACE-ISOLATION. The third is classified as POLICY-BUNDLE-SYNTAX.
+
+## Required policy validation
+
+Before any policy TOML is loaded for configuration or override evaluation, the reusable workflow MUST validate the syntax of:
+
+- the base ruff.toml;
+- every TOML file under ruff-overrides/.
+
+Validation MUST use Python 3.11+ `tomllib` and MUST fail closed. A syntax failure is a policy infrastructure failure, not a caller-code Ruff finding.
 
 ## Required evidence
 
@@ -48,6 +59,7 @@ For every reusable linting workflow, evidence MUST demonstrate:
 5. scan root;
 6. policy exclusion or external isolation mechanism;
 7. tool version;
-8. final step exit code.
+8. policy syntax-validation result;
+9. final step exit code.
 
-A successful run alone is insufficient to prove isolation.
+A successful run alone is insufficient to prove isolation or policy integrity.
