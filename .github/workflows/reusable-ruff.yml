@@ -14,7 +14,7 @@ permissions:
 
 env:
   POLICY_DIR: ${{ inputs.policy_dir }}
-  RUFF_POLICY_BUNDLE_SHA: f6c2901347e6448e43a2031a0ff44a250d6c3304
+  RUFF_POLICY_BUNDLE_SHA: d688fe605b45d1a612e34407cf2aabda2edfb8cb
   RUFF_POLICY_FILE_SHA: 6763406fc3c11cf109185bb1322a0c4ba59dab0c
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: A-TownChain-Okosystems/.github
-          ref: f6c2901347e6448e43a2031a0ff44a250d6c3304
+          ref: d688fe605b45d1a612e34407cf2aabda2edfb8cb
           path: ${{ inputs.policy_dir }}
           persist-credentials: false
 
