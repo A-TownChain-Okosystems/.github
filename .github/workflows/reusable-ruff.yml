@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+env:
+  POLICY_DIR: .org-github-policy
+  RUFF_POLICY_SHA: 7994fca8b24aef3572be1fa44adaf9c59fc13eb8
+
 jobs:
   ruff:
     name: Ruff
@@ -16,22 +20,22 @@ jobs:
 
       - name: Checkout organization Ruff policy
         uses: actions/checkout@v4
-        with:
+        with
           repository: A-TownChain-Okosystems/.github
-          ref: 7994fca8b24aef3572be1fa44adaf9c59fc13eb8
-          path: .org-github-policy
+          ref: ${{ env.RUFF_POLICY_SHA }}
+          path: ${{ env.POLICY_DIR }}
           persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
-        with:
+        with
           python-version: '3.11'
 
       - name: Install pinned Ruff
         run: python -m pip install --disable-pip-version-check --no-input ruff==0.16.7
 
       - name: Ruff lint
-        run: ruff check . --exclude .org-github-policy --config .org-github-policy/ruff.toml
+        run: ruff check . --exclude "$POLICY_DIR" --config "$POLICY_DIR/ruff.toml"
 
       - name: Ruff format check
-        run: ruff format --check . --exclude .org-github-policy --config .org-github-policy/ruff.toml
+        run: ruff format --check . --exclude "$POLICY_DIR" --config "$POLICY_DIR/ruff.toml"
