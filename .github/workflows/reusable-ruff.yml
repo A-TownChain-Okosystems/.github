@@ -120,6 +120,23 @@ jobs:
           print("Centralized Ruff override is active; base policy still reports an overridden rule.")
           PY
 
+      - name: Ruff negative test
+        shell: bash
+        run: |
+          set -u
+          negative_file="$(mktemp --suffix=.py)"
+          printf 'import os\n' > "$negative_file"
+          set +e
+          ruff check "$negative_file" --config "$RUFF_CONFIG"
+          rc=$?
+          set -e
+          rm -f "$negative_file"
+          if [ "$rc" -eq 0 ]; then
+            echo "RUFF_NEGATIVE_TEST_FAILED: intentionally invalid F401 input was accepted."
+            exit 1
+          fi
+          echo "Ruff negative test passed: intentionally invalid F401 input was rejected."
+
       - name: Ruff lint
         run: ruff check . --exclude "$POLICY_DIR" --config "$RUFF_CONFIG"
 
