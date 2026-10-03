@@ -19,18 +19,11 @@ If that file exists, it is selected as the Ruff configuration. Otherwise the bas
 `.org-github-policy/ruff.toml` is used.
 
 Each override must inherit the base policy and may only relax rules present in
-`ruff-overrides/ALLOWLIST.toml`:
-
-```toml
-extend = "../ruff.toml"
-
-[lint]
-ignore = ["<approved-rule>"]
-```
+`ruff-overrides/ALLOWLIST.toml`.
 
 The override must not replace the base policy, disable formatting, or add exclusions.
 
-## Stale detection
+## Stale and sunset detection
 
 Every active override is checked against the base policy before the normal lint gate.
 
@@ -41,29 +34,29 @@ The check fails if:
 3. the override requests a rule that is not in the central allowlist, or
 4. the override has passed its declared sunset date.
 
-This makes obsolete, expired, or unauthorized exceptions fail closed.
-
-## Sunset contract
-
 Temporary overrides MUST declare:
 
-- `sunset`: ISO date on which CI stops accepting the exception;
-- `tracking_issue`: the organization issue tracking removal/remediation.
+- `sunset.date`: ISO date on which CI stops accepting the exception;
+- `sunset.tracking_issue`: issue tracking removal/remediation.
 
-The CI gate compares `sunset` with the current UTC date and fails on or after the sunset date.
+The CI gate compares `sunset.date` with the current UTC date and fails on or after
+the sunset date.
 
-## atc-standards
+## atc-standards result
 
-`atc-standards.toml` temporarily relaxes E701 and E702 only.
+The temporary `atc-standards` E701/E702 override was introduced during the C-1
+baseline cycle but became stale after the dedicated Ruff format commit
+`94e948cce94c6a9e050735e082dbad1c78bede97`.
 
-- sunset: 2027-03-31
-- tracking issue: A-TownChain-Okosystems/.github#25
-- raw baseline at exact HEAD `f870085f04dacd21faebbb88ab722537fef88164`: 107 E701 + 70 E702
-- gate baseline with the override at exact HEAD `80c241dbc53f158e3c608d4b56a7ca0ed24313db`: 32 active findings
+Exact-head Ruff evidence on `bafcde76a6fbcc53dec8387e26b16adc41ff2107` reports:
 
-The 177 E701/E702 findings are not fixed by the override; they are intentionally suppressed
-while the temporary exception is active. The exception must be removed after those findings
-are remediated and no later than the sunset date.
+`RUFF_OVERRIDE_STALE: base-policy failures contain none of the relaxed rules: E701, E702`.
+
+The override is therefore removed rather than retained as a permanent exception.
+The historical raw baseline remains documented as 107 E701 + 70 E702; these are
+not current gate debt after formatting.
+
+Tracking issue: A-TownChain-Okosystems/.github#25.
 
 ## Review contract
 
