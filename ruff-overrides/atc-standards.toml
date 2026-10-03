@@ -1,0 +1,7 @@
+# Temporary, centrally reviewed Ruff exception for atc-standards.
+# Remove this file when E701/E702 are fully remediated.
+# This file may only relax rules explicitly approved by the organization.
+extend = "../ruff.toml"
+
+[lint]
+ignore = ["E701", "E702"]
