@@ -2,12 +2,18 @@ name: Organization Ruff Code Quality
 
 on:
   workflow_call:
+    inputs:
+      policy_dir:
+        description: Policy checkout directory; MUST remain outside the lint target or be excluded from every caller scan.
+        required: false
+        type: string
+        default: .org-github-policy
 
 permissions:
   contents: read
 
 env:
-  POLICY_DIR: .org-github-policy
+  POLICY_DIR: ${{ inputs.policy_dir }}
   RUFF_POLICY_SHA: 7994fca8b24aef3572be1fa44adaf9c59fc13eb8
 
 jobs:
@@ -20,15 +26,15 @@ jobs:
 
       - name: Checkout organization Ruff policy
         uses: actions/checkout@v4
-        with
+        with:
           repository: A-TownChain-Okosystems/.github
-          ref: ${{ env.RUFF_POLICY_SHA }}
-          path: ${{ env.POLICY_DIR }}
+          ref: 7994fca8b24aef3572be1fa44adaf9c59fc13eb8
+          path: ${{ inputs.policy_dir }}
           persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
-        with
+        with:
           python-version: '3.11'
 
       - name: Install pinned Ruff
