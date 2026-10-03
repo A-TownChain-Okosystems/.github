@@ -32,6 +32,22 @@ jobs:
           path: ${{ inputs.policy_dir }}
           persist-credentials: false
 
+      - name: Select centralized Ruff configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          override="$POLICY_DIR/ruff-overrides/${repo_name}.toml"
+          if [ -f "$override" ]; then
+            echo "Using centralized Ruff override: $override"
+            echo "RUFF_CONFIG=$override" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_ACTIVE=true" >> "$GITHUB_ENV"
+          else
+            echo "No centralized Ruff override for $repo_name; using base policy."
+            echo "RUFF_CONFIG=$POLICY_DIR/ruff.toml" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_ACTIVE=false" >> "$GITHUB_ENV"
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -40,8 +56,30 @@ jobs:
       - name: Install pinned Ruff
         run: python -m pip install --disable-pip-version-check --no-input ruff==0.16.7
 
+      - name: Validate override is not stale
+        if: env.RUFF_OVERRIDE_ACTIVE == 'true'
+        shell: bash
+        run: |
+          set -u
+          base_config="$POLICY_DIR/ruff.toml"
+          report="$(mktemp)"
+          set +e
+          ruff check . --exclude "$POLICY_DIR" --config "$base_config" >"$report" 2>&1
+          rc=$?
+          set -e
+          cat "$report"
+          if [ "$rc" -eq 0 ]; then
+            echo "RUFF_OVERRIDE_STALE: base policy is already clean; remove the centralized override."
+            exit 1
+          fi
+          if ! grep -Eq '(^|[[:space:]:])(E701|E702)([[:space:]:]|$)' "$report"; then
+            echo "RUFF_OVERRIDE_STALE: base-policy failures contain none of the rules relaxed by this override."
+            exit 1
+          fi
+          echo "Centralized Ruff override is active: base policy still reports an overridden rule."
+
       - name: Ruff lint
-        run: ruff check . --exclude "$POLICY_DIR" --config "$POLICY_DIR/ruff.toml"
+        run: ruff check . --exclude "$POLICY_DIR" --config "$RUFF_CONFIG"
 
       - name: Ruff format check
-        run: ruff format --check . --exclude "$POLICY_DIR" --config "$POLICY_DIR/ruff.toml"
+        run: ruff format --check . --exclude "$POLICY_DIR" --config "$RUFF_CONFIG"
