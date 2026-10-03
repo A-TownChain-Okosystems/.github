@@ -1,1 +1,2 @@
-[approved]\nrules = ["E701", "E702"]\n
+[approved]
+rules = ["E701", "E702"]
