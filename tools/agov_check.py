@@ -86,12 +86,8 @@ def check_repo(repo):
     if agents:
         org_ref = "ATC Org-weiten Agent-Governance-System" in agents
         cascade = "Kaskade" in agents and bool(re.search(r"^# ", agents, re.MULTILINE))
-        findings["002"] = (
-            verdict("PASS") if org_ref else verdict("FAIL", "Org-Verweisblock fehlt")
-        )
-        findings["003"] = (
-            verdict("PASS") if cascade else verdict("FAIL", "Kaskade nicht erkennbar")
-        )
+        findings["002"] = verdict("PASS") if org_ref else verdict("FAIL", "Org-Verweisblock fehlt")
+        findings["003"] = verdict("PASS") if cascade else verdict("FAIL", "Kaskade nicht erkennbar")
         findings["020"] = (
             verdict("PASS")
             if org_ref and cascade and len(agents) > 200
@@ -103,9 +99,7 @@ def check_repo(repo):
         findings["020"] = verdict("FAIL", "kein AGENTS.md")
 
     findings["004"] = (
-        verdict("PASS")
-        if file_content(repo, "README.md")
-        else verdict("WARN", "README fehlt")
+        verdict("PASS") if file_content(repo, "README.md") else verdict("WARN", "README fehlt")
     )
 
     license_text = file_content(repo, "LICENSE")
@@ -150,9 +144,7 @@ def check_repo(repo):
         findings["009"] = (
             verdict("PASS")
             if not missing_permissions
-            else verdict(
-                "FAIL", f"ohne permissions-Block: {','.join(missing_permissions[:3])}"
-            )
+            else verdict("FAIL", f"ohne permissions-Block: {','.join(missing_permissions[:3])}")
         )
         findings["019"] = (
             verdict("PASS")
@@ -175,9 +167,7 @@ def check_repo(repo):
         if any(pattern.search(content) for pattern in SECRET_PAT):
             secret_hits.append(name)
     findings["010"] = (
-        verdict("FAIL", f"Pattern-Treffer: {secret_hits[:3]}")
-        if secret_hits
-        else verdict("PASS")
+        verdict("FAIL", f"Pattern-Treffer: {secret_hits[:3]}") if secret_hits else verdict("PASS")
     )
 
     lockfiles = {
@@ -190,15 +180,11 @@ def check_repo(repo):
         "go.sum",
     }
     findings["011"] = (
-        verdict("PASS")
-        if lockfiles.intersection(paths)
-        else verdict("WARN", "kein Lockfile")
+        verdict("PASS") if lockfiles.intersection(paths) else verdict("WARN", "kein Lockfile")
     )
 
     has_tests = any(
-        re.search(
-            r"(^|/)tests?/|_test\.|test_.*\.(py|rs)$|\.spec\.|\.test\.", path
-        )
+        re.search(r"(^|/)tests?/|_test\.|test_.*\.(py|rs)$|\.spec\.|\.test\.", path)
         for path in paths
     )
     has_code = any(
@@ -225,9 +211,7 @@ def check_repo(repo):
         for run in runs:
             workflow_name = run.get("name", "?")
             latest.setdefault(workflow_name, run.get("conclusion"))
-        failures = [
-            f"{name}: {state}" for name, state in latest.items() if state == "failure"
-        ]
+        failures = [f"{name}: {state}" for name, state in latest.items() if state == "failure"]
         pending = [name for name, state in latest.items() if state is None]
         if failures:
             findings["013"] = verdict("FAIL", "; ".join(failures))
@@ -240,8 +224,7 @@ def check_repo(repo):
     findings["016"] = verdict("N/A", "MANUAL — zur Task-Zeit zu führen")
     findings["018"] = verdict("N/A", "MANUAL — zur Task-Zeit zu führen")
     has_build_manifest = any(
-        re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$", path)
-        for path in paths
+        re.search(r"Cargo\.toml$|package\.json$|pyproject\.toml$", path) for path in paths
     )
     findings["015"] = (
         verdict("PASS")
@@ -252,14 +235,10 @@ def check_repo(repo):
     debug_artifacts = [
         path
         for path in paths
-        if re.search(
-            r"\.DS_Store$|(^|/)target/|(^|/)node_modules/|\.core$|\.log$", path
-        )
+        if re.search(r"\.DS_Store$|(^|/)target/|(^|/)node_modules/|\.core$|\.log$", path)
     ]
     findings["017"] = (
-        verdict("WARN", f"Artefakte: {debug_artifacts[:3]}")
-        if debug_artifacts
-        else verdict("PASS")
+        verdict("WARN", f"Artefakte: {debug_artifacts[:3]}") if debug_artifacts else verdict("PASS")
     )
     return findings
 
@@ -274,22 +253,16 @@ def main():
         report[repo] = findings
         failures = [code for code, result in findings.items() if result[0] == "FAIL"]
         warnings = [code for code, result in findings.items() if result[0] == "WARN"]
-        not_applicable = [
-            code for code, result in findings.items() if result[0] == "N/A"
-        ]
+        not_applicable = [code for code, result in findings.items() if result[0] == "N/A"]
         blocking = [
             code
             for code in failures
-            if code
-            in {"001", "002", "003", "009", "010", "012", "013", "018", "019", "020"}
+            if code in {"001", "002", "003", "009", "010", "012", "013", "018", "019", "020"}
         ]
         if blocking:
             blocked.append(repo)
         print(
-            (
-                f"{repo:26s} {len(failures):4d} {len(warnings):4d} "
-                f"{len(not_applicable):3d}  "
-            )
+            (f"{repo:26s} {len(failures):4d} {len(warnings):4d} {len(not_applicable):3d}  ")
             + f"{'BLOCKIERT' if blocking else 'ok'} ({','.join(sorted(failures))})"
         )
 
@@ -297,10 +270,7 @@ def main():
     markdown = [
         f"# ATC AGOV-Check-Lauf vom {today} (SCR-0058)",
         "",
-        (
-            "Ausführung: `tools/agov_check.py` · Katalog: `ai/checks.yaml` "
-            "(AGOV-CHECK-001..020)"
-        ),
+        ("Ausführung: `tools/agov_check.py` · Katalog: `ai/checks.yaml` (AGOV-CHECK-001..020)"),
         (
             f"**Ergebnis: {len(repo_list)} Repos geprüft, "
             f"{len(blocked)} mit blockierenden MUST-FAILs.**"
@@ -311,20 +281,15 @@ def main():
     ]
     for repo, findings in sorted(report.items()):
         failures = (
-            ", ".join(
-                sorted(code for code, result in findings.items() if result[0] == "FAIL")
-            )
+            ", ".join(sorted(code for code, result in findings.items() if result[0] == "FAIL"))
             or "—"
         )
         warnings = (
-            ", ".join(
-                sorted(code for code, result in findings.items() if result[0] == "WARN")
-            )
+            ", ".join(sorted(code for code, result in findings.items() if result[0] == "WARN"))
             or "—"
         )
         markdown.append(
-            f"| {repo} | {failures} | {warnings} | "
-            f"{'JA' if repo in blocked else 'nein'} |"
+            f"| {repo} | {failures} | {warnings} | {'JA' if repo in blocked else 'nein'} |"
         )
 
     markdown.extend(["", "## Details", ""])
@@ -332,9 +297,7 @@ def main():
         markdown.append(f"### {repo}")
         for code in sorted(findings):
             status, note = findings[code]
-            markdown.append(
-                f"- AGOV-CHECK-{code}: {status}{' — ' + note if note else ''}"
-            )
+            markdown.append(f"- AGOV-CHECK-{code}: {status}{' — ' + note if note else ''}")
         markdown.append("")
 
     report_path = f"docs/AGOV-RUN-{today}.md"

@@ -1,0 +1,188 @@
+name: Organization Ruff Code Quality
+
+on:
+  workflow_call:
+    inputs:
+      policy_dir:
+        description: Policy checkout directory; MUST remain outside the lint target or be excluded from every caller scan.
+        required: false
+        type: string
+        default: .org-github-policy
+
+permissions:
+  contents: read
+
+env:
+  POLICY_DIR: ${{ inputs.policy_dir }}
+  RUFF_POLICY_BUNDLE_SHA: d688fe605b45d1a612e34407cf2aabda2edfb8cb
+  RUFF_POLICY_FILE_SHA: 6763406fc3c11cf109185bb1322a0c4ba59dab0c
+
+jobs:
+  ruff:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repository
+        uses: actions/checkout@v4
+
+      - name: Checkout organization Ruff policy bundle
+        uses: actions/checkout@v4
+        with:
+          repository: A-TownChain-Okosystems/.github
+          ref: d688fe605b45d1a612e34407cf2aabda2edfb8cb
+          path: ${{ inputs.policy_dir }}
+          persist-credentials: false
+
+      - name: Select centralized Ruff configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          override="$POLICY_DIR/ruff-overrides/${repo_name}.toml"
+          if [ -f "$override" ]; then
+            echo "Using centralized Ruff override: $override"
+            echo "RUFF_CONFIG=$override" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_FILE=$override" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_ACTIVE=true" >> "$GITHUB_ENV"
+          else
+            echo "No centralized Ruff override for $repo_name; using base policy."
+            echo "RUFF_CONFIG=$POLICY_DIR/ruff.toml" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_FILE=" >> "$GITHUB_ENV"
+            echo "RUFF_OVERRIDE_ACTIVE=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned Ruff
+        run: python -m pip install --disable-pip-version-check --no-input ruff==0.16.7
+
+      - name: Validate policy TOML syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$POLICY_DIR" <<'PY'
+          import pathlib
+          import sys
+          import tomllib
+
+          policy_dir = pathlib.Path(sys.argv[1])
+          paths = [policy_dir / "ruff.toml"]
+          paths.extend(sorted((policy_dir / "ruff-overrides").glob("*.toml")))
+          for path in paths:
+              try:
+                  with path.open("rb") as handle:
+                      tomllib.load(handle)
+              except (OSError, tomllib.TOMLDecodeError) as exc:
+                  raise SystemExit(f"POLICY_BUNDLE_SYNTAX_INVALID: {path}: {exc}") from exc
+              print(f"Policy TOML syntax OK: {path}")
+          PY
+
+      - name: Validate override policy and staleness
+        if: env.RUFF_OVERRIDE_ACTIVE == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RUFF_OVERRIDE_FILE" "$POLICY_DIR/ruff-overrides/ALLOWLIST.toml" <<'PY'
+          import datetime
+          import sys
+          import tomllib
+
+          override_path, allowlist_path = sys.argv[1], sys.argv[2]
+          with open(override_path, "rb") as handle:
+              override = tomllib.load(handle)
+          with open(allowlist_path, "rb") as handle:
+              allowlist = tomllib.load(handle)
+
+          requested = set(override.get("lint", {}).get("ignore", []))
+          approved = set(allowlist.get("approved", {}).get("rules", []))
+          if not requested:
+              raise SystemExit("RUFF_OVERRIDE_INVALID: no lint.ignore rules declared")
+          unexpected = sorted(requested - approved)
+          if unexpected:
+              raise SystemExit(
+                  "RUFF_OVERRIDE_INVALID: unapproved rules: " + ", ".join(unexpected)
+              )
+
+          sunset = override.get("sunset", {}).get("date")
+          tracking_issue = override.get("sunset", {}).get("tracking_issue")
+          if not sunset or not tracking_issue:
+              raise SystemExit(
+                  "RUFF_OVERRIDE_INVALID: sunset.date and sunset.tracking_issue are required"
+              )
+          try:
+              sunset_date = datetime.date.fromisoformat(sunset)
+          except ValueError as exc:
+              raise SystemExit(
+                  f"RUFF_OVERRIDE_INVALID: sunset.date is not ISO-8601: {sunset}"
+              ) from exc
+          today = datetime.datetime.now(datetime.UTC).date()
+          if today >= sunset_date:
+              raise SystemExit(
+                  f"RUFF_OVERRIDE_EXPIRED: sunset={sunset}; tracking_issue={tracking_issue}"
+              )
+          print(
+              "Approved override rules: "
+              + ", ".join(sorted(requested))
+              + f"; sunset={sunset}; tracking_issue={tracking_issue}"
+          )
+          PY
+
+          base_config="$POLICY_DIR/ruff.toml"
+          report="$(mktemp)"
+          set +e
+          ruff check . --exclude "$POLICY_DIR" --config "$base_config" >"$report" 2>&1
+          rc=$?
+          set -e
+          cat "$report"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "RUFF_OVERRIDE_STALE: base policy is already clean; remove the centralized override."
+            exit 1
+          fi
+
+          python - "$RUFF_OVERRIDE_FILE" "$report" <<'PY'
+          import re
+          import sys
+          import tomllib
+
+          override_path, report_path = sys.argv[1], sys.argv[2]
+          with open(override_path, "rb") as handle:
+              rules = tomllib.load(handle).get("lint", {}).get("ignore", [])
+          report = open(report_path, encoding="utf-8").read()
+          missing = [
+              rule for rule in rules
+              if not re.search(rf"(?<![A-Z0-9]){re.escape(rule)}(?![A-Z0-9])", report)
+          ]
+          if missing:
+              raise SystemExit(
+                  "RUFF_OVERRIDE_STALE: base-policy failures contain none of the "
+                  "relaxed rules: " + ", ".join(sorted(missing))
+              )
+          print("Centralized Ruff override is active; base policy still reports an overridden rule.")
+          PY
+
+      - name: Ruff negative test
+        shell: bash
+        run: |
+          set -u
+          negative_file="$(mktemp --suffix=.py)"
+          printf 'import os\n' > "$negative_file"
+          set +e
+          ruff check "$negative_file" --config "$RUFF_CONFIG"
+          rc=$?
+          set -e
+          rm -f "$negative_file"
+          if [ "$rc" -eq 0 ]; then
+            echo "RUFF_NEGATIVE_TEST_FAILED: intentionally invalid F401 input was accepted."
+            exit 1
+          fi
+          echo "Ruff negative test passed: intentionally invalid F401 input was rejected."
+
+      - name: Ruff lint
+        run: ruff check . --exclude "$POLICY_DIR" --config "$RUFF_CONFIG"
+
+      - name: Ruff format check
+        run: ruff format --check . --exclude "$POLICY_DIR" --config "$RUFF_CONFIG"
