@@ -1,0 +1,152 @@
+# ============================================================================
+# ATC AUTOMATION AUTHORITY — Maschinenlesbare Autorisierungs- und
+#                             Automatisierungsordnung des A-TownChain-Ökosystems
+# ============================================================================
+# SCR-0139 · ATC-AI-GOV-AUTOMATION-AUTHORITY-001 (atc-standards, normative Beschreibung)
+# Owner-Spezifikation (Volltext): Michael Wroblewski, 2026-10-07
+# Zweck: Jeder Agent/Workflow beantwortet vor einer Aktion deterministisch
+#        "Darf ich diese Aktion ausfuehren?" entlang der decision_chain.
+# Keine klassische Vollmacht — technische Ordnung mit Trennung von
+# Mensch, Automation, Repository, CI/CD, Evidence und Governance.
+# ----------------------------------------------------------------------------
+schema_version: "1.0.0"
+id: ATC-AUTOMATION-AUTHORITY
+status: ACTIVE
+version: "1.0.0"
+
+authority:
+  organization: A-TownChain-Okosystems
+  project: "A-TownChain Ecosystem"
+  scope: "Gesamtes A-TownChain Software-, Blockchain-, OS-, AI- und Engineering-Oekosystem"
+  issued: "2026-10-07"
+  issued_by: "Michael Wroblewski (Owner)"
+  scope_extension: "Erweiterungen des Scopes erfordern ausdrueckliche Freigabe (keine implizite Autorisierung)."
+  revocation:
+    revocable_by: [owner, governance_authority]
+    effect: "Nach Widerruf keine neuen automatisierten Aenderungen."
+    data_retention: "Erzeugte Evidence und Auditdaten bleiben gemaess Aufbewahrungsregeln erhalten."
+
+# --- 1) Identity --------------------------------------------------------------
+identities:
+  classes:
+    human_maintainer:  {role: "Owner/Entscheidungsinstanz", gates: "alle geschützten Aktionen + §9-Freigaben"}
+    github_app_or_bot: {role: "technische Bots (z.B. Aurora-Bot, Dependabot)", registration: "ai/agents.yaml"}
+    ci_runner:         {role: "GitHub Actions Runner", registration: "Workflow-Herkunft (.github/workflows)"}
+    ai_agent:          {role: "autorisierte AI-/Automation-Agents", registration: "ai/agents.yaml + ai/agent.yaml"}
+  rule: "Keine unregistrierte Identitaet erhaelt Autorisierung."
+
+# --- 2) Authorization-Scopes (Least Privilege) --------------------------------
+authorization:
+  scope_dimensions: [organization, repository, branch, path, action, environment, secrets, deployment]
+  least_privilege: true
+  no_repository_spillover: "Berechtigung fuer ein Repository ist KEINE Berechtigung fuer andere Repositories."
+  attestation_ssot: ai/authorization.yaml      # WO (Repository/Branch/Pfade/Operation je Instanz)
+  capability_ssot: ai/capabilities.yaml        # WAS (Befugnisse je Agent)
+  policies_ssot: [ai/policies.yaml, ai/policy-graph.yaml]
+
+# --- 3) Autorisierte Taetigkeiten ----------------------------------------------
+permitted_activities:
+  - repository_analyse
+  - struktur_und_abhaengigkeiten_untersuchen
+  - vorhandene_implementierungen_identifizieren
+  - existing_first_wiederverwendung
+  - fehler_identifizieren_und_beheben
+  - quellcode_aendern
+  - tests_erstellen_oder_aktualisieren
+  - builds_ausfuehren
+  - cicd_pipelines_ausfuehren
+  - dokumentation_aktualisieren
+  - konfiguration_aktualisieren
+  - evidence_erzeugen
+  - run_ids_registrieren
+  - commit_shas_erfassen
+  - logs_und_artefakte_sichern
+  - pull_requests_erstellen_oder_aktualisieren
+  - releases_vorbereiten
+  - autorisierte_tags_erstellen
+  - autorisierte_deployments_ausfuehren
+
+# --- 4) EXISTING-FIRST ---------------------------------------------------------
+existing_first:
+  mandatory_checks_before_implementation:
+    - existiert_bereits_eine_implementierung
+    - existiert_eine_funktional_aequivalente_implementierung
+    - existiert_bereits_eine_single_source_of_truth
+    - existiert_bereits_eine_spezifikation
+    - handelt_es_sich_moeglicherweise_um_duplikation
+    - muss_bestehender_code_erweitert_konsolidiert_oder_verschoben_werden
+  rule: "Neue Implementierungen duerfen NICHT allein deshalb erstellt werden, weil eine vorhandene Loesung nicht unmittelbar gefunden wurde."
+
+# --- 5) Engineering-Automation-Lifecycle (je Aktion/Run) ----------------------
+lifecycle:
+  states: [REGISTERED, DISCOVER, EXISTING_FIRST, ANALYZED, IMPLEMENT, FIX, BUILD, TEST, EVIDENCE, VERIFY, BLOCKED, RELEASE, RESIDUAL, CLOSED]
+  happy_path: [REGISTERED, DISCOVER, EXISTING_FIRST, ANALYZED, IMPLEMENT, BUILD, TEST, EVIDENCE, VERIFY, RELEASE, CLOSED]
+  transitions:
+    REGISTERED:    [DISCOVER]
+    DISCOVER:      [EXISTING_FIRST]
+    EXISTING_FIRST:[ANALYZED]
+    ANALYZED:      [IMPLEMENT, FIX, BLOCKED]
+    IMPLEMENT:     [BUILD]
+    FIX:           [BUILD]
+    BUILD:         [TEST, FAILED]
+    TEST:          [EVIDENCE, FAILED]
+    EVIDENCE:      [VERIFY]
+    VERIFY:
+      ok:   [RELEASE]           # alle Gates gruen, Evidence vollstaendig, keine offenen Blocker
+      fail: [FIX]                # Fehlerzyklus: FIX -> BUILD -> TEST -> EVIDENCE -> VERIFY
+      block:[BLOCKED]             # Human Approval / Dependency Resolution
+    BLOCKED:       [FIX, ANALYZED, CLOSED]   # nur nach Freigabe/Dependency-Aufloesung weiter
+    RELEASE:       [RESIDUAL, CLOSED]
+    RESIDUAL:      [FIX, CLOSED]             # Remediation oder Closure mit Nachweis
+  failed: "RUNNING -> FAILED: kein scheinbar erfolgreicher Endstatus bei Fehler; FAILED nie still geschlossen."
+  state_mapping_evidence: [REGISTERED, RUNNING, ANALYZED, VERIFIED]   # Evidence-Zustaende
+  evidence_transitions: {RUNNING: [FAILED, BLOCKED, ANALYZED], VERIFIED: [RESIDUAL]}
+  note: "Dieser Lifecycle gilt je Automationsaktion/Run und ist NICHT die Repository-Compliance-State-Machine (siehe ai/state-machine.yaml)."
+
+# --- 6) Evidence-Pflicht (Evidence First / No Evidence, No Trust) -------------
+evidence:
+  required_fields: [run_id, repository, branch, commit_sha, job, step, start_end_status, exit_code, logs, artifacts, result]
+  principle: "Eine technische Behauptung gilt NICHT allein aufgrund vorhandener Dateien, Codezeilen oder gruenem CI als verifiziert."
+  green_ci_is_not_verified: true
+  existence_is_not: "EXISTENCE != IMPLEMENTED != TESTED != VERIFIED"
+  storage: "unveraenderbar bzw. nachtraeglich nachvollziehbar (ai/audit.yaml, ai/provenance.yaml)"
+
+# --- 7) Governance-Gates --------------------------------------------------------
+governance:
+  merge_gate:  "Merge/Release nur bei erfuellten Gates + vollstaendiger Evidence (GREEN CI allein ist keine Verifikation)."
+  release_gate: "Release-Gates gem. GATE-Landkarte (ATC-STD-CHANGE-001) und atc-engineering Policy-Gates."
+  protected_actions:   # ausdrueckliche Freigabe / Governance-Gate zwingend
+    - branch_protection_aendern
+    - repository_berechtigungen_aendern
+    - secrets_aendern
+    - kryptografische_schluessel_aendern
+    - sicherheitskritische_policies_aendern
+    - governance_regeln_aendern
+    - consensus_blockchain_regeln_aendern
+    - produktionseinsatz
+    - irreversible_datenloeschung
+    - decommissioning_von_repositories
+    - aenderung_normativer_sot_komponente
+  crypto_rules:
+    - "Private Schluessel/Zugangsdaten niemals in Quellcode"
+    - "niemals in Logs ausgeben"
+    - "niemals an Dritte weitergeben"
+    - "niemals in Artefakten veroeffentlichen"
+  scope_discipline: "Keine neuen funktionalen Subsysteme ausserhalb des genehmigten Architektur-Scopes; Architektur/SoT/Repository-Zustaendigkeit/normative Spezifikationen/Governance/Security Boundaries gelten NICHT allein durch technische Implementierung als geändert."
+
+# --- 8) Auditierbarkeit ---------------------------------------------------------
+audit:
+  minimal_chain: [authorization, run_id, repository, commit_sha, job, step, evidence, verification]
+  rule: "Jede relevante automatisierte Aenderung muss auf den verursachenden Lauf zurueckfuehrbar sein."
+
+# --- 9) Grundprinzipien ----------------------------------------------------------
+principles: [
+  standalone_first_ecosystem_second, existing_first, least_privilege, fail_closed,
+  evidence_first, no_evidence_no_trust, no_gate_weakening, exact_sha_verification,
+  keine_implizite_autorisierung, keine_funktionale_duplikation,
+  reproduzierbare_builds, nachvollziehbare_aenderungen
+]
+
+# --- 10) Entscheidungs-Kette (deterministisch vor jeder Aktion) ------------------
+decision_chain: [identity, repository_scope, action_scope, policy, approval, execute, evidence, verify]
+decision_rule: "Abbruch bei jeder verweigerten Stufe (Fail Closed). Keine Stufe ueberspringen, kein Gate schwächen."
