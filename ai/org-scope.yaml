@@ -2,45 +2,48 @@ version: 1.1.0
 status: ACTIVE
 organization: A-TownChain-Okosystems
 organization_meta:
-  repository_count: 28
+  repository_count: 26
   repository_scope:
     source: github-api
-    snapshot: '2026-09-10T07:41:57Z'
+    snapshot: '2026-10-08T12:00:31Z'
     generator: tools/gen_org_scope.py
 governance_kpi:
-  GOVERNED_REPOSITORY_COUNT: 27
-  UNGOVERNED_REPOSITORY_COUNT: 1
-  DRIFT_COUNT: 1
-  ungoverned: &id001
+  GOVERNED_REPOSITORY_COUNT: 20
+  UNGOVERNED_REPOSITORY_COUNT: 6
+  DRIFT_COUNT: 6
+  ungoverned:
+  - a-townchain-ecosystem
+  - atc-engineering
+  - atc-ide
+  - atc-toolchain
   - demo-repository
+  - genesis-franchise-factory
 repositories:
 - .github
 - a-townchain
+- a-townchain-ecosystem
 - a-townchain-os
 - a-townchain-os-docs
 - atc-algorithm
 - atc-compute
 - atc-contracts
-- atc-explorer
-- atc-indexer
-- atc-interop
+- atc-engineering
+- atc-ide
 - atc-launchpad
 - atc-marketplace
-- atc-mining
 - atc-node
-- atc-oracle
 - atc-sdk
 - atc-shivacore
 - atc-standards
-- atc-storage
+- atc-toolchain
 - atc-vm
-- atc-wallet
 - atc-zkp
 - atclang
 - aurora-ai
 - demo-repository
 - genesis-chronicles
 - genesis-engine
+- genesis-franchise-factory
 - globus-os
 governed:
 - .github
@@ -50,24 +53,16 @@ governed:
 - atc-algorithm
 - atc-compute
 - atc-contracts
-- atc-explorer
-- atc-indexer
-- atc-interop
 - atc-launchpad
 - atc-marketplace
-- atc-mining
 - atc-node
-- atc-oracle
 - atc-sdk
 - atc-shivacore
 - atc-standards
-- atc-storage
 - atc-vm
-- atc-wallet
 - atc-zkp
 - atclang
 - aurora-ai
 - genesis-chronicles
 - genesis-engine
 - globus-os
-ungoverned: *id001
