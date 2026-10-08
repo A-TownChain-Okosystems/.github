@@ -77,7 +77,7 @@ Damit ist die **dynamische Governance-Regel spezifiziert, aber der A1-Binding-Zu
 | `atc-contracts` | Smart Contracts |
 | `atc-zkp` | ZKP |
 | `atc-compute` | Compute |
-| `atc-storage` | Storage |
+| `genesis-franchise-factory` | Franchise / generation tooling |
 | `atc-launchpad` | Launchpad |
 | `atc-marketplace` | Marketplace |
 | `genesis-engine` | Engine |
