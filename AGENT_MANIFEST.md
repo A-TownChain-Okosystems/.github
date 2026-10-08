@@ -49,11 +49,11 @@ Der Control Plane definiert `required_standards == ALLE Registry-Standards` als 
 **Aktueller Ist-Befund auf den oben genannten SHAs:**
 
 - `registry/standards.yaml`: 532 echte Standard-IDs
-- `.github/ai/agent.yaml`: 458 `required_standards`
-- Fehlende Registry-Bindings im Agent-Manifest: **83**
+- `.github/ai/agent.yaml`: **532** `required_standards`
+- Fehlende Registry-Bindings im Agent-Manifest: **0**
 - Zusätzliche rollenbezogene Agent-IDs in `agent.yaml`: **7**; diese sind keine Registry-Standard-IDs
 
-Damit ist die **dynamische Governance-Regel spezifiziert, aber der A1-Binding-Zustand derzeit nicht VERIFIED**. Das ist ein offener Governance-Residual und darf nicht als PASS dargestellt werden.
+Damit ist die **statische A1-Bindung synchronisiert**. Der A1-Zustand wird erst nach einem Exact-SHA-Governance-Gate als `VERIFIED` gesetzt; die Synchronisierung selbst ist kein Verify-Ersatz.
 
 ## 4. Repository-Inventar
 
