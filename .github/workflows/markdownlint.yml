@@ -1,0 +1,16 @@
+name: Markdown Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  markdownlint:
+    uses: ./.github/workflows/reusable-markdownlint.yml
+    permissions:
+      contents: read
