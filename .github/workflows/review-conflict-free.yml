@@ -1,0 +1,79 @@
+name: Request review only for conflict-free PRs
+
+on:
+  workflow_call:
+    inputs:
+      pull-request-number:
+        description: Pull request number in the caller repository
+        required: true
+        type: number
+      reviewer:
+        description: GitHub username to request as reviewer
+        required: false
+        default: A-TownChain
+        type: string
+    permissions:
+      contents: read
+      pull-requests: write
+
+jobs:
+  request-review:
+    name: Fail-closed mergeability check and review request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check mergeability and request review only when conflict-free
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = Number(${{ inputs.pull-request-number }});
+            const reviewer = ${{ toJSON(inputs.reviewer) }};
+            if (!Number.isInteger(prNumber) || prNumber < 1) {
+              core.setFailed('Invalid pull request number; no review requested.');
+              return;
+            }
+
+            // GitHub computes mergeability asynchronously. Retry briefly, then fail closed.
+            let pr;
+            for (let attempt = 1; attempt <= 6; attempt++) {
+              const response = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+              pr = response.data;
+              if (pr.state !== 'open') {
+                core.notice('PR is not open; no review requested.');
+                return;
+              }
+              if (pr.draft) {
+                core.notice('PR is a draft; no review requested.');
+                return;
+              }
+              if (pr.mergeable !== null) break;
+              if (attempt < 6) await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+
+            if (!pr || pr.mergeable !== true) {
+              core.notice(`Fail-closed: mergeable=${pr?.mergeable}; mergeable_state=${pr?.mergeable_state}. No review requested.`);
+              return;
+            }
+
+            if (!reviewer || reviewer.trim().length === 0) {
+              core.setFailed('Reviewer input is empty; no review requested.');
+              return;
+            }
+
+            const alreadyRequested = (pr.requested_reviewers || [])
+              .some(user => user.login.toLowerCase() === reviewer.toLowerCase());
+            if (alreadyRequested) {
+              core.notice(`Reviewer @${reviewer} is already requested; no duplicate request.`);
+              return;
+            }
+
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              reviewers: [reviewer]
+            });
+            core.notice(`Requested review from @${reviewer} for conflict-free PR #${prNumber} at head ${pr.head.sha}.`);
