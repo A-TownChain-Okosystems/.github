@@ -91,7 +91,7 @@ Kann ein Gate technisch nicht ausgeführt werden (Tool/CI fehlt), gilt: KEIN sti
 SKIP — Befund klassifizieren (F-NNN), Gate = PENDING, EXCEPTION RULE anwenden.
 SKIP nur mit dokumentierter Begründung (REPO-AUDIT-002: SKIP ohne Begründung = P1).
 
-*ATC Org-AGENTS.md v1.1.0 · SCR-0057/0058/0059 · 09.09.2026 · Aurora (Superagent)*
+*ATC Org-AGENTS.md v1.2.0 (Änderungsvorschlag) · SCR-0057/0058/0059 · 11.10.2026 · Aurora (Superagent)*
 
 ## 10. IMPLEMENTIERUNGSREIHENFOLGE & PRIORITÄTEN (verbindlich)
 
@@ -109,7 +109,7 @@ Jeder Agent MUSS vor größeren Implementierungen die Abhängigkeiten, den kanon
 - **Kanonische ATC-VM:** `a-townchain/components/vm/`; keine zweite produktive VM in Governance-/Spec-Repositories.
 - **Kanonischer Algorithmus/Konsens:** `a-townchain/components/algorithm/`; Kandidaten wie PoH/PoW/PoS/PoI nicht als final darstellen, bevor eine belegte Entscheidung vorliegt.
 - **ShivaCore Kernel:** `globus-os/modules/atc-shivacore/kernel/`; Netzwerk, AI und Contract-Ausführung bleiben außerhalb des TCB im Service-Space.
-- **ATC-Standards:** `atc-standards/registry/standards.yaml) ist normative Standards-SSOT.
+- **ATC-Standards:** `atc-standards/registry/standards.yaml` ist normative Standards-SSOT.
 - **ATC-Lang, Toolchain, Aurora-AI, Genesis Engine und GlobusOS:** jeweils ihre registrierten kanonischen Repositories; vor Implementierung Registry und `ai/org-scope.yaml` prüfen.
 
 ### Status- und Evidenzregeln
