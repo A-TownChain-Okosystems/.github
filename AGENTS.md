@@ -91,4 +91,36 @@ Kann ein Gate technisch nicht ausgeführt werden (Tool/CI fehlt), gilt: KEIN sti
 SKIP — Befund klassifizieren (F-NNN), Gate = PENDING, EXCEPTION RULE anwenden.
 SKIP nur mit dokumentierter Begründung (REPO-AUDIT-002: SKIP ohne Begründung = P1).
 
-*ATC Org-AGENTS.md v1.1.0 · SCR-0057/0058/0059 · 09.09.2026 · Aurora (Superagent)*
+*ATC Org-AGENTS.md v1.2.0 (Änderungsvorschlag) · SCR-0057/0058/0059 · 11.10.2026 · Aurora (Superagent)*
+
+## 10. IMPLEMENTIERUNGSREIHENFOLGE & PRIORITÄTEN (verbindlich)
+
+Jeder Agent MUSS vor größeren Implementierungen die Abhängigkeiten, den kanonischen SSOT-Ort, die betroffenen Schnittstellen und den aktuellen Status prüfen. Die folgende Reihenfolge ist organisationsweit verbindlich; eine Repo-Roadmap darf sie konkretisieren, aber nicht stillschweigend umgehen.
+
+1. **P0 — Sicherheit, SSOT und Evidence:** kanonische Repository-/Komponentenzuständigkeit klären; Architektur- und ABI-Konflikte erfassen; kritische ShivaCore-TCB-Risiken, Sicherheitsgrenzen, Registry-/Evidence- und erforderliche CI-Gates zuerst behandeln. Sicherheitskritische Blocker stoppen abhängige Arbeiten.
+2. **P1 — Kanonische Laufzeitgrundlagen:** ShivaCore Kernel, kanonische ATC-VM, A-TownChain-State-Transition/Transaktionsvalidierung, explizite Konsensentscheidung und reproduzierbare Toolchain stabilisieren und anhand von Tests nachweisen.
+3. **P2 — Sprach-, OS- und End-to-End-Integration:** ATC-Lang an die kanonische VM anbinden; ShivaCore in GlobusOS integrieren; Node/P2P/RPC/Recovery sowie repoübergreifende ABI- und Protokollkompatibilität testen.
+4. **P3 — Produktfähigkeiten:** Aurora-AI und Genesis Engine nach eigenen Abnahmekriterien entwickeln. Aurora darf weder TCB noch Konsens-/Chain-Autorität oder eine Umgehung von Capability- und Service-Grenzen erhalten. Optionale Integrationen laufen ausschließlich über explizite, least-privilege APIs.
+5. **P4 — Härtung und Release:** adversariales Fuzzing, Property-/Differential-Tests, Security Review, Rückgewinnungs-/Rollbacktests, Traceability, SBOM/Provenance und Release-Evidence abschließen.
+
+### Verbindliche SSOT-Zuordnung
+
+- **A-TownChain Blockchain Core:** `A-TownChain-Okosystems/a-townchain`.
+- **Kanonische ATC-VM:** `a-townchain/components/vm/`; keine zweite produktive VM in Governance-/Spec-Repositories.
+- **Kanonischer Algorithmus/Konsens:** `a-townchain/components/algorithm/`; Kandidaten wie PoH/PoW/PoS/PoI nicht als final darstellen, bevor eine belegte Entscheidung vorliegt.
+- **ShivaCore Kernel:** `globus-os/modules/atc-shivacore/kernel/`; Netzwerk, AI und Contract-Ausführung bleiben außerhalb des TCB im Service-Space.
+- **ATC-Standards:** `atc-standards/registry/standards.yaml` ist normative Standards-SSOT.
+- **ATC-Lang, Toolchain, Aurora-AI, Genesis Engine und GlobusOS:** jeweils ihre registrierten kanonischen Repositories; vor Implementierung Registry und `ai/org-scope.yaml` prüfen.
+
+### Status- und Evidenzregeln
+
+- `REQUIRED`/`PLANNED` bedeutet Anforderung/Plan, nicht vorhandene Implementierung.
+- `IMPLEMENTED` bedeutet, dass der Code im vorgesehenen Runtime-/Build-Pfad integriert ist.
+- `VERIFIED` ist nur zulässig mit **exaktem Commit-SHA** und nachprüfbarer Evidenz: **Workflow Run → Job → Step → Exit-Status/Logs/Artefakte**.
+- `FAILED`, `BLOCKED` und `RESIDUAL` bleiben sichtbar; Fehler beheben und Gates erneut ausführen. Keine Fehler verschweigen, keine Tests/Gates abschwächen und kein Ergebnis eines anderen SHA übertragen.
+- Parallelisieren ist nur zulässig, wenn Abhängigkeiten, Ownership und Schnittstellen geklärt sind. Keine Kalenderprognose ohne gemessene Baseline.
+- **Kein automatisches Mergen.** FAIL/PENDING in verpflichtenden Gates bedeutet NO MERGE; Änderungen bleiben im Review, bis alle erforderlichen Gates auf dem aktuellen PR-Head bestanden sind und die vorgeschriebene menschliche Freigabe vorliegt.
+
+### Roadmap-Verknüpfung
+
+Die detaillierte Roadmap wird in `atc-engineering/docs/architecture/implementation-roadmap.v1.json` geführt; lesbare Darstellung: `docs/architecture/IMPLEMENTATION_ROADMAP.md`. Solange der Roadmap-PR nicht gemergt und validiert ist, gilt sie als vorgeschlagener Plan, nicht als abgeschlossene Governance- oder Implementierungsevidenz. Agenten müssen Status und Evidenz nach Änderungen aktualisieren, statt geplante Arbeiten als erledigt zu markieren.
