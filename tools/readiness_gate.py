@@ -42,14 +42,18 @@ def _full_sha(value: Any, context: str) -> str:
     return value
 
 
-def _evidence(value: Any, context: str, checked_sha: str) -> list[dict[str, Any]]:
+def _evidence(
+    value: Any, context: str, source_sha: str, source_repository: str
+) -> list[dict[str, Any]]:
     if not isinstance(value, list) or not value:
         raise GateBlocked(f"{context}: evidence must be a non-empty list")
     result = []
     for index, raw in enumerate(value):
         item = _object(raw, f"{context}[{index}]")
-        if item.get("head_sha") != checked_sha:
+        if item.get("head_sha") != source_sha:
             raise GateBlocked(f"{context}[{index}]: evidence SHA mismatch")
+        if item.get("repository") != source_repository:
+            raise GateBlocked(f"{context}[{index}]: evidence repository mismatch")
         run_id = item.get("workflow_run_id")
         if not isinstance(run_id, int) or isinstance(run_id, bool) or run_id <= 0:
             raise GateBlocked(f"{context}[{index}]: invalid workflow_run_id")
@@ -120,12 +124,35 @@ def evaluate(bundle: Any) -> dict[str, Any]:
     if reconciliation_status != "VERIFIED":
         raise GateBlocked(f"reconciliation is {reconciliation_status}; merge is blocked")
 
+    source_bindings = {}
+    for name, source in (
+        ("readiness", readiness),
+        ("agov", agov),
+        ("reconciliation", reconciliation),
+    ):
+        source_bindings[name] = {
+            "repository": source.get("repository"),
+            "source_commit_sha": _full_sha(
+                source.get("source_commit_sha"), f"sources.{name}.source_commit_sha"
+            ),
+        }
+        if not isinstance(source_bindings[name]["repository"], str) or not re.fullmatch(
+            r"[^/\\s]+/[^/\\s]+", source_bindings[name]["repository"]
+        ):
+            raise GateBlocked(f"sources.{name}.repository must be owner/name")
+
     evidence = {
-        "readiness": _evidence(readiness.get("evidence"), "readiness.evidence", checked_sha),
-        "agov": _evidence(agov.get("evidence"), "agov.evidence", checked_sha),
-        "reconciliation": _evidence(
-            reconciliation.get("evidence"), "reconciliation.evidence", checked_sha
-        ),
+        name: _evidence(
+            source.get("evidence"),
+            f"{name}.evidence",
+            source_bindings[name]["source_commit_sha"],
+            source_bindings[name]["repository"],
+        )
+        for name, source in (
+            ("readiness", readiness),
+            ("agov", agov),
+            ("reconciliation", reconciliation),
+        )
     }
     return {
         "schema_version": 1,
