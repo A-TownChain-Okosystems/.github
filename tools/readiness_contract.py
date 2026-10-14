@@ -63,7 +63,10 @@ def collect_pages(
     for attempt in range(3):
         try:
             return _collect_pages_once(
-                fetch_page, key=key, context=context, page_size=page_size
+                fetch_page,
+                key=key,
+                context=context,
+                page_size=page_size,
             )
         except RuntimeError as exc:
             message = str(exc)
