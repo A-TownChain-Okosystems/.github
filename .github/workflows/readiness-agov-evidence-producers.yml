@@ -17,9 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout exact workflow commit
+      - name: Checkout exact source commit
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,12 +32,14 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ATC_EVIDENCE_JSON: docs/readiness-claim.json
+          ATC_SOURCE_COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/readiness_check.py
       - name: Generate machine-readable AGOV claim
         if: always()
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ATC_EVIDENCE_JSON: docs/agov-claim.json
+          ATC_SOURCE_COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/agov_check.py
       - name: Upload producer reports
         if: always()
