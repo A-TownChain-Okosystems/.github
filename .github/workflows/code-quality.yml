@@ -19,7 +19,7 @@ jobs:
         run: pip install ruff==0.16.7
       - name: Readiness and consumer contract tests
         run: |
-          python -m py_compile tools/readiness_check.py tools/readiness_contract.py tools/readiness_gate.py
+          python -m py_compile tools/readiness_check.py tools/readiness_contract.py tools/readiness_gate.py tools/verify_live_readiness_evidence.py
           python -m unittest tools.test_readiness_contract tools.test_readiness_gate
       - name: Lint-Pruefung (ATC-STD-081)
         run: ruff check .
