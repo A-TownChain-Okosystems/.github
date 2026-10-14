@@ -6,6 +6,7 @@ as separate domains. They do not infer one domain from another.
 
 from __future__ import annotations
 
+import base64
 import re
 from typing import Any, Callable
 
@@ -13,6 +14,25 @@ SHA40 = re.compile(r"^[0-9a-f]{40}$")
 READINESS_STATES = {"NO-GO", "PREP"}
 AGOV_STATES = {"PASS", "FAIL", "WARN", "N/A", "PENDING"}
 RECONCILIATION_STATES = {"DETECTED", "RECONCILED", "VERIFIED"}
+
+
+def decode_contents(payload: Any, context: str) -> str:
+    """Decode a GitHub Contents API object with strict Base64 validation.
+
+    GitHub may wrap Base64 text in ASCII transport whitespace. Remove only
+    spaces, tabs, CR, and LF before strict alphabet/padding validation.
+    """
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"{context}: invalid contents payload type")
+    encoded = payload.get("content")
+    if not isinstance(encoded, str) or payload.get("encoding") != "base64":
+        raise RuntimeError(f"{context}: missing base64 content")
+    normalized = re.sub(r"[ \t\r\n]", "", encoded)
+
+    try:
+        return base64.b64decode(normalized, validate=True).decode("utf-8")
+    except (ValueError, UnicodeDecodeError) as exc:
+        raise RuntimeError(f"{context}: invalid Base64 content or non-UTF-8 payload") from exc
 
 
 def response_json(
@@ -38,7 +58,42 @@ def collect_pages(
     context: str,
     page_size: int = 100,
 ) -> list[dict[str, Any]]:
-    """Collect all pages and fail closed on malformed, missing, or inconsistent data."""
+    """Collect a complete page set, retrying boundedly when the API changes mid-scan."""
+    last_drift: RuntimeError | None = None
+    for attempt in range(3):
+        try:
+            return _collect_pages_once(
+                fetch_page,
+                key=key,
+                context=context,
+                page_size=page_size,
+            )
+        except RuntimeError as exc:
+            message = str(exc)
+            if not any(
+                marker in message
+                for marker in (
+                    "total_count changed during pagination",
+                    "pagination exceeded total_count",
+                    "incomplete pagination",
+                )
+            ):
+                raise
+            last_drift = exc
+    raise RuntimeError(
+        f"{context}: pagination did not stabilize after 3 complete-scan attempts; "
+        f"last error: {last_drift}"
+    ) from last_drift
+
+
+def _collect_pages_once(
+    fetch_page: Callable[[int], Any],
+    *,
+    key: str | None,
+    context: str,
+    page_size: int,
+) -> list[dict[str, Any]]:
+    """Perform one scan; a changing total_count invalidates the entire scan."""
     collected: list[dict[str, Any]] = []
     page = 1
     expected_total: int | None = None
@@ -46,7 +101,6 @@ def collect_pages(
         payload = response_json(fetch_page(page), f"{context} page {page}", (dict, list))
         if isinstance(payload, list):
             items = payload
-            total = None
         else:
             items = payload.get(key) if key else None
             total = payload.get("total_count")

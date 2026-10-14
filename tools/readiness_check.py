@@ -16,9 +16,10 @@ Umsetzungs-/Readiness-Evidenz ueberfuehren. Generiert aus den Registry-SSOTs
 Aufruf: python3 tools/readiness_check.py  → docs/READINESS-<date>.md
 """
 
-import base64
 import datetime
+import json
 import os
+import re
 from collections import Counter
 
 import requests
@@ -27,6 +28,7 @@ import yaml
 try:
     from tools.readiness_contract import (
         collect_pages,
+        decode_contents,
         response_json,
         select_runs_for_sha,
         validate_registry_counts,
@@ -35,6 +37,7 @@ except ModuleNotFoundError:
     # Support the documented direct invocation: python3 tools/readiness_check.py
     from readiness_contract import (
         collect_pages,
+        decode_contents,
         response_json,
         select_runs_for_sha,
         validate_registry_counts,
@@ -52,13 +55,7 @@ def get(path):
 def content(repo, path):
     response = get(f"/repos/{ORG}/{repo}/contents/{path}")
     payload = response_json(response, f"contents {repo}/{path}")
-    encoded = payload.get("content")
-    if not isinstance(encoded, str) or payload.get("encoding") != "base64":
-        raise RuntimeError(f"contents {repo}/{path}: missing base64 content")
-    try:
-        return base64.b64decode(encoded, validate=True).decode("utf-8")
-    except Exception as exc:
-        raise RuntimeError(f"contents {repo}/{path}: invalid base64 or UTF-8") from exc
+    return decode_contents(payload, f"contents {repo}/{path}")
 
 
 def ry(name):
@@ -244,3 +241,35 @@ for rp, t in dep_prs[:12]:
 open("docs/READINESS-" + today + ".md", "w", encoding="utf-8").write("\n".join(md))
 print("\n".join(md[:16]))
 print(f"\n→ docs/READINESS-{today}.md")
+
+# Optional machine-readable producer output. Workflow metadata is required; do
+# not fabricate a source SHA when running outside GitHub Actions.
+evidence_output = os.environ.get("ATC_EVIDENCE_JSON")
+if evidence_output:
+    source_sha = os.environ.get("ATC_SOURCE_COMMIT_SHA", "")
+    source_repo = os.environ.get("GITHUB_REPOSITORY", "")
+    if not re.fullmatch(r"[0-9a-f]{40}", source_sha):
+        raise RuntimeError("ATC_EVIDENCE_JSON requires a full lowercase GITHUB_SHA")
+    if not re.fullmatch(r"[^/\s]+/[^/\s]+", source_repo):
+        raise RuntimeError("ATC_EVIDENCE_JSON requires GITHUB_REPOSITORY in owner/name form")
+    readiness_status = "NO-GO" if (p0 or p1 or red_ci or ci_unverified) else "PREP"
+    payload = {
+        "schema_version": 1,
+        "producer": "readiness",
+        "status": readiness_status,
+        "repository": source_repo,
+        "source_commit_sha": source_sha,
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "summary": {
+            "open_p0": len(p0),
+            "open_p1": len(p1),
+            "repositories_with_red_ci": len(red_ci),
+            "repositories_without_exact_sha_ci_evidence": len(ci_unverified),
+        },
+        "evidence": [],
+        "evidence_note": "Workflow run/job/step/log evidence must be attached by the independent live verifier.",
+    }
+    with open(evidence_output, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, sort_keys=True, indent=2)
+        handle.write("\n")
+    print(f"\nMachine-readable readiness claim: {evidence_output} ({readiness_status})")
