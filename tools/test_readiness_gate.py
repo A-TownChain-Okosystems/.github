@@ -4,16 +4,19 @@ import unittest
 
 from tools.readiness_gate import GateBlocked, evaluate
 
-SHA = "a" * 40
-HASH = "b" * 64
+GATE_SHA = "d" * 40
+READINESS_SHA = "a" * 40
+AGOV_SHA = "b" * 40
+RECONCILIATION_SHA = "c" * 40
+HASH = "e" * 64
 
 
-def evidence():
+def evidence(repository, source_sha):
     return [
         {
-            "repository": "A-TownChain-Okosystems/.github",
+            "repository": repository,
             "workflow_run_id": 123,
-            "head_sha": SHA,
+            "head_sha": source_sha,
             "job": "quality",
             "step": "Readiness producer",
             "log_sha256": HASH,
@@ -25,13 +28,28 @@ def evidence():
 def valid_bundle():
     return {
         "schema_version": 1,
-        "checked_commit_sha": SHA,
+        "checked_commit_sha": GATE_SHA,
         "sources": {
-            "readiness": {"status": "PREP", "evidence": evidence()},
-            "agov": {"status": "PASS", "evidence": evidence()},
-            "reconciliation": {"status": "VERIFIED", "evidence": evidence()},
+            "readiness": {
+                "status": "PREP",
+                "repository": "A-TownChain-Okosystems/.github",
+                "source_commit_sha": READINESS_SHA,
+                "evidence": evidence("A-TownChain-Okosystems/.github", READINESS_SHA),
+            },
+            "agov": {
+                "status": "PASS",
+                "repository": "A-TownChain-Okosystems/.github",
+                "source_commit_sha": AGOV_SHA,
+                "evidence": evidence("A-TownChain-Okosystems/.github", AGOV_SHA),
+            },
+            "reconciliation": {
+                "status": "VERIFIED",
+                "repository": "A-TownChain-Okosystems/atc-engineering",
+                "source_commit_sha": RECONCILIATION_SHA,
+                "evidence": evidence("A-TownChain-Okosystems/atc-engineering", RECONCILIATION_SHA),
+            },
         },
-        "consumers": {"merge-gate": {"status": "EXECUTED", "checked_commit_sha": SHA}},
+        "consumers": {"merge-gate": {"status": "EXECUTED", "checked_commit_sha": GATE_SHA}},
     }
 
 
@@ -65,8 +83,20 @@ class ReadinessGateTests(unittest.TestCase):
 
     def test_sha_mismatch_blocks(self):
         bundle = valid_bundle()
-        bundle["sources"]["agov"]["evidence"][0]["head_sha"] = "c" * 40
+        bundle["sources"]["agov"]["evidence"][0]["head_sha"] = "f" * 40
         with self.assertRaisesRegex(GateBlocked, "evidence SHA mismatch"):
+            evaluate(bundle)
+
+    def test_source_commit_sha_must_be_full_and_explicit(self):
+        bundle = valid_bundle()
+        bundle["sources"]["agov"]["source_commit_sha"] = "b" * 12
+        with self.assertRaisesRegex(GateBlocked, "full lowercase 40-character"):
+            evaluate(bundle)
+
+    def test_evidence_repository_must_match_source_repository(self):
+        bundle = valid_bundle()
+        bundle["sources"]["reconciliation"]["evidence"][0]["repository"] = "attacker/other"
+        with self.assertRaisesRegex(GateBlocked, "evidence repository mismatch"):
             evaluate(bundle)
 
     def test_empty_api_evidence_blocks(self):
