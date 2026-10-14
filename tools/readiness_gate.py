@@ -137,7 +137,7 @@ def evaluate(bundle: Any) -> dict[str, Any]:
             ),
         }
         if not isinstance(source_bindings[name]["repository"], str) or not re.fullmatch(
-            r"[^/\\s]+/[^/\\s]+", source_bindings[name]["repository"]
+            r"[^/\s]+/[^/\s]+", source_bindings[name]["repository"]
         ):
             raise GateBlocked(f"sources.{name}.repository must be owner/name")
 
