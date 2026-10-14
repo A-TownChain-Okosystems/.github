@@ -29,6 +29,7 @@ import yaml
 try:
     from tools.readiness_contract import (
         collect_pages,
+        decode_contents,
         response_json,
         select_runs_for_sha,
         validate_registry_counts,
@@ -37,6 +38,7 @@ except ModuleNotFoundError:
     # Support the documented direct invocation: python3 tools/readiness_check.py
     from readiness_contract import (
         collect_pages,
+        decode_contents,
         response_json,
         select_runs_for_sha,
         validate_registry_counts,
@@ -54,21 +56,7 @@ def get(path):
 def content(repo, path):
     response = get(f"/repos/{ORG}/{repo}/contents/{path}")
     payload = response_json(response, f"contents {repo}/{path}")
-    encoded = payload.get("content")
-    if not isinstance(encoded, str) or payload.get("encoding") != "base64":
-        raise RuntimeError(f"contents {repo}/{path}: missing base64 content")
-    # GitHub's Contents API may wrap the Base64 field with ASCII whitespace.
-    # Normalize only Base64 transport whitespace; keep strict alphabet/padding
-    # validation so malformed or unexpected API data still fails closed.
-    normalized = re.sub(r"[ \\t\\r\\n]", "", encoded)
-    try:
-        decoded = base64.b64decode(normalized, validate=True)
-        return decoded.decode("utf-8")
-    except (ValueError, UnicodeDecodeError) as exc:
-        raise RuntimeError(
-            f"contents {repo}/{path}: invalid Base64 content or non-UTF-8 payload"
-        ) from exc
-
+    return decode_contents(payload, f"contents {repo}/{path}")
 
 def ry(name):
     raw = yaml.safe_load(content("atc-standards", f"registry/{name}.yaml"))
