@@ -5,6 +5,7 @@ Input JSON schema: {"checked_commit_sha": "<40-char SHA>", "evidence": [
   "step":"step name","log_sha256":"<sha256 of downloaded job-log response bytes>"}]}
 This verifies evidence claims only; it does not manufacture producer verdicts.
 """
+
 from __future__ import annotations
 
 import argparse
