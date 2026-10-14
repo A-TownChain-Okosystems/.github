@@ -16,7 +16,6 @@ Umsetzungs-/Readiness-Evidenz ueberfuehren. Generiert aus den Registry-SSOTs
 Aufruf: python3 tools/readiness_check.py  → docs/READINESS-<date>.md
 """
 
-import base64
 import datetime
 import json
 import os
