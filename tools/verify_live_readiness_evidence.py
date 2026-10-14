@@ -90,7 +90,7 @@ class GitHub:
         repo = item.get("repository")
         run_id = item.get("workflow_run_id")
         job_name, step_name = item.get("job"), item.get("step")
-        if not isinstance(repo, str) or not re.fullmatch(r"[^/\\s]+/[^/\\s]+", repo):
+        if not isinstance(repo, str) or not re.fullmatch(r"[^/\s]+/[^/\s]+", repo):
             raise Blocked("repository must be owner/name")
         if not isinstance(run_id, int) or isinstance(run_id, bool) or run_id <= 0:
             raise Blocked("workflow_run_id must be a positive integer")
