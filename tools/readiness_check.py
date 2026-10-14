@@ -24,12 +24,21 @@ from collections import Counter
 import requests
 import yaml
 
-from tools.readiness_contract import (
-    collect_pages,
-    response_json,
-    select_runs_for_sha,
-    validate_registry_counts,
-)
+try:
+    from tools.readiness_contract import (
+        collect_pages,
+        response_json,
+        select_runs_for_sha,
+        validate_registry_counts,
+    )
+except ModuleNotFoundError:
+    # Support the documented direct invocation: python3 tools/readiness_check.py
+    from readiness_contract import (
+        collect_pages,
+        response_json,
+        select_runs_for_sha,
+        validate_registry_counts,
+    )
 
 ORG = "A-TownChain-Okosystems"
 H = {"Authorization": "Bearer " + os.environ["GITHUB_ACCESS_TOKEN"]}
