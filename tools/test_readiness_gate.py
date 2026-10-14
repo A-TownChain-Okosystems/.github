@@ -31,9 +31,7 @@ def valid_bundle():
             "agov": {"status": "PASS", "evidence": evidence()},
             "reconciliation": {"status": "VERIFIED", "evidence": evidence()},
         },
-        "consumers": {
-            "merge-gate": {"status": "EXECUTED", "checked_commit_sha": SHA}
-        },
+        "consumers": {"merge-gate": {"status": "EXECUTED", "checked_commit_sha": SHA}},
     }
 
 
