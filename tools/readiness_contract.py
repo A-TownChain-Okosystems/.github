@@ -15,6 +15,25 @@ AGOV_STATES = {"PASS", "FAIL", "WARN", "N/A", "PENDING"}
 RECONCILIATION_STATES = {"DETECTED", "RECONCILED", "VERIFIED"}
 
 
+def decode_contents(payload: Any, context: str) -> str:
+    """Decode a GitHub Contents API object with strict Base64 validation.
+
+    GitHub may wrap Base64 text in ASCII transport whitespace. Remove only
+    spaces, tabs, CR, and LF before strict alphabet/padding validation.
+    """
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"{context}: invalid contents payload type")
+    encoded = payload.get("content")
+    if not isinstance(encoded, str) or payload.get("encoding") != "base64":
+        raise RuntimeError(f"{context}: missing base64 content")
+    normalized = re.sub(r"[ \\t\\r\\n]", "", encoded)
+    import base64
+
+    try:
+        return base64.b64decode(normalized, validate=True).decode("utf-8")
+    except (ValueError, UnicodeDecodeError) as exc:
+        raise RuntimeError(f"{context}: invalid Base64 content or non-UTF-8 payload") from exc
+
 def response_json(
     response: Any, context: str, expected_type: type | tuple[type, ...] = dict
 ) -> Any:
