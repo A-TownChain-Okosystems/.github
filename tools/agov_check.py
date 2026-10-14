@@ -7,7 +7,9 @@ verdict tuples. Exit 1 is reserved for blocking P0/P1 findings.
 
 import base64
 import datetime
+import json
 import os
+import re
 import re
 import sys
 
@@ -304,6 +306,41 @@ def main():
     with open(report_path, "w", encoding="utf-8") as report_file:
         report_file.write("\n".join(markdown))
     print(f"\nReport: {report_path} | blockiert:", blocked or "keine")
+
+    # Optional machine-readable producer output. The workflow SHA is mandatory
+    # whenever this sidecar is requested; no source identity is inferred.
+    evidence_output = os.environ.get("ATC_EVIDENCE_JSON")
+    if evidence_output:
+        source_sha = os.environ.get("GITHUB_SHA", "")
+        source_repo = os.environ.get("GITHUB_REPOSITORY", "")
+        if not re.fullmatch(r"[0-9a-f]{40}", source_sha):
+            raise RuntimeError("ATC_EVIDENCE_JSON requires a full lowercase GITHUB_SHA")
+        if not re.fullmatch(r"[^/\\s]+/[^/\\s]+", source_repo):
+            raise RuntimeError("ATC_EVIDENCE_JSON requires GITHUB_REPOSITORY in owner/name form")
+        warning_count = sum(
+            1 for findings in report.values()
+            for status, _ in findings.values()
+            if status == "WARN"
+        )
+        payload = {
+            "schema_version": 1,
+            "producer": "agov",
+            "status": "FAIL" if blocked else "PASS",
+            "repository": source_repo,
+            "source_commit_sha": source_sha,
+            "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "summary": {
+                "repositories_checked": len(repo_list),
+                "repositories_blocked": len(blocked),
+                "warning_checks": warning_count,
+            },
+            "evidence": [],
+            "evidence_note": "Workflow run/job/step/log evidence must be attached by the independent live verifier.",
+        }
+        with open(evidence_output, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, sort_keys=True, indent=2)
+            handle.write("\n")
+        print(f"Machine-readable AGOV claim: {evidence_output} ({payload['status']})")
     sys.exit(1 if blocked else 0)
 
 
