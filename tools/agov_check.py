@@ -317,10 +317,7 @@ def main():
         if not re.fullmatch(r"[^/\s]+/[^/\s]+", source_repo):
             raise RuntimeError("ATC_EVIDENCE_JSON requires GITHUB_REPOSITORY in owner/name form")
         warning_count = sum(
-            1
-            for findings in report.values()
-            for status, _ in findings.values()
-            if status == "WARN"
+            1 for findings in report.values() for status, _ in findings.values() if status == "WARN"
         )
         payload = {
             "schema_version": 1,
