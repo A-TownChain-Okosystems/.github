@@ -4,6 +4,7 @@ import unittest
 
 from tools.readiness_contract import (
     collect_pages,
+    decode_contents,
     response_json,
     select_runs_for_sha,
     validate_registry_counts,
@@ -24,6 +25,19 @@ class FakeResponse:
 
 
 class ReadinessContractTests(unittest.TestCase):
+    def test_contents_base64_allows_ascii_transport_whitespace(self):
+        self.assertEqual(
+            decode_contents({"encoding": "base64", "content": "aGVs\n bG8=\r\n"}, "file"),
+            "hello",
+        )
+
+    def test_contents_base64_rejects_invalid_characters(self):
+        with self.assertRaisesRegex(RuntimeError, "invalid Base64 content"):
+            decode_contents({"encoding": "base64", "content": "%%%"}, "file")
+
+    def test_contents_base64_rejects_wrong_encoding(self):
+        with self.assertRaisesRegex(RuntimeError, "missing base64 content"):
+            decode_contents({"encoding": "utf-8", "content": "hello"}, "file")
     def test_http_error_fails_closed(self):
         with self.assertRaisesRegex(RuntimeError, "HTTP status 403"):
             response_json(FakeResponse(403, {"message": "forbidden"}), "registry")
