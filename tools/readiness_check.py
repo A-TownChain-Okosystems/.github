@@ -57,10 +57,17 @@ def content(repo, path):
     encoded = payload.get("content")
     if not isinstance(encoded, str) or payload.get("encoding") != "base64":
         raise RuntimeError(f"contents {repo}/{path}: missing base64 content")
+    # GitHub's Contents API may wrap the Base64 field with ASCII whitespace.
+    # Normalize only Base64 transport whitespace; keep strict alphabet/padding
+    # validation so malformed or unexpected API data still fails closed.
+    normalized = re.sub(r"[ \\t\\r\\n]", "", encoded)
     try:
-        return base64.b64decode(encoded, validate=True).decode("utf-8")
-    except Exception as exc:
-        raise RuntimeError(f"contents {repo}/{path}: invalid base64 or UTF-8") from exc
+        decoded = base64.b64decode(normalized, validate=True)
+        return decoded.decode("utf-8")
+    except (ValueError, UnicodeDecodeError) as exc:
+        raise RuntimeError(
+            f"contents {repo}/{path}: invalid Base64 content or non-UTF-8 payload"
+        ) from exc
 
 
 def ry(name):
