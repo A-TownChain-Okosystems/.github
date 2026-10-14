@@ -57,6 +57,7 @@ def content(repo, path):
     payload = response_json(response, f"contents {repo}/{path}")
     return decode_contents(payload, f"contents {repo}/{path}")
 
+
 def ry(name):
     raw = yaml.safe_load(content("atc-standards", f"registry/{name}.yaml"))
     if not isinstance(raw, dict):
