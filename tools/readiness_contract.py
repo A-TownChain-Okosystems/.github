@@ -58,7 +58,39 @@ def collect_pages(
     context: str,
     page_size: int = 100,
 ) -> list[dict[str, Any]]:
-    """Collect all pages and fail closed on malformed, missing, or inconsistent data."""
+    """Collect a complete page set, retrying boundedly when the API changes mid-scan."""
+    last_drift: RuntimeError | None = None
+    for attempt in range(3):
+        try:
+            return _collect_pages_once(
+                fetch_page, key=key, context=context, page_size=page_size
+            )
+        except RuntimeError as exc:
+            message = str(exc)
+            if not any(
+                marker in message
+                for marker in (
+                    "total_count changed during pagination",
+                    "pagination exceeded total_count",
+                    "incomplete pagination",
+                )
+            ):
+                raise
+            last_drift = exc
+    raise RuntimeError(
+        f"{context}: pagination did not stabilize after 3 complete-scan attempts; "
+        f"last error: {last_drift}"
+    ) from last_drift
+
+
+def _collect_pages_once(
+    fetch_page: Callable[[int], Any],
+    *,
+    key: str | None,
+    context: str,
+    page_size: int,
+) -> list[dict[str, Any]]:
+    """Perform one scan; a changing total_count invalidates the entire scan."""
     collected: list[dict[str, Any]] = []
     page = 1
     expected_total: int | None = None
@@ -66,7 +98,6 @@ def collect_pages(
         payload = response_json(fetch_page(page), f"{context} page {page}", (dict, list))
         if isinstance(payload, list):
             items = payload
-            total = None
         else:
             items = payload.get(key) if key else None
             total = payload.get("total_count")
