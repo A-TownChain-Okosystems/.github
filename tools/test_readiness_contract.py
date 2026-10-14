@@ -1,4 +1,5 @@
 """Negative tests for fail-closed readiness evidence validation."""
+
 import unittest
 
 from tools.readiness_contract import (
