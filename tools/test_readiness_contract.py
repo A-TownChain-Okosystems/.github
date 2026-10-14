@@ -38,6 +38,7 @@ class ReadinessContractTests(unittest.TestCase):
     def test_contents_base64_rejects_wrong_encoding(self):
         with self.assertRaisesRegex(RuntimeError, "missing base64 content"):
             decode_contents({"encoding": "utf-8", "content": "hello"}, "file")
+
     def test_http_error_fails_closed(self):
         with self.assertRaisesRegex(RuntimeError, "HTTP status 403"):
             response_json(FakeResponse(403, {"message": "forbidden"}), "registry")
