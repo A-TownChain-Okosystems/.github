@@ -79,7 +79,9 @@ class GitHub:
                 break
             if len(items) < 100:
                 if total is not None and len(result) != total:
-                    raise Blocked(f"incomplete pagination for {url}: expected {total}, got {len(result)}")
+                    raise Blocked(
+                        f"incomplete pagination for {url}: expected {total}, got {len(result)}"
+                    )
                 break
             page += 1
         if not result:
@@ -123,7 +125,9 @@ class GitHub:
         steps = job.get("steps")
         if not isinstance(steps, list):
             raise Blocked("job step inventory is missing")
-        step_matches = [step for step in steps if isinstance(step, dict) and step.get("name") == step_name]
+        step_matches = [
+            step for step in steps if isinstance(step, dict) and step.get("name") == step_name
+        ]
         if len(step_matches) != 1:
             raise Blocked("named step is missing or ambiguous")
         step = step_matches[0]
@@ -172,7 +176,11 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, json.JSONDecodeError, Blocked) as exc:
         print(f"LIVE_EVIDENCE=BLOCKED: {exc}", file=sys.stderr)
         return 1
-    print(json.dumps({"checked_commit_sha": sha, "evidence": results, "status": "VERIFIED"}, sort_keys=True))
+    print(
+        json.dumps(
+            {"checked_commit_sha": sha, "evidence": results, "status": "VERIFIED"}, sort_keys=True
+        )
+    )
     return 0
 
 
