@@ -76,6 +76,25 @@ class ReadinessContractTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "total_count changed"):
             collect_pages(lambda page: pages[page], key="items", context="test", page_size=2)
 
+    def test_total_count_drift_retries_and_accepts_stable_complete_scan(self):
+        responses = [
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 1}, {"id": 2}]}),
+            FakeResponse(200, {"total_count": 4, "items": [{"id": 3}, {"id": 4}]}),
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 1}, {"id": 2}]}),
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 3}]}),
+        ]
+        calls = 0
+
+        def fetch_page(page):
+            nonlocal calls
+            response = responses[calls]
+            calls += 1
+            return response
+
+        items = collect_pages(fetch_page, key="items", context="test", page_size=2)
+        self.assertEqual([item["id"] for item in items], [1, 2, 3])
+        self.assertEqual(calls, 4)
+
     def test_stale_sha_runs_are_excluded(self):
         expected = "a" * 40
         runs = [
