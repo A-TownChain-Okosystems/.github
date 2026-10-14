@@ -3,6 +3,7 @@
 These helpers deliberately keep readiness, AGOV, and reconciliation verdicts
 as separate domains. They do not infer one domain from another.
 """
+
 from __future__ import annotations
 
 import re
