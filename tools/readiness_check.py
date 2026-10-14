@@ -24,29 +24,54 @@ from collections import Counter
 import requests
 import yaml
 
+try:
+    from tools.readiness_contract import (
+        collect_pages,
+        response_json,
+        select_runs_for_sha,
+        validate_registry_counts,
+    )
+except ModuleNotFoundError:
+    # Support the documented direct invocation: python3 tools/readiness_check.py
+    from readiness_contract import (
+        collect_pages,
+        response_json,
+        select_runs_for_sha,
+        validate_registry_counts,
+    )
+
 ORG = "A-TownChain-Okosystems"
 H = {"Authorization": "Bearer " + os.environ["GITHUB_ACCESS_TOKEN"]}
 API = "https://api.github.com"
 
 
 def get(path):
-    return requests.get(API + path, headers=H)
+    return requests.get(API + path, headers=H, timeout=30)
 
 
 def content(repo, path):
-    r = get(f"/repos/{ORG}/{repo}/contents/{path}")
-    if r.status_code != 200:
-        return None
-    j = r.json()
-    return base64.b64decode(j["content"]).decode("utf-8", "replace")
+    response = get(f"/repos/{ORG}/{repo}/contents/{path}")
+    payload = response_json(response, f"contents {repo}/{path}")
+    encoded = payload.get("content")
+    if not isinstance(encoded, str) or payload.get("encoding") != "base64":
+        raise RuntimeError(f"contents {repo}/{path}: missing base64 content")
+    try:
+        return base64.b64decode(encoded, validate=True).decode("utf-8")
+    except Exception as exc:
+        raise RuntimeError(f"contents {repo}/{path}: invalid base64 or UTF-8") from exc
 
 
 def ry(name):
-    return yaml.safe_load(content("atc-standards", f"registry/{name}.yaml"))
+    raw = yaml.safe_load(content("atc-standards", f"registry/{name}.yaml"))
+    if not isinstance(raw, dict):
+        raise RuntimeError(f"registry/{name}.yaml: expected a YAML object")
+    return raw
 
 
 # ── 1) IMPLEMENTATION MATRIX ──
 si = ry("standard-implementation")
+standards_registry = ry("standards")
+registry_counts = validate_registry_counts(standards_registry, si)
 stds = si.get("standards", [])
 cls_field = None
 for cand in ("classification", "status", "implementation", "evidence_class"):
@@ -66,7 +91,7 @@ for e in stds:
     if str(c).lower() in ("enforced", "implemented"):
         impl_ids.add(e.get("standard") or e.get("id"))
 kpi = si.get("coverage_kpi", {})
-total_reg = 433
+total_reg = registry_counts["registry_total"]
 
 # ── 2) INTEGRATION MATRIX ──
 ifc = ry("interfaces").get("interfaces", [])
@@ -97,22 +122,60 @@ p1 = [e["id"] for e in items if e.get("status") == "OPEN" and e.get("severity") 
 # Rote CIs je Repo (letzte Laufe je Workflow) — Stichprobe via AGOV-Logik
 repos = ry("repositories").get("repositories", [])
 red_ci = []
+ci_unverified = []
 for r in repos:
     rp = r["name"]
-    runs = get(f"/repos/{ORG}/{rp}/actions/runs?per_page=100").json().get("workflow_runs", [])
+    repo_meta = response_json(get(f"/repos/{ORG}/{rp}"), f"repository metadata {rp}")
+    default_branch = repo_meta.get("default_branch")
+    if not isinstance(default_branch, str) or not default_branch:
+        raise RuntimeError(f"repository metadata {rp}: missing default_branch")
+    branch_data = response_json(
+        get(f"/repos/{ORG}/{rp}/branches/{default_branch}"),
+        f"default branch {rp}/{default_branch}",
+    )
+    expected_sha = (branch_data.get("commit") or {}).get("sha")
+    if not isinstance(expected_sha, str) or len(expected_sha) != 40:
+        raise RuntimeError(f"default branch {rp}/{default_branch}: missing exact commit SHA")
+    all_runs = collect_pages(
+        lambda page: get(
+            f"/repos/{ORG}/{rp}/actions/runs?branch={default_branch}&per_page=100&page={page}"
+        ),
+        key="workflow_runs",
+        context=f"workflow runs {rp}",
+    )
+    runs = select_runs_for_sha(all_runs, expected_sha)
+    if not runs:
+        ci_unverified.append((rp, expected_sha))
+        continue
     latest = {}
     for rr in runs:
-        if rr.get("name") not in latest:
-            latest[rr.get("name")] = rr.get("conclusion")
-    bad = [k for k, s in latest.items() if s == "failure"]
+        if rr.get("name") and rr.get("name") not in latest:
+            latest[rr["name"]] = rr.get("conclusion")
+    bad = [k for k, state in latest.items() if state == "failure"]
     if bad:
         red_ci.append((rp, bad))
 
 # ── 4) MAINTENANCE QUEUE (Dependabot) ──
-q = get(f"/search/issues?q=org:{ORG}+type:pr+state:open+author:app/dependabot&per_page=100").json()
-dep_prs = [(i["repository_url"].split("/")[-1], i["title"][:60]) for i in q.get("items", [])]
-alerts = get(f"/repos/{ORG}/a-townchain-os/dependabot/alerts?state=open").json()
-n_alerts = len(alerts) if isinstance(alerts, list) else 0
+dep_items = collect_pages(
+    lambda page: get(
+        f"/search/issues?q=org:{ORG}+type:pr+state:open+author:app/dependabot&per_page=100&page={page}"
+    ),
+    key="items",
+    context="Dependabot PR search",
+)
+dep_prs = [
+    (item["repository_url"].split("/")[-1], item["title"][:60])
+    for item in dep_items
+    if isinstance(item.get("repository_url"), str) and isinstance(item.get("title"), str)
+]
+alerts = collect_pages(
+    lambda page: get(
+        f"/repos/{ORG}/a-townchain-os/dependabot/alerts?state=open&per_page=100&page={page}"
+    ),
+    key=None,
+    context="Dependabot alerts a-townchain-os",
+)
+n_alerts = len(alerts)
 
 # ── Gates & Verdict ──
 today = datetime.date.today().isoformat()
@@ -154,14 +217,15 @@ md += [
     f"- Release-Evidenz VERIFIED: {len(rel_ver)} ({', '.join(rel_ver[:4])}…)",
     f"- Offene P0: {len(p0)} · offene P1: {len(p1)} ({', '.join(p1) or '—'})",
     f"- Rote CI-Workflows: {len(red_ci)} Repos ({', '.join(f'{r}({len(b)})' for r, b in red_ci) or 'keine'})",
+    f"- CI-Evidenz ohne passenden aktuellen Default-Branch-SHA: {len(ci_unverified)} Repos ({', '.join(r for r, _ in ci_unverified) or 'keine'})",
     "",
     "| Tier | Netzwerk | Chain-ID | Registry-Status | Gate (ehrlich) |",
     "|---|---|---|---|---|",
 ]
 for tier, nw, cid, st in net_rows:
-    gate = "NO-GO" if (p0 or p1 or red_ci) else "PREP"
+    gate = "NO-GO" if (p0 or p1 or red_ci or ci_unverified) else "PREP"
     md.append(
-        f"| {tier} | {nw} | {cid} | {st} | {gate} — Blocker: offene P1 ({len(p1)}), rote CI ({len(red_ci)}) |"
+        f"| {tier} | {nw} | {cid} | {st} | {gate} — Blocker: offene P0/P1 ({len(p0)}/{len(p1)}), rote CI ({len(red_ci)}), CI-Evidenz fehlt ({len(ci_unverified)}) |"
         if tier in ("testnet", "mainnet")
         else f"| {tier} | {nw} | {cid} | {st} | {gate} |"
     )

@@ -17,6 +17,10 @@ jobs:
         with: {python-version: '3.11'}
       - name: Ruff installieren (gepinnt, ATC-STD-CI-001/CI-004)
         run: pip install ruff==0.16.7
+      - name: Readiness contract negative tests
+        run: |
+          python -m py_compile tools/readiness_check.py tools/readiness_contract.py
+          python -m unittest tools.test_readiness_contract
       - name: Lint-Pruefung (ATC-STD-081)
         run: ruff check .
       - name: Format-Pruefung (ATC-STD-082)
