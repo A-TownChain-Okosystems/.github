@@ -6,6 +6,7 @@ as separate domains. They do not infer one domain from another.
 
 from __future__ import annotations
 
+import base64
 import re
 from typing import Any, Callable
 
@@ -26,13 +27,13 @@ def decode_contents(payload: Any, context: str) -> str:
     encoded = payload.get("content")
     if not isinstance(encoded, str) or payload.get("encoding") != "base64":
         raise RuntimeError(f"{context}: missing base64 content")
-    normalized = re.sub(r"[ \\t\\r\\n]", "", encoded)
-    import base64
+    normalized = re.sub(r"[ \t\r\n]", "", encoded)
 
     try:
         return base64.b64decode(normalized, validate=True).decode("utf-8")
     except (ValueError, UnicodeDecodeError) as exc:
         raise RuntimeError(f"{context}: invalid Base64 content or non-UTF-8 payload") from exc
+
 
 def response_json(
     response: Any, context: str, expected_type: type | tuple[type, ...] = dict
