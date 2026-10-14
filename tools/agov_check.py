@@ -310,7 +310,7 @@ def main():
     # whenever this sidecar is requested; no source identity is inferred.
     evidence_output = os.environ.get("ATC_EVIDENCE_JSON")
     if evidence_output:
-        source_sha = os.environ.get("GITHUB_SHA", "")
+        source_sha = os.environ.get("ATC_SOURCE_COMMIT_SHA", "")
         source_repo = os.environ.get("GITHUB_REPOSITORY", "")
         if not re.fullmatch(r"[0-9a-f]{40}", source_sha):
             raise RuntimeError("ATC_EVIDENCE_JSON requires a full lowercase GITHUB_SHA")
