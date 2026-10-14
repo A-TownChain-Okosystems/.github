@@ -14,7 +14,9 @@ AGOV_STATES = {"PASS", "FAIL", "WARN", "N/A", "PENDING"}
 RECONCILIATION_STATES = {"DETECTED", "RECONCILED", "VERIFIED"}
 
 
-def response_json(response: Any, context: str, expected_type: type | tuple[type, ...] = dict) -> Any:
+def response_json(
+    response: Any, context: str, expected_type: type | tuple[type, ...] = dict
+) -> Any:
     """Require HTTP 200, valid JSON, and the expected top-level shape."""
     status = getattr(response, "status_code", None)
     if status != 200:
@@ -81,7 +83,9 @@ def select_runs_for_sha(runs: list[dict[str, Any]], expected_sha: str) -> list[d
     return selected
 
 
-def validate_registry_counts(registry: dict[str, Any], implementation: dict[str, Any]) -> dict[str, int]:
+def validate_registry_counts(
+    registry: dict[str, Any], implementation: dict[str, Any]
+) -> dict[str, int]:
     """Require exact registry/matrix counts and unique, matching standard IDs."""
     registry_items = registry.get("standards")
     matrix_items = implementation.get("standards")
@@ -89,9 +93,7 @@ def validate_registry_counts(registry: dict[str, Any], implementation: dict[str,
         raise RuntimeError("registry or implementation matrix missing standards list")
     registry_ids = [item.get("id") for item in registry_items if isinstance(item, dict)]
     matrix_ids = [
-        item.get("standard") or item.get("id")
-        for item in matrix_items
-        if isinstance(item, dict)
+        item.get("standard") or item.get("id") for item in matrix_items if isinstance(item, dict)
     ]
     if len(registry_ids) != len(registry_items) or any(not x for x in registry_ids):
         raise RuntimeError("registry contains malformed standard entries")
