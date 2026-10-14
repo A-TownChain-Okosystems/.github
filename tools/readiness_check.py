@@ -255,7 +255,7 @@ if evidence_output:
     source_repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not re.fullmatch(r"[0-9a-f]{40}", source_sha):
         raise RuntimeError("ATC_EVIDENCE_JSON requires a full lowercase GITHUB_SHA")
-    if not re.fullmatch(r"[^/\\s]+/[^/\\s]+", source_repo):
+    if not re.fullmatch(r"[^/\s]+/[^/\s]+", source_repo):
         raise RuntimeError("ATC_EVIDENCE_JSON requires GITHUB_REPOSITORY in owner/name form")
     readiness_status = "NO-GO" if (p0 or p1 or red_ci or ci_unverified) else "PREP"
     payload = {
