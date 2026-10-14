@@ -1,6 +1,12 @@
 name: Readiness and AGOV Evidence Producers
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "tools/readiness_check.py"
+      - "tools/readiness_contract.py"
+      - "tools/agov_check.py"
+      - ".github/workflows/readiness-agov-evidence-producers.yml"
 permissions:
   contents: read
   actions: read
