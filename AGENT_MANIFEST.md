@@ -138,3 +138,15 @@ Ein grüner Einzelcheck erzeugt keine automatische `VERIFIED`-Aussage. Verificat
 4. **P1:** Erst nach Exact-SHA-Prüfung den Zustand als `VERIFIED` markieren.
 
 **Aktualisierungsprinzip:** Registry → Org Scope → Agent Binding → Manifest → Checks → Evidence. Keine manuelle Statuskosmetik und kein „PASS by presence“.
+
+## 9. Zielarchitektur — L0–L9 + X0–X36
+
+**Vom Auftraggeber festgelegtes Zielmodell:** zehn Hauptlayer **L0–L9** und 37 Cross-Layer-Bereiche **X0–X36**. `X0` ist ausdrücklich Teil des Namensraums; die Zählung beginnt nicht bei X1.
+
+- Dieses Modell ist die Zielarchitektur für die ökosystemweite Architekturplanung und den Soll-/Ist-Abgleich.
+- Es ersetzt als Zielmodell die bisherige Zielangabe `L0–L9 + X1–X36` in Entwürfen. X0 darf nicht ausgelassen oder stillschweigend in einen anderen Bereich umbenannt werden.
+- Der derzeitige Registry-/Architektur-Draft-Stand `L0–L10 + X1–X8` ist als Ist-Befund getrennt zu führen. Diese Dokumentation allein ändert weder Registry-IDs noch Validatoren oder normative Standards.
+- Vor der Migration müssen die Definitionen und Verantwortlichkeiten für L0–L9 und X0–X36, die Zuordnung aller vorhandenen Komponenten, die Behandlung des bisherigen L10 sowie die Kompatibilität bestehender Referenzen dokumentiert werden.
+- Betroffene Architekturdateien, Layer-Registry, Component-Mapping, Soll-Katalog, Validatoren und gegebenenfalls `atc-standards` sind gemeinsam und reviewbar zu aktualisieren. Keine Teilmigration, keine stillschweigende Umnummerierung und keine konkurrierende Implementierungs-SSOT.
+- Statuskennzeichnung: **TARGET MODEL RECORDED / REGISTRY MIGRATION PENDING**. Implementierung, Normativität und Verifikation dürfen erst nach ihren jeweiligen Freigabe- und Evidence-Gates behauptet werden.
+
