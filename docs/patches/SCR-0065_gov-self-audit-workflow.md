@@ -1,6 +1,7 @@
 # SCR-0065/0066 — GOV-SELF-AUDIT-001: .github Self-Validation-Workflow (Owner-Aktion GH013)
 
 ## Status
+
 BEREIT — wartet auf Owner-Anwendung (Workflow-Datei = GH013). Alternativ:
 workflow-Scope fuer Aurora, dann pusht und verifiziert Aurora selbst.
 
@@ -38,11 +39,13 @@ jobs:
 ```
 
 ## Nachweis nach Anwendung
+
 Self-Governance-Schleife geschlossen: jede Hub-Aenderung laeuft gegen
 T1-T20 + agov_check + Branch-Protection-Drift. Danach in ai/branch-policy.yaml
 require_status_checks auf true stellen (Governance-Release M5).
 
 ## F-045: GESCHLOSSEN (Owner-Entscheidung 09.09. — Ja zu PR + 10 Gates)
+
 enforce_admins=true auf .github/main ist aktiv gesetzt (SCR-0066); kuenftig
 laufen Governance-Aenderungen am Hub ausschliesslich via PR + Review —
 auch fuer beide Aurora-Instanzen und den Automator.

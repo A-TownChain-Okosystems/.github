@@ -149,4 +149,3 @@ Ein grüner Einzelcheck erzeugt keine automatische `VERIFIED`-Aussage. Verificat
 - Vor der Migration müssen die Definitionen und Verantwortlichkeiten für L0–L9 und X0–X36, die Zuordnung aller vorhandenen Komponenten, die Behandlung des bisherigen L10 sowie die Kompatibilität bestehender Referenzen dokumentiert werden.
 - Betroffene Architekturdateien, Layer-Registry, Component-Mapping, Soll-Katalog, Validatoren und gegebenenfalls `atc-standards` sind gemeinsam und reviewbar zu aktualisieren. Keine Teilmigration, keine stillschweigende Umnummerierung und keine konkurrierende Implementierungs-SSOT.
 - Statuskennzeichnung: **TARGET MODEL RECORDED / REGISTRY MIGRATION PENDING**. Implementierung, Normativität und Verifikation dürfen erst nach ihren jeweiligen Freigabe- und Evidence-Gates behauptet werden.
-
