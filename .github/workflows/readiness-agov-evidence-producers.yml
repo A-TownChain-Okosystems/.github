@@ -1,0 +1,63 @@
+name: Readiness and AGOV Evidence Producers
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "tools/readiness_check.py"
+      - "tools/readiness_contract.py"
+      - "tools/agov_check.py"
+      - ".github/workflows/readiness-agov-evidence-producers.yml"
+permissions:
+  contents: read
+  actions: read
+  issues: read
+  pull-requests: read
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact source commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install producer dependencies
+        run: python -m pip install requests pyyaml
+      - name: Require organization read token
+        env:
+          ATC_ORG_READ_TOKEN: ${{ secrets.ATC_ORG_READ_TOKEN }}
+        run: |
+          if [ -z "$ATC_ORG_READ_TOKEN" ]; then
+            echo "::error::ATC_ORG_READ_TOKEN secret is required to read organization repositories."
+            exit 1
+          fi
+      - name: Generate machine-readable Readiness claim
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.ATC_ORG_READ_TOKEN }}
+          ATC_EVIDENCE_JSON: docs/readiness-claim.json
+          ATC_SOURCE_COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/readiness_check.py
+      - name: Generate machine-readable AGOV claim
+        if: always()
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.ATC_ORG_READ_TOKEN }}
+          ATC_EVIDENCE_JSON: docs/agov-claim.json
+          ATC_SOURCE_COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/agov_check.py
+      - name: Upload producer reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: readiness-agov-claims-${{ github.sha }}
+          path: |
+            docs/readiness-claim.json
+            docs/agov-claim.json
+            docs/READINESS-*.md
+            docs/AGOV-RUN-*.md
+          if-no-files-found: error
+          retention-days: 14

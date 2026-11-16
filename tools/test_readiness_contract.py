@@ -4,6 +4,7 @@ import unittest
 
 from tools.readiness_contract import (
     collect_pages,
+    decode_contents,
     response_json,
     select_runs_for_sha,
     validate_registry_counts,
@@ -24,6 +25,20 @@ class FakeResponse:
 
 
 class ReadinessContractTests(unittest.TestCase):
+    def test_contents_base64_allows_ascii_transport_whitespace(self):
+        self.assertEqual(
+            decode_contents({"encoding": "base64", "content": "aGVs\n bG8=\r\n"}, "file"),
+            "hello",
+        )
+
+    def test_contents_base64_rejects_invalid_characters(self):
+        with self.assertRaisesRegex(RuntimeError, "invalid Base64 content"):
+            decode_contents({"encoding": "base64", "content": "%%%"}, "file")
+
+    def test_contents_base64_rejects_wrong_encoding(self):
+        with self.assertRaisesRegex(RuntimeError, "missing base64 content"):
+            decode_contents({"encoding": "utf-8", "content": "hello"}, "file")
+
     def test_http_error_fails_closed(self):
         with self.assertRaisesRegex(RuntimeError, "HTTP status 403"):
             response_json(FakeResponse(403, {"message": "forbidden"}), "registry")
@@ -60,6 +75,25 @@ class ReadinessContractTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(RuntimeError, "total_count changed"):
             collect_pages(lambda page: pages[page], key="items", context="test", page_size=2)
+
+    def test_total_count_drift_retries_and_accepts_stable_complete_scan(self):
+        responses = [
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 1}, {"id": 2}]}),
+            FakeResponse(200, {"total_count": 4, "items": [{"id": 3}, {"id": 4}]}),
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 1}, {"id": 2}]}),
+            FakeResponse(200, {"total_count": 3, "items": [{"id": 3}]}),
+        ]
+        calls = 0
+
+        def fetch_page(page):
+            nonlocal calls
+            response = responses[calls]
+            calls += 1
+            return response
+
+        items = collect_pages(fetch_page, key="items", context="test", page_size=2)
+        self.assertEqual([item["id"] for item in items], [1, 2, 3])
+        self.assertEqual(calls, 4)
 
     def test_stale_sha_runs_are_excluded(self):
         expected = "a" * 40
