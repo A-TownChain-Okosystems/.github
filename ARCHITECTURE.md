@@ -9,7 +9,7 @@ updated: 2026-09-13
 standard: ATC-STD-MD-001
 ---
 
-# Architecture Specification — .github (Organisation Hub)
+## Architecture Specification — .github (Organisation Hub)
 
 ## Übersicht
 

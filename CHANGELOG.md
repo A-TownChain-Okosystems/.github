@@ -1,7 +1,9 @@
 # Changelog
 
 ## [Unreleased] — 09.09.2026 (SCR-0065, Audit-Response .github)
+
 ### M1 Self-Consistency + M2 Validator-Härtung + M3-Vorbereitung
+
 - ai/org-scope.yaml als Repository-Scope-SSOT (27 Repos, Quelle GitHub-API);
   README/AGENT_MANIFEST leiten sich ab (26→27-Inkonsistenz behoben, P2-01).
 - AGENT_MANIFEST v1.2.0 vereinheitlicht (Footer/Selbstreferenz v1.1.0 → v1.2.0, P2-02).
@@ -17,7 +19,9 @@
   bereit (docs/patches/, Owner-Aktion GH013 — P1-02/M3).
 
 ## [Unreleased] — 09.09.2026 (SCR-0066, Control-Plane Phase 1)
+
 ### Executable Governance: SSOT-Matrix, Schemas, Authorization, Drift Detection
+
 - ai/governance-sources.yaml: normative Source-of-Truth-Matrix (Audit-Block 1)
   — jeder Validator weiss exakt, welche Datei bei Konflikten gewinnt.
 - ai/schemas/ (7 JSON-Schema-Vertraege) + T17 Schema-Selbstvalidierung:
@@ -37,6 +41,7 @@
   (PR + 10 Gates fuer Governance-Aenderungen, gilt auch fuer Agenten).
 
 ## [Unreleased] — 09.09.2026 (SCR-0067, Control-Plane Phase 2: fehlende Komponenten)
+
 - ai/policy-graph.yaml + tools/gov_impact.py: Policy Dependency Graph +
   Governance Change Impact Analysis (P1-10: Aenderung -> betroffene
   Policies/Checks/Tests/Workflows/Repos, risk + owner_gate).

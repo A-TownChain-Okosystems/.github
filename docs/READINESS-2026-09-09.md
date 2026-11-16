@@ -50,13 +50,13 @@ Ehrlicher Kern: 191/432 der erfassten Standards sind enforced/implemented (Code+
 
 - [atc-sdk] chore(deps): update pyyaml requirement from >=6.0 to >=6.0.3
 - [atc-sdk] chore(deps): update requests requirement from >=2.28 to >=2.
-- [atc-sdk] chore(deps): update click requirement from >=8.1 to >=8.5.0 
+- [atc-sdk] chore(deps): update click requirement from >=8.1 to >=8.5.0
 - [atc-sdk] chore(deps): update rich requirement from >=13.0 to >=15.0.0
 - [globus-os] chore(deps): bump typescript from 5.9.3 to 7.0.2 in /modules
 - [globus-os] chore(deps-dev): bump @types/node from 20.19.43 to 26.4.1 in
-- [globus-os] chore(deps-dev): bump @types/jest from 29.5.14 to 30.0.0 in 
+- [globus-os] chore(deps-dev): bump @types/jest from 29.5.14 to 30.0.0 in
 - [globus-os] chore(deps-dev): bump jest from 29.7.0 to 30.5.1 in /modules
-- [globus-os] chore(deps): update eframe requirement from 0.27 to 0.36 in 
+- [globus-os] chore(deps): update eframe requirement from 0.27 to 0.36 in
 - [globus-os] chore(deps): update egui requirement from 0.27 to 0.36 in /m
 - [atc-wallet] chore(deps): update ed25519-dalek requirement from 2.0 to 3.
 - [aurora-ai] chore(deps): bump three from 0.184.0 to 0.185.1 in /modules/

@@ -15,6 +15,7 @@ dokumentiert in NAMING_CONVENTIONS.md).
 ## Verbindliche Implementierungspriorität
 
 Arbeite dependency-first und nutze die organisationsweite Reihenfolge aus `AGENTS.md §10`:
+
 - **P0:** Security/TCB, SSOT- und ABI-Konflikte, normative Standards, CI/Evidence.
 - **P1:** kanonischer ShivaCore-Kernel, ATC-VM, Blockchain-Kern, Konsensentscheidung und reproduzierbare Toolchain.
 - **P2:** ATC-Lang, GlobusOS, Node und systemübergreifende Integration.

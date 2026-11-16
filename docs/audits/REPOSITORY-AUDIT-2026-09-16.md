@@ -7,6 +7,7 @@ Mode: source/static GitHub audit; runtime CI is not inferred.
 ## Findings
 
 ### F-20260916-GH-001
+
 - Priority: P1
 - Class: Governance / Consistency
 - Category: Stale generated metadata
@@ -17,6 +18,7 @@ Mode: source/static GitHub audit; runtime CI is not inferred.
 - Closure: re-read generated manifest and compare registry/repository snapshot with SSOT.
 
 ### F-20260916-GH-002
+
 - Priority: P2
 - Class: Configuration Quality
 - Category: YAML duplicate key
@@ -27,6 +29,7 @@ Mode: source/static GitHub audit; runtime CI is not inferred.
 - Closure: parse/lint the file with duplicate-key detection enabled.
 
 ### F-20260916-GH-003
+
 - Priority: P1
 - Class: Governance / Enforcement
 - Category: Merge-gate enforcement

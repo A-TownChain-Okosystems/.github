@@ -11,7 +11,7 @@ The caller repository cannot create or modify its own policy exception.
 
 The reusable Ruff workflow derives the repository name from `GITHUB_REPOSITORY`:
 
-```
+```text
 .org-github-policy/ruff-overrides/<repository>.toml
 ```
 
